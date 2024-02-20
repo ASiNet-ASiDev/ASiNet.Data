@@ -15,7 +15,7 @@ public class ObjectModelsGenerator
 
         model.SetGetValueeDelegate(GenerateGetLambda<T>());
         model.SetSetValueeDelegate(GenerateSetLambda<T>());
-        model.SeProps(GetProps(typeof(T)));
+        model.SetProps(GetProps(typeof(T)));
 
         return model;
     }

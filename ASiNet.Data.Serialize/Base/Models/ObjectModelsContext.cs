@@ -1,6 +1,9 @@
 ﻿using ASiNet.Data.Base.Models.Interfaces;
 
 namespace ASiNet.Data.Base.Models;
+/// <summary>
+/// Содержит модели обьектов для сериализатора.
+/// </summary>
 public class ObjectModelsContext
 {
     public ObjectModelsGenerator Generator { get; init; } = new();
@@ -20,6 +23,7 @@ public class ObjectModelsContext
             return model;
         var newModel = Generator.GenerateModel<T>();
         _models.TryAdd(typeof(T), newModel);
+        newModel.GenerateSubModels(this, Generator);
         return newModel;
     }
 

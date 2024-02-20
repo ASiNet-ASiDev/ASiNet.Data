@@ -3,6 +3,11 @@ using ASiNet.Data.Serialize.Interfaces;
 using ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialize;
+
+/// <summary>
+/// Содержит сериализаторы.
+/// </summary>
+/// <param name="omContext"></param>
 public class SerializerContext(ObjectModelsContext omContext)
 {
     public static SerializerContext FromDefaultModels(ObjectModelsContext omContext)

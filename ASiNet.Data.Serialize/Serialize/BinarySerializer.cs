@@ -10,7 +10,7 @@ public static class BinarySerializer
 
     private static Lazy<ObjectModelsContext> _sharedObjectsModelContext = new();
 
-    private static Lazy<SerializerContext> _sharedSerializeContext = new();
+    private static Lazy<SerializerContext> _sharedSerializeContext = new(() => SerializerContext.FromDefaultModels(SharedObjectsModelContext));
 
     public static int Serialize<T>(T obj, byte[] buffer)
     {
