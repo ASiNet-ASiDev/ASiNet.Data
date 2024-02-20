@@ -3,9 +3,30 @@ using System.Linq.Expressions;
 using ASiNet.Data;
 using ASiNet.Data.Base.Models;
 using ASiNet.Data.Serialize;
+using ASiNet.Data.Serialize.ArrayIO;
+using ASiNet.Data.Serialize.Interfaces;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
+
+var buffer = new byte[] {25, 26, 27, 99, 31};
+ISerializeReader reader = new ArrayReader(buffer);
+
+Console.WriteLine(reader.CanReadSize(3));
+Span<byte> buf = stackalloc byte[3];
+reader.ReadBytes(buf);
+Console.WriteLine(string.Join(' ', buf.ToArray()));
+
+Console.WriteLine(reader.CanReadSize(3));
+Span<byte> buf1 = stackalloc byte[3];
+reader.ReadBytes(buf1);
+Console.WriteLine(string.Join(' ', buf1.ToArray()));
+
+
+
+Console.ReadKey();
+
+return;
 var omc = new ObjectModelsContext();
 
 var sec = new SerializerContext(omc);

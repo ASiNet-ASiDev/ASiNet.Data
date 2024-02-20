@@ -1,13 +1,13 @@
 using System.Runtime.Serialization;
 using ASiNet.Data.Serialize.Interfaces;
 
-namespace ASiNet.Data.Serialize.Writers;
+namespace ASiNet.Data.Serialize.ArrayIO;
 
 public class ArrayReader(byte[] c_src) : ISerializeReader
 {
-    public int TotalAreaSize { get; }
-    public int AvalibleAreaSize { get; }
-    public int FilledAreaSize { get; }
+    public int TotalAreaSize => _src.Length;
+    public int AvalibleAreaSize => 0;
+    public int FilledAreaSize => _src.Length;
 
     private int _position;
     private byte[] _src = c_src;
@@ -18,15 +18,16 @@ public class ArrayReader(byte[] c_src) : ISerializeReader
     public void ReadBytes(Span<byte> data)
     {
         if(!CanReadSize(data.Length))
-            throw new InvalidDataException();
+            throw new IndexOutOfRangeException();
         
         _src.AsSpan().Slice(_position, data.Length).CopyTo(data);
+        _position += data.Length;
     }
 
     public byte ReadByte()
     {
         if(!CanReadSize(1))
-            throw new InvalidDataException();
+            throw new IndexOutOfRangeException();
         
         return _src[_position++];
     }
