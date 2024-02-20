@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASiNet.Data", "ASiNet.Data.Serialize\ASiNet.Data.csproj", "{C931F31C-2CAA-4D41-880A-19A83A6DF6F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{61665EA4-143B-4722-9C09-117CAC69355D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C931F31C-2CAA-4D41-880A-19A83A6DF6F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C931F31C-2CAA-4D41-880A-19A83A6DF6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C931F31C-2CAA-4D41-880A-19A83A6DF6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C931F31C-2CAA-4D41-880A-19A83A6DF6F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61665EA4-143B-4722-9C09-117CAC69355D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61665EA4-143B-4722-9C09-117CAC69355D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61665EA4-143B-4722-9C09-117CAC69355D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61665EA4-143B-4722-9C09-117CAC69355D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1FA36B38-EBDE-429F-B2CC-A9C9BE41AE3F}
+	EndGlobalSection
+EndGlobal
