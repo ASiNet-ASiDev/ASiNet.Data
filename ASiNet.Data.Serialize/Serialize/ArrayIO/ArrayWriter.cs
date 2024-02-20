@@ -31,6 +31,7 @@ public class ArrayWriter(byte[] c_src) : ISerializerWriter
         if(AvalibleAreaSize < data.Length)
             throw new IndexOutOfRangeException();
         data.CopyTo(_src.AsSpan().Slice(_position, data.Length));
+        _position += data.Length;
     }
 
     public byte[] AsArray() => _src;

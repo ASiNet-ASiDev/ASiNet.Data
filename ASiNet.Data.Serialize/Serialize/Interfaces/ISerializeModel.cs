@@ -11,9 +11,8 @@ public interface ISerializeModel : IDisposable
 
     public bool ContainsSerializeDelegate { get; }
     public bool ContainsDeserializeDelegate { get; }
+    
+    public void SerializeObject(object? obj, ISerializerWriter writer);
 
-
-    public void Serialize(object? obj, ISerializerWriter writer);
-
-    public object? Deserialize(ISerializeReader reader);
+    public object? DeserializeToObject(ISerializeReader reader);
 }

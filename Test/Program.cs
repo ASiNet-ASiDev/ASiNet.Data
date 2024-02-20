@@ -5,28 +5,24 @@ using ASiNet.Data.Base.Models;
 using ASiNet.Data.Serialize;
 using ASiNet.Data.Serialize.ArrayIO;
 using ASiNet.Data.Serialize.Interfaces;
+using ASiNet.Data.Serialize.Models.BinarySerializeModels.ArrayTypes;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
+var buffer = new byte[30000];
 
-var buffer = new byte[] {25, 26, 27, 99, 31};
-ISerializeReader reader = new ArrayReader(buffer);
+var arr = new string[] { "hello", "world", "gay", "pedik" };
 
-Console.WriteLine(reader.CanReadSize(3));
-Span<byte> buf = stackalloc byte[3];
-reader.ReadBytes(buf);
-Console.WriteLine(string.Join(' ', buf.ToArray()));
+var m = new ArrayModel<string[]>();
+m.Serialize(arr, (ArrayWriter)buffer);
 
-Console.WriteLine(reader.CanReadSize(3));
-Span<byte> buf1 = stackalloc byte[3];
-reader.ReadBytes(buf1);
-Console.WriteLine(string.Join(' ', buf1.ToArray()));
+var res = m.Deserialize((ArrayReader)buffer);
 
+Console.WriteLine(string.Join(' ', res));
 
-
-Console.ReadKey();
-
+Console.ReadLine();
 return;
+
 var omc = new ObjectModelsContext();
 
 var sec = new SerializerContext(omc);

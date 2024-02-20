@@ -8,7 +8,7 @@ using ASiNet.Data.Serialize.Interfaces;
 namespace ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
 public class Int64Model : BaseSerializeModel<long>
 {
-    public override long Deserealize(ISerializeReader reader)
+    public override long Deserialize(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(long)))
         {
@@ -19,7 +19,7 @@ public class Int64Model : BaseSerializeModel<long>
         throw new Exception();
     }
 
-    public override object? Deserialize(ISerializeReader reader)
+    public override object? DeserializeToObject(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(long)))
         {
@@ -30,7 +30,7 @@ public class Int64Model : BaseSerializeModel<long>
         throw new Exception();
     }
 
-    public override void Serealize(long obj, ISerializerWriter writer)
+    public override void Serialize(long obj, ISerializerWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(long)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class Int64Model : BaseSerializeModel<long>
         throw new Exception();
     }
 
-    public override void Serialize(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializerWriter writer)
     {
         if (obj is long value)
         {

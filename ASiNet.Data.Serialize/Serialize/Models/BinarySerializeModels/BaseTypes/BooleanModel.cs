@@ -8,7 +8,7 @@ using ASiNet.Data.Serialize.Interfaces;
 namespace ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
 public class BooleanModel : BaseSerializeModel<bool>
 {
-    public override bool Deserealize(ISerializeReader reader)
+    public override bool Deserialize(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(bool)))
         {
@@ -19,7 +19,7 @@ public class BooleanModel : BaseSerializeModel<bool>
         throw new Exception();
     }
 
-    public override object? Deserialize(ISerializeReader reader)
+    public override object? DeserializeToObject(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(bool)))
         {
@@ -30,7 +30,7 @@ public class BooleanModel : BaseSerializeModel<bool>
         throw new Exception();
     }
 
-    public override void Serealize(bool obj, ISerializerWriter writer)
+    public override void Serialize(bool obj, ISerializerWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(bool)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class BooleanModel : BaseSerializeModel<bool>
         throw new Exception();
     }
 
-    public override void Serialize(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializerWriter writer)
     {
         if (obj is bool value)
         {

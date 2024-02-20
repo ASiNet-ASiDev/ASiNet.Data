@@ -8,7 +8,7 @@ using ASiNet.Data.Serialize.Interfaces;
 namespace ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
 public class UInt64Model : BaseSerializeModel<ulong>
 {
-    public override ulong Deserealize(ISerializeReader reader)
+    public override ulong Deserialize(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(ulong)))
         {
@@ -19,7 +19,7 @@ public class UInt64Model : BaseSerializeModel<ulong>
         throw new Exception();
     }
 
-    public override object? Deserialize(ISerializeReader reader)
+    public override object? DeserializeToObject(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(ulong)))
         {
@@ -30,7 +30,7 @@ public class UInt64Model : BaseSerializeModel<ulong>
         throw new Exception();
     }
 
-    public override void Serealize(ulong obj, ISerializerWriter writer)
+    public override void Serialize(ulong obj, ISerializerWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(ulong)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class UInt64Model : BaseSerializeModel<ulong>
         throw new Exception();
     }
 
-    public override void Serialize(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializerWriter writer)
     {
         if (obj is ulong value)
         {

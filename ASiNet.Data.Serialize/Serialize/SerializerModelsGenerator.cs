@@ -56,7 +56,7 @@ public class SerializerModelsGenerator
             var sm = (ISerializeModel)SerializerHalper.InvokeGenerickMethod(serializeContext, nameof(SerializerContext.GetOrGenerate), [prop.PropertyType], [])!;
             yield return Expression.Call(
                 Expression.Constant(sm), 
-                nameof(ISerializeModel.Serialize), 
+                nameof(ISerializeModel.SerializeObject), 
                 null, 
                 Expression.ArrayAccess(
                     props, 

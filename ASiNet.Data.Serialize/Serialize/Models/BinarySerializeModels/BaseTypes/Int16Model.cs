@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
 public class Int16Model : BaseSerializeModel<short>
 {
-    public override short Deserealize(ISerializeReader reader)
+    public override short Deserialize(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(short)))
         {
@@ -14,7 +14,7 @@ public class Int16Model : BaseSerializeModel<short>
         throw new Exception();
     }
 
-    public override object? Deserialize(ISerializeReader reader)
+    public override object? DeserializeToObject(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(short)))
         {
@@ -25,7 +25,7 @@ public class Int16Model : BaseSerializeModel<short>
         throw new Exception();
     }
 
-    public override void Serealize(short obj, ISerializerWriter writer)
+    public override void Serialize(short obj, ISerializerWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(short)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class Int16Model : BaseSerializeModel<short>
         throw new Exception();
     }
 
-    public override void Serialize(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializerWriter writer)
     {
         if (obj is short value)
         {

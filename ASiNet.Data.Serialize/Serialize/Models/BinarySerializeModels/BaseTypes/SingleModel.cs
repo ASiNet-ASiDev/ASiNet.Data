@@ -8,7 +8,7 @@ using ASiNet.Data.Serialize.Interfaces;
 namespace ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
 public class SingleModel : BaseSerializeModel<float>
 {
-    public override float Deserealize(ISerializeReader reader)
+    public override float Deserialize(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(float)))
         {
@@ -19,7 +19,7 @@ public class SingleModel : BaseSerializeModel<float>
         throw new Exception();
     }
 
-    public override object? Deserialize(ISerializeReader reader)
+    public override object? DeserializeToObject(ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(float)))
         {
@@ -30,7 +30,7 @@ public class SingleModel : BaseSerializeModel<float>
         throw new Exception();
     }
 
-    public override void Serealize(float obj, ISerializerWriter writer)
+    public override void Serialize(float obj, ISerializerWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(float)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class SingleModel : BaseSerializeModel<float>
         throw new Exception();
     }
 
-    public override void Serialize(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializerWriter writer)
     {
         if (obj is float value)
         {
