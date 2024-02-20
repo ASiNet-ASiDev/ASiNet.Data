@@ -35,6 +35,8 @@ public class ArrayWriter(byte[] c_src) : ISerializerWriter
 
     public byte[] AsArray() => _src;
 
+
+
     public static implicit operator ArrayWriter(byte[] src) => new(src);
 
     public static implicit operator byte[](ArrayWriter src) => src._src;

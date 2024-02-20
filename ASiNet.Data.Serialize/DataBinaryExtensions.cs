@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using ASiNet.Data.Serialize.ArrayIO;
 
 namespace ASiNet.Data;
 
@@ -56,5 +57,4 @@ public static class DataBinaryExtensions
 
     public static bool TryToBytes(this double src, Span<byte> buffer) =>
         BitConverter.TryWriteBytes(buffer, src);
-
 }

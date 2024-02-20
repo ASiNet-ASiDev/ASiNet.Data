@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using ASiNet.Data.Base.Models.Interfaces;
 
 namespace ASiNet.Data.Base.Models;
 
@@ -17,7 +11,7 @@ public class ObjectModelsGenerator
 {
     public ObjectModel<T> GenerateModel<T>()
     {
-       var model = new ObjectModel<T>();
+        var model = new ObjectModel<T>();
 
         model.SetGetValueeDelegate(GenerateGetLambda<T>());
         model.SetSetValueeDelegate(GenerateSetLambda<T>());
@@ -30,7 +24,7 @@ public class ObjectModelsGenerator
     {
         var instParam = Expression.Parameter(typeof(T));
         var rp = Expression.Parameter(typeof(object[]));
-        var body = Expression.Block([rp], 
+        var body = Expression.Block([rp],
             [
                 Expression.Assign(rp, EnumiratePropsGetMethod(typeof(T), instParam)),
                 rp,
@@ -84,7 +78,7 @@ public class ObjectModelsGenerator
     private IEnumerable<Expression> EnumiratePropsSetMethod(Type type, Expression inst, Expression valuesArr)
     {
         var props = GetProps(type);
-         
+
         yield return Expression.IfThen(
                         Expression.NotEqual(
                             Expression.ArrayLength(valuesArr),

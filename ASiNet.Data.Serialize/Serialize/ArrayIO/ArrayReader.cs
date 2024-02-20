@@ -31,4 +31,9 @@ public class ArrayReader(byte[] c_src) : ISerializeReader
         
         return _src[_position++];
     }
+
+
+    public static implicit operator ArrayReader(byte[] src) => new(src);
+
+    public static implicit operator byte[](ArrayReader src) => src._src;
 }

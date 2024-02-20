@@ -16,6 +16,9 @@ public class SerializerContext(ObjectModelsContext omContext)
         context.AddModel(new UInt64Model());
         context.AddModel(new SingleModel());
         context.AddModel(new DoubleModel());
+        context.AddModel(new CharModel());
+        context.AddModel(new StringModel());
+        context.AddModel(new BooleanModel());
 
         return context;
     }

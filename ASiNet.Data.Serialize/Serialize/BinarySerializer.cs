@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ASiNet.Data.Base.Models;
+﻿using ASiNet.Data.Base.Models;
+using ASiNet.Data.Serialize.ArrayIO;
 
 namespace ASiNet.Data.Serialize;
 public static class BinarySerializer
@@ -16,10 +12,25 @@ public static class BinarySerializer
 
     private static Lazy<SerializerContext> _sharedSerializeContext = new();
 
-    public static byte[] Serialize<T>(T obj)
+    public static int Serialize<T>(T obj, byte[] buffer)
     {
         var model = SharedSerializeContext.GetOrGenerate<T>();
 
-        return null;
+        var writer = (ArrayWriter)buffer;
+
+        model.Serialize(obj, writer);
+
+        return writer.FilledAreaSize;
+    }
+
+    public static T? Deserialize<T>(byte[] buffer)
+    {
+        var model = SharedSerializeContext.GetOrGenerate<T>();
+
+        var reader = (ArrayReader)buffer;
+
+        var result = (T?)model.Deserialize(reader);
+
+        return result;
     }
 }
