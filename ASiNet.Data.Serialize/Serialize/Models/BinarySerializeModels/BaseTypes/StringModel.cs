@@ -10,8 +10,14 @@ public class StringModel : BaseSerializeModel<string>
 {
     public override string Deserealize(ISerializeReader reader)
     {
-        var sizeBuffer = (stackalloc byte[sizeof(int)]);
-        
+        if(reader.CanReadSize(sizeof(int)))
+        {
+            var sizeBuffer = (stackalloc byte[sizeof(int)]);
+            reader.ReadBytes(sizeBuffer);
+            var strBytesSize = BitConverter.ToInt32(sizeBuffer);
+            var buffer = strBytesSize > ushort.MaxValue ? (new byte[strBytesSize]) : (stackalloc byte[strBytesSize]);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
