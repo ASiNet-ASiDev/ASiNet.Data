@@ -30,7 +30,7 @@ public class Int64Model : BaseSerializeModel<long>
         throw new Exception();
     }
 
-    public override void Serialize(long obj, ISerializerWriter writer)
+    public override void Serialize(long obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(long)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class Int64Model : BaseSerializeModel<long>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is long value)
         {

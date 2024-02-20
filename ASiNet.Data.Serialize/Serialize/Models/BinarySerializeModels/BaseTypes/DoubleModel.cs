@@ -31,7 +31,7 @@ public class DoubleModel : BaseSerializeModel<double>
         throw new Exception();
     }
 
-    public override void Serialize(double obj, ISerializerWriter writer)
+    public override void Serialize(double obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(double)]);
         if (obj.TryToBytes(buffer))
@@ -43,7 +43,7 @@ public class DoubleModel : BaseSerializeModel<double>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is double value)
         {

@@ -1,7 +1,6 @@
-using System.Runtime.Serialization;
 using ASiNet.Data.Serialize.Interfaces;
 
-namespace ASiNet.Data.Serialize.ArrayIO;
+namespace ASiNet.Data.Serialize.SerializerIO.Arrays;
 
 public class ArrayReader(byte[] c_src) : ISerializeReader
 {

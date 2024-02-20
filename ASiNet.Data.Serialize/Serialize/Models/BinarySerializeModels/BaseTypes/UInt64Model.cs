@@ -30,7 +30,7 @@ public class UInt64Model : BaseSerializeModel<ulong>
         throw new Exception();
     }
 
-    public override void Serialize(ulong obj, ISerializerWriter writer)
+    public override void Serialize(ulong obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(ulong)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class UInt64Model : BaseSerializeModel<ulong>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is ulong value)
         {

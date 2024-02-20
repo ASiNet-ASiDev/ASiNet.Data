@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialize.Interfaces;
 
-namespace ASiNet.Data.Serialize.ArrayIO;
-public class ArrayWriter(byte[] c_src) : ISerializerWriter
+namespace ASiNet.Data.Serialize.SerializerIO.Arrays;
+public class ArrayWriter(byte[] c_src) : ISerializeWriter
 {
     public int TotalAreaSize => _src.Length;
 

@@ -30,7 +30,7 @@ public class CharModel : BaseSerializeModel<char>
         throw new Exception();
     }
 
-    public override void Serialize(char obj, ISerializerWriter writer)
+    public override void Serialize(char obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(char)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class CharModel : BaseSerializeModel<char>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is char value)
         {

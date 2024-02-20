@@ -26,16 +26,15 @@ public class ObjectModelsGenerator
         var rp = Expression.Parameter(typeof(object[]));
         var body = Expression.Block([rp],
             [
-                Expression.Assign(rp, EnumiratePropsGetMethod(typeof(T), instParam)),
+                Expression.Assign(rp, EnumeratePropsGetMethod(typeof(T), instParam)),
                 rp,
             ]);
 
         var lambda = Expression.Lambda<GetValuesDelegate<T>>(body, instParam);
         return lambda.Compile();
     }
-
-
-    private Expression EnumiratePropsGetMethod(Type type, Expression inst)
+    
+    private Expression EnumeratePropsGetMethod(Type type, Expression inst)
     {
         var props = GetProps(type);
 
@@ -69,13 +68,13 @@ public class ObjectModelsGenerator
     {
         var instParam = Expression.Parameter(typeof(T));
         var valuesParam = Expression.Parameter(typeof(object[]));
-        var body = Expression.Block([], EnumiratePropsSetMethod(typeof(T), instParam, valuesParam));
+        var body = Expression.Block([], EnumeratePropsSetMethod(typeof(T), instParam, valuesParam));
 
         var lambda = Expression.Lambda<SetValuesDelegate<T>>(body, instParam, valuesParam);
         return lambda.Compile();
     }
 
-    private IEnumerable<Expression> EnumiratePropsSetMethod(Type type, Expression inst, Expression valuesArr)
+    private IEnumerable<Expression> EnumeratePropsSetMethod(Type type, Expression inst, Expression valuesArr)
     {
         var props = GetProps(type);
 

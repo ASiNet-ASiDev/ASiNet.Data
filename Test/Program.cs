@@ -3,9 +3,9 @@ using System.Linq.Expressions;
 using ASiNet.Data;
 using ASiNet.Data.Base.Models;
 using ASiNet.Data.Serialize;
-using ASiNet.Data.Serialize.ArrayIO;
 using ASiNet.Data.Serialize.Interfaces;
 using ASiNet.Data.Serialize.Models.BinarySerializeModels.ArrayTypes;
+using ASiNet.Data.Serialize.SerializerIO.Arrays;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 

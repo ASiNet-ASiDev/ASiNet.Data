@@ -9,7 +9,7 @@ using ASiNet.Data.Serialize.Interfaces;
 
 namespace ASiNet.Data.Serialize;
 
-public delegate void SerializeObjectDelegate<T>(T? obj, ISerializerWriter writer);
+public delegate void SerializeObjectDelegate<T>(T? obj, ISerializeWriter writer);
 
 public delegate T? DeserializeObjectDelegate<T>(ISerializeReader reader);
 
@@ -29,7 +29,7 @@ public class SerializerModelsGenerator
     public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(ObjectModel<T> model, SerializerContext serializeContext)
     {
         var inst = Expression.Parameter(typeof(T));
-        var writer = Expression.Parameter(typeof(ISerializerWriter));
+        var writer = Expression.Parameter(typeof(ISerializeWriter));
         var om = Expression.Parameter(typeof(ObjectModel<T>));
 
         var propsArr = Expression.Parameter(typeof(object[]));
@@ -53,7 +53,7 @@ public class SerializerModelsGenerator
         var i = 0;
         foreach (var prop in model.EnumirateProps())
         {
-            var sm = (ISerializeModel)SerializerHalper.InvokeGenerickMethod(serializeContext, nameof(SerializerContext.GetOrGenerate), [prop.PropertyType], [])!;
+            var sm = (ISerializeModel)SerializerHelper.InvokeGenerickMethod(serializeContext, nameof(SerializerContext.GetOrGenerate), [prop.PropertyType], [])!;
             yield return Expression.Call(
                 Expression.Constant(sm), 
                 nameof(ISerializeModel.SerializeObject), 

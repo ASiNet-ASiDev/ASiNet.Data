@@ -14,7 +14,7 @@ public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, Des
     private SerializeObjectDelegate<T>? _serializeDelegate = serialize;
     private DeserializeObjectDelegate<T>? _deserializeDelegate = deserialize;
 
-    public virtual void SerializeObject(object? obj, ISerializerWriter writer)
+    public virtual void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (_serializeDelegate is null)
             throw new NullReferenceException();
@@ -30,7 +30,7 @@ public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, Des
         return _deserializeDelegate(reader);
     }
 
-    public virtual void Serialize(T obj, ISerializerWriter writer)
+    public virtual void Serialize(T obj, ISerializeWriter writer)
     {
         if (_serializeDelegate is null)
             throw new NullReferenceException();

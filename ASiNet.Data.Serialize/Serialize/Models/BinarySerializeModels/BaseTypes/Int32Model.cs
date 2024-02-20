@@ -30,7 +30,7 @@ public class Int32Model : BaseSerializeModel<int>
         throw new Exception();
     }
     
-    public override void Serialize(int obj, ISerializerWriter writer)
+    public override void Serialize(int obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(int)]);
         if(obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class Int32Model : BaseSerializeModel<int>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if(obj is int value)
         {

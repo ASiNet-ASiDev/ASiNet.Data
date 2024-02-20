@@ -30,7 +30,7 @@ public class UInt16Model : BaseSerializeModel<ushort>
         throw new Exception();
     }
 
-    public override void Serialize(ushort obj, ISerializerWriter writer)
+    public override void Serialize(ushort obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(ushort)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class UInt16Model : BaseSerializeModel<ushort>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is ushort value)
         {

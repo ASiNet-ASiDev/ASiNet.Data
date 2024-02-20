@@ -30,7 +30,7 @@ public class SingleModel : BaseSerializeModel<float>
         throw new Exception();
     }
 
-    public override void Serialize(float obj, ISerializerWriter writer)
+    public override void Serialize(float obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(float)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class SingleModel : BaseSerializeModel<float>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is float value)
         {

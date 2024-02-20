@@ -40,7 +40,7 @@ public class StringModel : BaseSerializeModel<string>
         throw new Exception();
     }
 
-    public override void Serialize(string obj, ISerializerWriter writer)
+    public override void Serialize(string obj, ISerializeWriter writer)
     {
         var strBytesSize = Encoding.UTF8.GetByteCount(obj);
         var buffer = strBytesSize > ushort.MaxValue ? (new byte[strBytesSize]) : (stackalloc byte[strBytesSize]);
@@ -55,7 +55,7 @@ public class StringModel : BaseSerializeModel<string>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is string value)
         {

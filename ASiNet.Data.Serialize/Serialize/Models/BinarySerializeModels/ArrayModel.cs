@@ -11,7 +11,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         ()=>typeof(T).GetElementType() 
             ?? throw new Exception("Invalid array element type."));
     
-    public override void Serialize(T obj, ISerializerWriter writer)
+    public override void Serialize(T obj, ISerializeWriter writer)
     {
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         BitConverter.TryWriteBytes(buffer, obj.Count);
@@ -24,7 +24,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
             model.SerializeObject(element, writer);
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         var array = (obj as T)
                     ?? throw new Exception("Invalid array element type.");

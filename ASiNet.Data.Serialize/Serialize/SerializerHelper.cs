@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 using ASiNet.Data.Base.Models;
 
 namespace ASiNet.Data.Serialize;
-public static class SerializerHalper
+public static class SerializerHelper
 {
-
     public static Expression ObjectModelGetMethodCall(Expression om, Expression inst) =>
         Expression.Call(om, nameof(ObjectModel<byte>.GetValues), [inst.Type], inst);
-
-
+    
     public static object? InvokeGenerickMethod(object inst, string methodName, Type[] genericParameters, object?[] parameters)
     {
         var method = inst

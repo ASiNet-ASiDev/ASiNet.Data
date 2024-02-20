@@ -30,7 +30,7 @@ public class BooleanModel : BaseSerializeModel<bool>
         throw new Exception();
     }
 
-    public override void Serialize(bool obj, ISerializerWriter writer)
+    public override void Serialize(bool obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(bool)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class BooleanModel : BaseSerializeModel<bool>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is bool value)
         {

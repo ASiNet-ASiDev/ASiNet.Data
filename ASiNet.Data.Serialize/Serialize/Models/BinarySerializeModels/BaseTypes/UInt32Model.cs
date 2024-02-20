@@ -30,7 +30,7 @@ public class UInt32Model : BaseSerializeModel<uint>
         throw new Exception();
     }
 
-    public override void Serialize(uint obj, ISerializerWriter writer)
+    public override void Serialize(uint obj, ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(uint)]);
         if (obj.TryToBytes(buffer))
@@ -41,7 +41,7 @@ public class UInt32Model : BaseSerializeModel<uint>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializerWriter writer)
+    public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
         if (obj is uint value)
         {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ASiNet.Data.Serialize.Interfaces;
-public interface ISerializerWriter
+public interface ISerializeWriter
 {
     public int TotalAreaSize { get; }
     public int AvalibleAreaSize { get; }
