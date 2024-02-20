@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using ASiNet.Data.Serialize.Interfaces;
 
 namespace ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
@@ -10,19 +6,38 @@ public class StringModel : BaseSerializeModel<string>
 {
     public override string Deserealize(ISerializeReader reader)
     {
-        if(reader.CanReadSize(sizeof(int)))
+        if (reader.CanReadSize(sizeof(int)))
         {
             var sizeBuffer = (stackalloc byte[sizeof(int)]);
             reader.ReadBytes(sizeBuffer);
             var strBytesSize = BitConverter.ToInt32(sizeBuffer);
-            var buffer = strBytesSize > ushort.MaxValue ? (new byte[strBytesSize]) : (stackalloc byte[strBytesSize]);
+            if (reader.CanReadSize(strBytesSize))
+            {
+                var buffer = strBytesSize > ushort.MaxValue ? (new byte[strBytesSize]) : (stackalloc byte[strBytesSize]);
+                reader.ReadBytes(buffer);
+                return Encoding.UTF8.GetString(buffer);
+            }
+            throw new Exception();
         }
         throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(int)))
+        {
+            var sizeBuffer = (stackalloc byte[sizeof(int)]);
+            reader.ReadBytes(sizeBuffer);
+            var strBytesSize = BitConverter.ToInt32(sizeBuffer);
+            if (reader.CanReadSize(strBytesSize))
+            {
+                var buffer = strBytesSize > ushort.MaxValue ? (new byte[strBytesSize]) : (stackalloc byte[strBytesSize]);
+                reader.ReadBytes(buffer);
+                return Encoding.UTF8.GetString(buffer);
+            }
+            throw new Exception();
+        }
+        throw new Exception();
     }
 
     public override void Serealize(string obj, ISerializerWriter writer)
