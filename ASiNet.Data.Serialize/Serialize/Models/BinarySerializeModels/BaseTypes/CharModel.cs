@@ -10,12 +10,24 @@ public class CharModel : BaseSerializeModel<char>
 {
     public override char Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(char)))
+        {
+            var buffer = (stackalloc byte[sizeof(char)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToChar(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(char)))
+        {
+            var buffer = (stackalloc byte[sizeof(char)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToChar(buffer);
+        }
+        throw new Exception();
     }
 
     public override void Serealize(char obj, ISerializerWriter writer)

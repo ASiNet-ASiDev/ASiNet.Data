@@ -11,12 +11,24 @@ public class DoubleModel : BaseSerializeModel<double>
 {
     public override double Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(double)))
+        {
+            var buffer = (stackalloc byte[sizeof(double)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToDouble(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(double)))
+        {
+            var buffer = (stackalloc byte[sizeof(double)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToDouble(buffer);
+        }
+        throw new Exception();
     }
 
     public override void Serealize(double obj, ISerializerWriter writer)

@@ -10,12 +10,24 @@ public class BooleanModel : BaseSerializeModel<bool>
 {
     public override bool Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(bool)))
+        {
+            var buffer = (stackalloc byte[sizeof(bool)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToBoolean(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(bool)))
+        {
+            var buffer = (stackalloc byte[sizeof(bool)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToBoolean(buffer);
+        }
+        throw new Exception();
     }
 
     public override void Serealize(bool obj, ISerializerWriter writer)

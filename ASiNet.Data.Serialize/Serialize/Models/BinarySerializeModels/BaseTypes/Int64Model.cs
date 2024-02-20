@@ -10,12 +10,24 @@ public class Int64Model : BaseSerializeModel<long>
 {
     public override long Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(long)))
+        {
+            var buffer = (stackalloc byte[sizeof(long)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToInt64(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(long)))
+        {
+            var buffer = (stackalloc byte[sizeof(long)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToInt64(buffer);
+        }
+        throw new Exception();
     }
 
     public override void Serealize(long obj, ISerializerWriter writer)

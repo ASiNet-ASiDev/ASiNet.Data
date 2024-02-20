@@ -10,12 +10,24 @@ public class UInt32Model : BaseSerializeModel<uint>
 {
     public override uint Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(uint)))
+        {
+            var buffer = (stackalloc byte[sizeof(uint)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToUInt32(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(uint)))
+        {
+            var buffer = (stackalloc byte[sizeof(uint)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToUInt32(buffer);
+        }
+        throw new Exception();
     }
 
     public override void Serealize(uint obj, ISerializerWriter writer)

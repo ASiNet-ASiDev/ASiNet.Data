@@ -10,12 +10,24 @@ public class UInt64Model : BaseSerializeModel<ulong>
 {
     public override ulong Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(ulong)))
+        {
+            var buffer = (stackalloc byte[sizeof(ulong)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToUInt64(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(ulong)))
+        {
+            var buffer = (stackalloc byte[sizeof(ulong)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToUInt64(buffer);
+        }
+        throw new Exception();
     }
 
     public override void Serealize(ulong obj, ISerializerWriter writer)

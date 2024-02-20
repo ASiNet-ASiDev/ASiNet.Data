@@ -10,14 +10,26 @@ public class Int32Model : BaseSerializeModel<int>
 {
     public override int Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(int)))
+        {
+            var buffer = (stackalloc byte[sizeof(int)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToInt32(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(int)))
+        {
+            var buffer = (stackalloc byte[sizeof(int)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToInt32(buffer);
+        }
+        throw new Exception();
     }
-
+    
     public override void Serealize(int obj, ISerializerWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(int)]);

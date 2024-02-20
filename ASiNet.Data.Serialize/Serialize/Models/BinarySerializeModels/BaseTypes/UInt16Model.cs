@@ -10,12 +10,24 @@ public class UInt16Model : BaseSerializeModel<ushort>
 {
     public override ushort Deserealize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(ushort)))
+        {
+            var buffer = (stackalloc byte[sizeof(ushort)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToUInt16(buffer);
+        }
+        throw new Exception();
     }
 
     public override object? Deserialize(ISerializeReader reader)
     {
-        throw new NotImplementedException();
+        if (reader.CanReadSize(sizeof(ushort)))
+        {
+            var buffer = (stackalloc byte[sizeof(ushort)]);
+            reader.ReadBytes(buffer);
+            return BitConverter.ToUInt16(buffer);
+        }
+        throw new Exception();
     }
 
     public override void Serealize(ushort obj, ISerializerWriter writer)
