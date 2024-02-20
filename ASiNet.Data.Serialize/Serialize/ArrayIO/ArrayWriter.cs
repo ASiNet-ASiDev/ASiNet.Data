@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialize.Interfaces;
 
 namespace ASiNet.Data.Serialize.Writers;
-public class ArrayWriter(byte[] src) : ISerializerWriter
+public class ArrayWriter(byte[] c_src) : ISerializerWriter
 {
     public int TotalAreaSize => _src.Length;
 
@@ -10,7 +10,7 @@ public class ArrayWriter(byte[] src) : ISerializerWriter
     public int FilledAreaSize => _position;
 
     private int _position;
-    private byte[] _src = src;
+    private byte[] _src = c_src;
 
     public bool CanWriteSize(int size) => 
         AvalibleAreaSize >= size;

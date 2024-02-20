@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ASiNet.Data.Serialize.Interfaces;
 
 namespace ASiNet.Data.Serialize.Models.BinarySerializeModels.BaseTypes;
+
 public class DoubleModel : BaseSerializeModel<double>
 {
     public override double Deserealize(ISerializeReader reader)
@@ -26,6 +27,7 @@ public class DoubleModel : BaseSerializeModel<double>
             writer.WriteBytes(buffer);
             return;
         }
+
         throw new Exception();
     }
 
@@ -39,7 +41,10 @@ public class DoubleModel : BaseSerializeModel<double>
                 writer.WriteBytes(buffer);
                 return;
             }
+
             throw new Exception();
         }
+
         throw new Exception();
     }
+}
