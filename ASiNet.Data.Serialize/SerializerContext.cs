@@ -1,5 +1,6 @@
 ﻿using ASiNet.Data.Base.Serialization.Models;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization;
@@ -16,14 +17,21 @@ public class SerializerContext(ObjectModelsContext omContext)
         context.AddModel(new Int16Model());
         context.AddModel(new Int32Model());
         context.AddModel(new Int64Model());
+        
         context.AddModel(new UInt16Model());
         context.AddModel(new UInt32Model());
         context.AddModel(new UInt64Model());
+        
         context.AddModel(new SingleModel());
         context.AddModel(new DoubleModel());
+        
         context.AddModel(new CharModel());
         context.AddModel(new StringModel());
+        
         context.AddModel(new BooleanModel());
+        
+        context.AddModel(new GuidModel());
+        
 
         return context;
     }

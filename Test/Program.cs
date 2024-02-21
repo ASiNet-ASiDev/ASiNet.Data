@@ -6,73 +6,22 @@ using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
-var buffer = new byte[30000];
-
-var arr = new string[] { "hello", "world", "gay", "pedik" };
-
-var m = new ArrayModel<string[]>();
-m.Serialize(arr, (ArrayWriter)buffer);
-
-var res = m.Deserialize((ArrayReader)buffer);
-
-Console.WriteLine(string.Join(' ', res));
-
-Console.ReadLine();
-return;
-
-var omc = new ObjectModelsContext();
-
-var sec = new SerializerContext(omc);
-
-var model = sec.GetOrGenerate<T1>();
-
-//BenchmarkRunner.Run<BenchmarkTest>();
-
-Console.ReadLine();
-
-
-[MemoryDiagnoser()]
-public class BenchmarkTest
+try
 {
-    public BenchmarkTest()
-    {
-        SetValuesDelegate = _generator.GenerateSetLambda<T1>();
-        GetValuesDelegate = _generator.GenerateGetLambda<T1>();
-    }
+    var buffer = new byte[30000];
 
-    public ObjectModelsGenerator _generator = new();
+    var guid = Guid.NewGuid();
+    Console.WriteLine(guid);
+    
+    BinarySerializer.Serialize(guid, (ArrayWriter)buffer);
 
-    public SetValuesDelegate<T1> SetValuesDelegate;
-    public GetValuesDelegate<T1> GetValuesDelegate;
+    var res = BinarySerializer.Deserialize<Guid>((ArrayReader)buffer);
 
-
-    private T1 _test = new();
-
-    [Benchmark]
-    public void GetModelPrors()
-    {
-        _ = GetValuesDelegate.Invoke(_test);
-    }
-
-
-    [Benchmark]
-    public void SetModelPrors()
-    {
-        SetValuesDelegate.Invoke(_test, 1, 2, 3, 4, 5);
-    }
-
-    private void Callback(object? value)
-    {
-
-    }
+    Console.WriteLine(string.Join(' ', res));
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex);
 }
 
-
-public class T1
-{
-    public int I0 { get; set; }
-    public int I1 { get; set; }
-    public int I2 { get; set; }
-    public int I3 { get; set; }
-    public int I4 { get; set; }
-}
+Console.ReadLine();
