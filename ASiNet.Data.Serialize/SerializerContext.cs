@@ -54,6 +54,14 @@ public class SerializerContext(ObjectModelsContext omContext)
     {
         if (GetModel<T>() is SerializeModel<T> model)
             return model;
+
+        var type = typeof(T);
+        if (type.IsArray)
+        {
+            var arrModel = new ArrayModel<T>();
+
+        }
+
         var newModel = Generator.GenerateModel<T>(ObjectModelsContext, this);
         _models.TryAdd(typeof(T), newModel);
         return newModel;
