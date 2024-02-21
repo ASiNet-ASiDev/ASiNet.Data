@@ -1,24 +1,15 @@
 ﻿using ASiNet.Data.Base.Serialization.Models;
 using ASiNet.Data.Serialization;
 using ASiNet.Data.Serialization.Base.Models;
+using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.IO.Arrays;
 
-var gen = new SerializerModelsGenerator();
+var arr = new byte[32];
 
-var omContext = new ObjectModelsContext();
-var omGen = new ObjectModelsGenerator();
-var model = omGen.GenerateModel<T1>();
+Console.WriteLine(BinarySerializer.Serialize(new T1() { A = 11, B = 22, C = 33 }, (ArrayWriter)arr));
 
-var sc = SerializerContext.FromDefaultModels(omContext);
 
-var des = gen.GenerateDeserializeLambda(model, sc);
-var ser = gen.GenerateSerializeLambda(model, sc);
-
-var buffer = new byte[32];
-
-ser.Invoke(new T1() { A = 11, B = 22, C = 33 }, (ArrayWriter)buffer);
-
-var result = des.Invoke((ArrayReader)buffer);
+var res = BinarySerializer.Deserialize<T1>((ArrayReader)arr);
 
 
 Console.ReadLine();
