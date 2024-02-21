@@ -21,7 +21,8 @@ public class SerializerModelsGenerator
         var model = new SerializeModel<T>();
 
         model.SetSerializeDelegate(GenerateSerializeLambda<T>(om, serializeContext));
-        
+        model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(om, serializeContext));
+
         return model;
     }
 
@@ -66,5 +67,18 @@ public class SerializerModelsGenerator
         }
 
         yield break;
+    }
+
+    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(ObjectModel<T> model, SerializerContext serializeContext)
+    {
+        var inst = Expression.Parameter(typeof(T));
+        var reader = Expression.Parameter(typeof(ISerializeReader));
+        var om = Expression.Parameter(typeof(ObjectModel<T>));
+
+
+        var block = Expression.Block();
+
+        var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(block, reader);
+        return lambda.Compile();
     }
 }
