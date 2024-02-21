@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ASiNet.Data;
+namespace ASiNet.Data.Serialization;
 
 public static class DataBinaryExtensions
 {

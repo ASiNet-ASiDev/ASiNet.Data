@@ -1,6 +1,7 @@
-﻿using ASiNet.Data.Base.Models.Interfaces;
+﻿using ASiNet.Data.Serialization.Base.Models;
+using ASiNet.Data.Serialization.Base.Models.Interfaces;
 
-namespace ASiNet.Data.Base.Models;
+namespace ASiNet.Data.Base.Serialization.Models;
 /// <summary>
 /// Содержит модели обьектов для сериализатора.
 /// </summary>

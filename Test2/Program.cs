@@ -1,5 +1,5 @@
 ﻿
-using ASiNet.Data.Base.Models;
+using ASiNet.Data.Base.Serialization.Models;
 
 var context = new ObjectModelsContext();
 

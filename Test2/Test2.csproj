@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ASiNet.Data.Serialize\ASiNet.Data.csproj" />
+    <ProjectReference Include="..\ASiNet.Data.Serialize\ASiNet.Data.Serialization.csproj" />
   </ItemGroup>
 
 </Project>

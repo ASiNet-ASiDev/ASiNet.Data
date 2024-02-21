@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ASiNet.Data.Base.Models;
+namespace ASiNet.Data.Serialization.Base.Models;
 
 public delegate object?[] GetValuesDelegate<T>(T obj);
 

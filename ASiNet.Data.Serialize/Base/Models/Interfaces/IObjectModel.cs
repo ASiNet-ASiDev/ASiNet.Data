@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ASiNet.Data.Base.Serialization.Models;
 
-namespace ASiNet.Data.Base.Models.Interfaces;
+namespace ASiNet.Data.Serialization.Base.Models.Interfaces;
 public interface IObjectModel : IDisposable
 {
     public Type ObjType { get; }

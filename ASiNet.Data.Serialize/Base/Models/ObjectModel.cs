@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using ASiNet.Data.Base.Models.Interfaces;
+﻿using System.Reflection;
+using ASiNet.Data.Base.Serialization.Models;
+using ASiNet.Data.Serialization.Base.Models.Interfaces;
 
-namespace ASiNet.Data.Base.Models;
- 
+namespace ASiNet.Data.Serialization.Base.Models;
+
 public class ObjectModel<T>(SetValuesDelegate<T>? set = null, GetValuesDelegate<T>? get = null) : IObjectModel
 {
     public Type ObjType => _objType.Value;
@@ -27,7 +22,7 @@ public class ObjectModel<T>(SetValuesDelegate<T>? set = null, GetValuesDelegate<
 
     public object?[] GetValues(object obj)
     {
-        if(obj is T valueObj)
+        if (obj is T valueObj)
             return GetValues(valueObj);
         throw new Exception();
     }
@@ -44,7 +39,7 @@ public class ObjectModel<T>(SetValuesDelegate<T>? set = null, GetValuesDelegate<
 
     public object?[] GetValues(T obj)
     {
-        if(_getDelegate is null)
+        if (_getDelegate is null)
             throw new NullReferenceException();
         return _getDelegate(obj);
     }
