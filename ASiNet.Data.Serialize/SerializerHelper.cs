@@ -4,6 +4,18 @@ using ASiNet.Data.Serialization.Base.Models;
 namespace ASiNet.Data.Serialization;
 public static class SerializerHelper
 {
+    public static TEnum ToEnum<TType, TEnum>(TType x) where TType : struct where TEnum : Enum
+    {
+        return (TEnum)(object)x;
+    }
+
+    public static Enum ToEnum<TType>(TType x, Type type) where TType : struct
+    {
+        var result = Activator.CreateInstance(type);
+        result = x;
+        return (Enum)result;
+    }
+    
     public static Expression ObjectModelGetMethodCall(Expression om, Expression inst) =>
         Expression.Call(om, nameof(ObjectModel<byte>.GetValues), [inst.Type], inst);
 

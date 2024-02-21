@@ -14,6 +14,9 @@ public class SerializerContext(ObjectModelsContext omContext)
     public static SerializerContext FromDefaultModels(ObjectModelsContext omContext)
     {
         var context = new SerializerContext(omContext);
+        context.AddModel(new ByteModel());
+        context.AddModel(new SbyteModel());
+        
         context.AddModel(new Int16Model());
         context.AddModel(new Int32Model());
         context.AddModel(new Int64Model());
@@ -32,7 +35,6 @@ public class SerializerContext(ObjectModelsContext omContext)
         
         context.AddModel(new GuidModel());
         
-
         return context;
     }
 
