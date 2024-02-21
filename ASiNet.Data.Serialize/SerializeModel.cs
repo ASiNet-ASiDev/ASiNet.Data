@@ -20,7 +20,7 @@ public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, Des
             throw new NullReferenceException();
         if (obj is T value)
             _serializeDelegate(value, writer);
-        throw new Exception();
+        //throw new Exception();
     }
 
     public virtual object? DeserializeToObject(ISerializeReader reader)

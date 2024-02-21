@@ -24,7 +24,7 @@ public class ObjectModelsContext
             return model;
         var newModel = Generator.GenerateModel<T>();
         _models.TryAdd(typeof(T), newModel);
-        newModel.GenerateSubModels(this, Generator);
+        //newModel.GenerateSubModels(this, Generator);
         return newModel;
     }
 
