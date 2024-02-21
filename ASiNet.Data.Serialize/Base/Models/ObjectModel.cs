@@ -11,6 +11,8 @@ public class ObjectModel<T>(SetValuesDelegate<T>? set = null, GetValuesDelegate<
     public bool ContainsGetDelegate => _getDelegate is not null;
     public bool ContainsSetDelegate => _setDelegate is not null;
 
+    public int PropertiesCount => _props?.Length ?? 0;
+
     private Lazy<Type> _objType = new Lazy<Type>(() => typeof(T));
 
     private SetValuesDelegate<T>? _setDelegate = set;
@@ -27,7 +29,7 @@ public class ObjectModel<T>(SetValuesDelegate<T>? set = null, GetValuesDelegate<
         throw new Exception();
     }
 
-    public void SetValues(object obj, IEnumerable<object?> values)
+    public void SetValues(object obj, object?[] values)
     {
         if (obj is T valueObj)
         {
@@ -44,7 +46,7 @@ public class ObjectModel<T>(SetValuesDelegate<T>? set = null, GetValuesDelegate<
         return _getDelegate(obj);
     }
 
-    public void SetValues(T obj, IEnumerable<object?> values)
+    public void SetValues(T obj, object?[] values)
     {
         if (_setDelegate is null)
             throw new NullReferenceException();

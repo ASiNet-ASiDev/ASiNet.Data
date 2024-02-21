@@ -25,11 +25,11 @@ public class SerializerModelsGenerator
 
     public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(ObjectModel<T> model, SerializerContext serializeContext)
     {
-        var inst = Expression.Parameter(typeof(T));
-        var writer = Expression.Parameter(typeof(ISerializeWriter));
-        var om = Expression.Parameter(typeof(ObjectModel<T>));
+        var inst = Expression.Parameter(typeof(T), "inst");
+        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var om = Expression.Parameter(typeof(ObjectModel<T>), "objectModel");
 
-        var propsArr = Expression.Parameter(typeof(object[]));
+        var propsArr = Expression.Parameter(typeof(object[]), "props");
 
         var body = new List<Expression>
         {
@@ -67,14 +67,49 @@ public class SerializerModelsGenerator
 
     public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(ObjectModel<T> model, SerializerContext serializeContext)
     {
-        var inst = Expression.Parameter(typeof(T));
-        var reader = Expression.Parameter(typeof(ISerializeReader));
-        var om = Expression.Parameter(typeof(ObjectModel<T>));
+        var inst = Expression.Parameter(typeof(T), "inst");
+        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var om = Expression.Parameter(typeof(ObjectModel<T>), "objectModel");
 
+        var propsArr = Expression.Parameter(typeof(object[]), "props");
 
-        var block = Expression.Block();
+        var body = new List<Expression>
+        {
+            Expression.Assign(om, Expression.Constant(model)),
+            Expression.Assign(inst, Expression.New(typeof(T))),
+            Expression.Assign(propsArr, Expression.NewArrayBounds(typeof(object), Expression.Constant(model.PropertiesCount))),
+        };
+
+        body.AddRange(ReadProperties(inst, reader, propsArr, model, serializeContext));
+        body.Add(Expression.Call(om, nameof(ObjectModel<T>.SetValues), null, Expression.Convert(inst, typeof(object)), propsArr));
+        body.Add(inst);
+
+        var block = Expression.Block([om, propsArr, inst], body);
 
         var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(block, reader);
         return lambda.Compile();
+    }
+
+    private IEnumerable<Expression> ReadProperties<T>(Expression inst, Expression reader, Expression props, ObjectModel<T> model, SerializerContext serializeContext)
+    {
+        var i = 0;
+        foreach (var prop in model.EnumirateProps())
+        {
+            var sm = (ISerializeModel)SerializerHelper.InvokeGenerickMethod(serializeContext, nameof(SerializerContext.GetOrGenerate), [prop.PropertyType], [])!;
+
+            var desResult = Expression.Call(
+                Expression.Constant(sm), 
+                nameof(ISerializeModel.DeserializeToObject), 
+                null, 
+                reader);
+            yield return 
+                Expression.Assign(
+                    Expression.ArrayAccess(
+                        props, 
+                        Expression.Constant(i)),
+                    desResult);
+            i++;
+        }
+        yield break;
     }
 }
