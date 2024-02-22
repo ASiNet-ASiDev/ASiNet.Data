@@ -1,17 +1,22 @@
+using System.Collections;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels;
 
-public class ListModel<TElement> : BaseSerializeModel<List<TElement?>>
+public class ListModel<TList> : BaseSerializeModel<TList>
+    where TList : class, IList, new()
 {
-    public override void Serialize(List<TElement?> obj, ISerializeWriter writer)
+    private Lazy<ISerializeModel> _arrayElementSerializeModel = new(() =>
+        BinarySerializer.SharedSerializeContext.GetOrGenerate(typeof(TList).GenericTypeArguments[0] ?? throw new Exception()) 
+        ?? throw new Exception($"Invalid array element type."));
+    
+    public override void Serialize(TList obj, ISerializeWriter writer)
     {
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         BitConverter.TryWriteBytes(buffer, obj.Count);
         writer.WriteBytes(buffer); // Writing an array length
 
-        var model = BinarySerializer.SharedSerializeContext.GetModel(typeof(TElement))
-                    ?? throw new Exception("Invalid array element type.");
+        var model = _arrayElementSerializeModel.Value;
 
         foreach (var element in obj)
             model.SerializeObject(element, writer);
@@ -19,13 +24,13 @@ public class ListModel<TElement> : BaseSerializeModel<List<TElement?>>
 
     public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
-        var array = obj as List<TElement?>
+        var array = obj as TList
                     ?? throw new Exception("Invalid array element type.");
 
         Serialize(array, writer);
     }
 
-    public override List<TElement?>? Deserialize(ISerializeReader reader)
+    public override TList? Deserialize(ISerializeReader reader)
     {
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         reader.ReadBytes(buffer); // Read length
@@ -35,13 +40,12 @@ public class ListModel<TElement> : BaseSerializeModel<List<TElement?>>
         if (reader.AvalibleAreaSize % arrayLength != 0)
             throw new Exception("Invalid data to deserealize in array.");
 
-        var model = BinarySerializer.SharedSerializeContext.GetModel(typeof(TElement))
-                    ?? throw new Exception("Invalid array element type.");
+        var model = _arrayElementSerializeModel.Value;
 
-        var arrResult = new List<TElement?>();
+        var arrResult = new TList();
         
         for (int i = 0; i < arrayLength; i++)
-            arrResult.Add((TElement?)model.DeserializeToObject(reader));
+            arrResult.Add(model.DeserializeToObject(reader));
 
         return arrResult;
     }
