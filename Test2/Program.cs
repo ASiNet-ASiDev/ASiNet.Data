@@ -3,31 +3,16 @@ using ASiNet.Data.Serialization;
 using ASiNet.Data.Serialization.Base.Models;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.IO.Arrays;
+using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 
-var arr = new byte[1000];
+var buffer = new byte[100];
 
-Console.WriteLine(BinarySerializer.Serialize(new T1() { A = 11, B = 22, C = 33, D = new() { A2 = Guid.NewGuid(), A1 = "12345" } }, (ArrayWriter)arr));
+int[] src = [20, 20, 30, 40];
 
+var arr = new ArrayModel<int[]>();
 
-var res = BinarySerializer.Deserialize<T1>((ArrayReader)arr);
+arr.Serialize(src, (ArrayWriter)buffer);
 
+var res = arr.Deserialize((ArrayReader)buffer);
 
 Console.ReadLine();
-
-class T1
-{
-    public int? A { get; set; }
-
-    public int B { get; set; }
-
-    public int C { get; set; }
-
-    public T2? D { get; set; }
-}
-
-class T2
-{
-    public string A1 { get; set; }
-
-    public Guid A2 { get; set; }
-}
