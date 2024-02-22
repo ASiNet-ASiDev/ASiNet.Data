@@ -10,7 +10,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         typeof(T).GetElementType() ?? throw new Exception());
 
     private Lazy<ISerializeModel> _arrayElementSerializeModel = new(() =>
-        BinarySerializer.SharedSerializeContext.GetModel(typeof(T).GetElementType() ?? throw new Exception()) ?? throw new Exception());
+        BinarySerializer.SharedSerializeContext.GetOrGenerate(typeof(T).GetElementType() ?? throw new Exception()) ?? throw new Exception());
 
     public override void Serialize(T obj, ISerializeWriter writer)
     {

@@ -1,4 +1,5 @@
-﻿using ASiNet.Data.Base.Serialization.Models;
+﻿using System.Reflection;
+using ASiNet.Data.Base.Serialization.Models;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
@@ -65,6 +66,29 @@ public class SerializerContext(ObjectModelsContext omContext)
         else
         {
             var newModel = Generator.GenerateModel<T>(ObjectModelsContext, this);
+            _models.TryAdd(type, newModel);
+            return newModel;
+        }
+    }
+
+    public ISerializeModel GetOrGenerate(Type type)
+    {
+        if (GetModel(type) is ISerializeModel model)
+            return model;
+
+        if (type.IsArray)
+        {
+            var arrModel = (ISerializeModel?)Activator.CreateInstance(typeof(ArrayModel<>).MakeGenericType(type)) 
+                ?? throw new Exception();
+            _models.TryAdd(type, arrModel);
+            return arrModel;
+        }
+        else
+        {
+            var mi = typeof(SerializerModelsGenerator).GetMethod(nameof(SerializerModelsGenerator.GenerateModel))?.MakeGenericMethod(type)
+                ?? throw new Exception();
+            var newModel = (ISerializeModel?)mi.Invoke(Generator, [ObjectModelsContext, this])
+                ?? throw new Exception();
             _models.TryAdd(type, newModel);
             return newModel;
         }
