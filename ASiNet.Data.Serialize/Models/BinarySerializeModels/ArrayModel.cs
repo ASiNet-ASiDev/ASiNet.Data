@@ -16,7 +16,12 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         var arr = obj as Array;
 
         if(arr is null)
-            throw new Exception();
+        {
+            writer.WriteByte(0);
+            return;
+        }
+        else
+            writer.WriteByte(1);
 
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         BitConverter.TryWriteBytes(buffer, arr.Length);
@@ -36,8 +41,13 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         Serialize(array, writer);
     }
 
-    public override T Deserialize(ISerializeReader reader)
+    public override T? Deserialize(ISerializeReader reader)
     {
+        var isNull = reader.ReadByte();
+
+        if(isNull == 0)
+            return default;
+
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         reader.ReadBytes(buffer); // Read length
 
