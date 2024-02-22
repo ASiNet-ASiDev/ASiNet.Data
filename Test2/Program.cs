@@ -1,13 +1,9 @@
-﻿using ASiNet.Data.Base.Serialization.Models;
-using ASiNet.Data.Serialization;
-using ASiNet.Data.Serialization.Base.Models;
-using ASiNet.Data.Serialization.Interfaces;
-using ASiNet.Data.Serialization.IO.Arrays;
+﻿using ASiNet.Data.Serialization.IO.Arrays;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 
 var buffer = new byte[100];
 
-int[] src = [20, 20, 30, 40];
+int[] src = null;
 
 var arr = new ArrayModel<int[]>();
 
