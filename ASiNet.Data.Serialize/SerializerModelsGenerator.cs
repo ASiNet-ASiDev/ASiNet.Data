@@ -33,40 +33,34 @@ public class SerializerModelsGenerator
 
         var propsArr = Expression.Parameter(typeof(object[]), "props");
 
-        var returnTarget = Expression.Label();
-
         var body = new List<Expression>
         {
-            Expression.Assign(om, Expression.Constant(model)),
+            Expression.Call(
+                writer,
+                nameof(ISerializeWriter.WriteByte),
+                null,
+                Expression.Constant((byte)1)),
 
-            Expression.IfThenElse(
-                Expression.Equal(
-                    inst, 
-                    Expression.Constant(null)), 
-                Expression.Block(
-                    Expression.Call(
-                        writer, 
-                        nameof(ISerializeWriter.WriteByte), 
-                        null, 
-                        Expression.Constant((byte)0)),
-                    Expression.Return(returnTarget)
-                    ),
-                Expression.Block(
-                    Expression.Call(
-                        writer,
-                        nameof(ISerializeWriter.WriteByte),
-                        null,
-                        Expression.Constant((byte)1))
-                    )),
+            Expression.Assign(om, Expression.Constant(model)),
 
             Expression.Assign(propsArr, Expression.Call(om, nameof(ObjectModel<T>.GetValues), null, Expression.Convert(inst, typeof(object))))
         };
 
         body.AddRange(WriteProperties(inst, writer, propsArr, model, serializeContext));
 
-        body.Add(Expression.Label(returnTarget));
+        var block = 
+            Expression.IfThenElse(
+                Expression.NotEqual(
+                    inst,
+                    Expression.Constant(null)),
 
-        var block = Expression.Block([om, propsArr], body);
+                Expression.Block([om, propsArr], body),
+
+                Expression.Call(
+                    writer,
+                    nameof(ISerializeWriter.WriteByte),
+                    null,
+                    Expression.Constant((byte)0)));
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(block, inst, writer);
         return lambda.Compile();
@@ -100,22 +94,11 @@ public class SerializerModelsGenerator
 
         var isNull = Expression.Parameter(typeof(byte), "isNull");
 
-        var returnTarget = Expression.Label(typeof(T));
-
         var propsArr = Expression.Parameter(typeof(object[]), "props");
 
         var body = new List<Expression>
         {
             Expression.Assign(om, Expression.Constant(model)),
-            Expression.Assign(isNull, Expression.Call(reader, nameof(ISerializeReader.ReadByte), null)),
-
-            Expression.IfThen(
-                Expression.Equal(
-                    isNull, 
-                    Expression.Constant((byte)0)),
-                Expression.Return(
-                    returnTarget, 
-                    Expression.Default(typeof(T)))),
 
             Expression.Assign(inst, Expression.New(typeof(T))),
             Expression.Assign(propsArr, Expression.NewArrayBounds(typeof(object), Expression.Constant(model.PropertiesCount))),
@@ -124,9 +107,15 @@ public class SerializerModelsGenerator
         body.AddRange(ReadProperties(inst, reader, propsArr, model, serializeContext));
         body.Add(Expression.Call(om, nameof(ObjectModel<T>.SetValues), null, Expression.Convert(inst, typeof(object)), propsArr));
 
-        body.Add(Expression.Label(returnTarget, inst));
+        var block = Expression.Block([om, propsArr, inst, isNull],
 
-        var block = Expression.Block([om, propsArr, inst, isNull], body);
+            Expression.Assign(isNull, Expression.Call(reader, nameof(ISerializeReader.ReadByte), null)),
+            Expression.IfThen(
+                Expression.Equal(
+                    isNull,
+                    Expression.Constant((byte)1)),
+                Expression.Block(body)),
+            inst);
 
         var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(block, reader);
         return lambda.Compile();

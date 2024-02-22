@@ -42,7 +42,7 @@ public class ObjectModelsGenerator
 
         var body = new List<Expression>
         {
-            Expression.Assign(arrProp, Expression.NewArrayBounds(typeof(object), Expression.Constant(props.Count())))
+            Expression.Assign(arrProp, Expression.NewArrayBounds(typeof(object), Expression.Constant(props.Length)))
         };
 
         var i = 0;
@@ -81,7 +81,7 @@ public class ObjectModelsGenerator
         yield return Expression.IfThen(
                         Expression.NotEqual(
                             Expression.ArrayLength(valuesArr),
-                            Expression.Constant(props.Count())),
+                            Expression.Constant(props.Length)),
                         Expression.Throw(
                             Expression.Constant(new IndexOutOfRangeException($"The number of properties[{props.Length}] to record does not match"))));
 
@@ -98,6 +98,6 @@ public class ObjectModelsGenerator
         }
     }
 
-    private PropertyInfo[] GetProps(Type type) =>
-        type.GetProperties().OrderBy(x => x.Name).ToArray();
+    private static PropertyInfo[] GetProps(Type type) =>
+        [.. type.GetProperties().OrderBy(x => x.Name)];
 }

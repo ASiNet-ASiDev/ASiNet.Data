@@ -15,9 +15,6 @@ public static class SerializerHelper
         result = x;
         return (Enum)result;
     }
-    
-    public static Expression ObjectModelGetMethodCall(Expression om, Expression inst) =>
-        Expression.Call(om, nameof(ObjectModel<byte>.GetValues), [inst.Type], inst);
 
     public static object? InvokeGenerickMethod(object inst, string methodName, Type[] genericParameters, object?[] parameters)
     {
