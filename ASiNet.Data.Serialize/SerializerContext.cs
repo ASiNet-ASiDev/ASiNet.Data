@@ -66,7 +66,6 @@ public class SerializerContext(ObjectModelsContext omContext)
         else
         {
             var newModel = Generator.GenerateModel<T>(ObjectModelsContext, this);
-            _models.TryAdd(type, newModel);
             return newModel;
         }
     }

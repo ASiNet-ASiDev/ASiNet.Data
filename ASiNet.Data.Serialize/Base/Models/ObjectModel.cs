@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using ASiNet.Data.Base.Serialization.Models;
 using ASiNet.Data.Serialization.Base.Models.Interfaces;
 
 namespace ASiNet.Data.Serialization.Base.Models;
@@ -51,26 +50,6 @@ public class ObjectModel<T>(SetValuesDelegate<T>? set = null, GetValuesDelegate<
         if (_setDelegate is null)
             throw new NullReferenceException();
         _setDelegate(obj, values);
-    }
-
-    public void GenerateSubModels(ObjectModelsContext modelsContext, ObjectModelsGenerator generator)
-    {
-        if (_props is null)
-            return;
-        var method = typeof(ObjectModelsGenerator).GetMethod(nameof(ObjectModelsGenerator.GenerateModel));
-        foreach (var item in _props)
-        {
-            if (!modelsContext.ContainsModel(item.PropertyType!))
-            {
-                var gMethod = method!.MakeGenericMethod(item.PropertyType!);
-                var model = (IObjectModel?)gMethod.Invoke(generator, []);
-                if (model is null)
-                    throw new NullReferenceException();
-                modelsContext.AddModel(model);
-
-                model.GenerateSubModels(modelsContext, generator);
-            }
-        }
     }
 
     internal void SetSetValueeDelegate(SetValuesDelegate<T>? set) =>

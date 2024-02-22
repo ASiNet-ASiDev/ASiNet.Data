@@ -13,6 +13,4 @@ public interface IObjectModel : IDisposable
     public object?[] GetValues(object obj);
 
     public void SetValues(object obj, object?[] values);
-
-    public void GenerateSubModels(ObjectModelsContext modelsContext, ObjectModelsGenerator generator);
 }
