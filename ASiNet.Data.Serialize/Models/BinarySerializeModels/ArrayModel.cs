@@ -5,9 +5,12 @@ namespace ASiNet.Data.Serialization.Models.BinarySerializeModels;
 
 public class ArrayModel<T> : BaseSerializeModel<T>
 {
-    private Lazy<Type> _arrayElementType = new(
-        () => typeof(T).GetElementType()
-            ?? throw new Exception("Invalid array element type."));
+
+    private Lazy<Type> _arrayElementType = new (() => 
+        typeof(T).GetElementType() ?? throw new Exception());
+
+    private Lazy<ISerializeModel> _arrayElementSerializeModel = new(() =>
+        BinarySerializer.SharedSerializeContext.GetModel(typeof(T).GetElementType() ?? throw new Exception()) ?? throw new Exception());
 
     public override void Serialize(T obj, ISerializeWriter writer)
     {
@@ -20,8 +23,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         BitConverter.TryWriteBytes(buffer, arr.Length);
         writer.WriteBytes(buffer); // Writing an array length
 
-        var model = BinarySerializer.SharedSerializeContext.GetModel(_arrayElementType.Value)
-                   ?? throw new Exception("Invalid array element type.");
+        var model = _arrayElementSerializeModel.Value;
 
         foreach (var element in arr)
             model.SerializeObject(element, writer);
@@ -45,8 +47,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         if (reader.AvalibleAreaSize % arrayLength != 0)
             throw new Exception("Invalid data to deserealize in array.");
 
-        var model = BinarySerializer.SharedSerializeContext.GetModel(_arrayElementType.Value)
-                    ?? throw new Exception("Invalid array element type.");
+        var model = _arrayElementSerializeModel.Value;
 
         var arrResult = Array.CreateInstance(_arrayElementType.Value, arrayLength);
         
