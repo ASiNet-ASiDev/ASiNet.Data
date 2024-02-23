@@ -11,12 +11,20 @@ public static class SerializerHelper
 
     public static Enum ToEnum<TType>(TType x, Type type) where TType : struct
     {
-        var result = Activator.CreateInstance(type);
-        result = x;
-        return (Enum)result;
+        return (Enum)(object)x;
     }
 
-
+    static bool IsNullable<T>(T obj)
+    {
+        if (obj == null) 
+            return true; 
+        Type type = typeof(T);
+        if (!type.IsValueType) 
+            return true;
+        if (Nullable.GetUnderlyingType(type) != null) 
+            return true;
+        return false;
+    }
 
     public static Expression WriteNullableByte(Expression writer, byte value) =>
         Expression.Call(writer, nameof(ISerializeWriter.WriteByte), null, Expression.Constant(value));
