@@ -15,7 +15,7 @@ public class SerializerContext()
     {
         var context = new SerializerContext();
         context.AddModel(new ByteModel());
-        context.AddModel(new SbyteModel());
+        context.AddModel(new SByteModel());
 
         context.AddModel(new Int16Model());
         context.AddModel(new Int32Model());
