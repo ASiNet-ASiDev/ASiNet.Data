@@ -5,16 +5,8 @@ using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
+using Test;
 
-
-var buf = new byte[64];
-
-int? val = null;
-
-var model = new NullableTypesModel<int?>();
-
-model.Serialize(val, (ArrayWriter)buf);
-
-var res = model.Deserialize((ArrayReader)buf);
-
+BenchmarkRunner.Run<SerializeBenchmark>();
+    
 Console.ReadLine();
