@@ -341,7 +341,6 @@ public static class Int64ArrayConverter
     }
 }
 
-
 public static class UInt64ArrayConverter
 {
     public static byte[] AsByteArray(this ulong[] input)
