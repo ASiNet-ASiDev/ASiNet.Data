@@ -34,6 +34,7 @@ public class SerializerModelsGenerator
             Expression.NotEqual(
                 inst,
                 Expression.Default(type)),
+            
 
             // WRITE PROPERTIES AND NULLABLR BYTE!
             Expression.Block(SerializeProperties(type, inst, writer, serializeContext)),
