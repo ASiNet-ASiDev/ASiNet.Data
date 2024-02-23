@@ -17,7 +17,7 @@ public class ByteModel : BaseSerializeModel<byte>
     {
         if (reader.CanReadSize(1))
         {
-            return reader.ReadByte();;
+            return reader.ReadByte();
         }
         throw new Exception();
     }
