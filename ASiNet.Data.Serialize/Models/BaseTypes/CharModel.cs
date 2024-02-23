@@ -1,5 +1,4 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
-using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class CharModel : BaseSerializeModel<char>

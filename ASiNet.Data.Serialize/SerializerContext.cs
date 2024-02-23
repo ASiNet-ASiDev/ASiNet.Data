@@ -1,5 +1,5 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
-using ASiNet.Data.Serialization.Models.BinarySerializeModels;
+using ASiNet.Data.Serialization.Models;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization;

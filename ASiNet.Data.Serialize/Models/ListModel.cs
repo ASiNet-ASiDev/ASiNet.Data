@@ -1,15 +1,15 @@
 using System.Collections;
 using ASiNet.Data.Serialization.Interfaces;
 
-namespace ASiNet.Data.Serialization.Models.BinarySerializeModels;
+namespace ASiNet.Data.Serialization.Models;
 
 public class ListModel<TList> : BaseSerializeModel<TList>
     where TList : class, IList, new()
 {
     private Lazy<ISerializeModel> _arrayElementSerializeModel = new(() =>
-        BinarySerializer.SharedSerializeContext.GetOrGenerate(typeof(TList).GenericTypeArguments[0] ?? throw new Exception()) 
+        BinarySerializer.SharedSerializeContext.GetOrGenerate(typeof(TList).GenericTypeArguments[0] ?? throw new Exception())
         ?? throw new Exception($"Invalid array element type."));
-    
+
     public override void Serialize(TList obj, ISerializeWriter writer)
     {
         Span<byte> buffer = stackalloc byte[sizeof(int)];
@@ -43,7 +43,7 @@ public class ListModel<TList> : BaseSerializeModel<TList>
         var model = _arrayElementSerializeModel.Value;
 
         var arrResult = new TList();
-        
+
         for (int i = 0; i < arrayLength; i++)
             arrResult.Add(model.DeserializeToObject(reader));
 

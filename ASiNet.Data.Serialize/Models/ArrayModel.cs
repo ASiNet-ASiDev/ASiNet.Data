@@ -1,11 +1,11 @@
 using System.Collections;
 using ASiNet.Data.Serialization.Interfaces;
 
-namespace ASiNet.Data.Serialization.Models.BinarySerializeModels;
+namespace ASiNet.Data.Serialization.Models;
 
 public class ArrayModel<T> : BaseSerializeModel<T>
 {
-    private Lazy<Type> _arrayElementType = new (() => 
+    private Lazy<Type> _arrayElementType = new(() =>
         typeof(T).GetElementType() ?? throw new Exception());
 
     private Lazy<ISerializeModel> _arrayElementSerializeModel = new(() =>
@@ -15,7 +15,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
     {
         var arr = obj as Array;
 
-        if(arr is null)
+        if (arr is null)
         {
             writer.WriteByte(0);
             return;
@@ -45,7 +45,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
     {
         var isNull = reader.ReadByte();
 
-        if(isNull == 0)
+        if (isNull == 0)
             return default;
 
         Span<byte> buffer = stackalloc byte[sizeof(int)];
@@ -59,7 +59,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         var model = _arrayElementSerializeModel.Value;
 
         var arrResult = Array.CreateInstance(_arrayElementType.Value, arrayLength);
-        
+
         for (int i = 0; i < arrayLength; i++)
             arrResult.SetValue(model.DeserializeToObject(reader), i);
 
