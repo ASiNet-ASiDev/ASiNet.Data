@@ -1,5 +1,6 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
+using ASiNet.Data.Serialization.Models.Arrays;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization;
@@ -33,6 +34,8 @@ public class SerializerContext()
         context.AddModel(new BooleanModel());
 
         context.AddModel(new GuidModel());
+
+        context.AddModel(new Int32ArrayModel());
 
         return context;
     }
