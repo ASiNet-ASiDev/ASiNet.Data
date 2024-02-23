@@ -16,7 +16,7 @@ public static class SerializerHelper
 
     static bool IsNullable<T>(T obj)
     {
-        if (obj == null) 
+        if (obj is null) 
             return true; 
         Type type = typeof(T);
         if (!type.IsValueType) 
