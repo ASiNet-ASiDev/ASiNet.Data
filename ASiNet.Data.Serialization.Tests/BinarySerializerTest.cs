@@ -8,7 +8,6 @@ namespace ASiNet.Data.Serialization.Tests;
 [TestSubject(typeof(BinarySerializer))]
 public class BinarySerializerTest
 {
-
     [TestMethod]
     public void METHOD()
     {
