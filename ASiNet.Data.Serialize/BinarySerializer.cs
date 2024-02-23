@@ -1,17 +1,11 @@
-﻿using ASiNet.Data.Base.Serialization.Models;
-using ASiNet.Data.Serialization.Interfaces;
+﻿using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.IO.Arrays;
 
 namespace ASiNet.Data.Serialization;
 public static class BinarySerializer
 {
-    public static ObjectModelsContext SharedObjectsModelContext => _sharedObjectsModelContext.Value;
-
     public static SerializerContext SharedSerializeContext => _sharedSerializeContext.Value;
-
-    private static Lazy<ObjectModelsContext> _sharedObjectsModelContext = new();
-
-    private static Lazy<SerializerContext> _sharedSerializeContext = new(() => SerializerContext.FromDefaultModels(SharedObjectsModelContext));
+    private static Lazy<SerializerContext> _sharedSerializeContext = new(() => SerializerContext.FromDefaultModels());
 
     public static int Serialize<T>(T obj, ISerializeWriter writer)
     {

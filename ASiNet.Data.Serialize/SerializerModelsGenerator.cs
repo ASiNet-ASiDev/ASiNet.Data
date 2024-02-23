@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
-using ASiNet.Data.Base.Serialization.Models;
-using ASiNet.Data.Serialization.Base.Models;
+using System.Reflection;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization;
@@ -11,135 +10,97 @@ public delegate T? DeserializeObjectDelegate<T>(ISerializeReader reader);
 
 public class SerializerModelsGenerator
 {
-    public SerializeModel<T> GenerateModel<T>(ObjectModelsContext modelsContext, SerializerContext serializeContext)
+    public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext)
     {
-        var om = modelsContext.GetOrGenerate<T>();
         var model = new SerializeModel<T>();
 
         serializeContext.AddModel(model);
 
-        model.SetSerializeDelegate(GenerateSerializeLambda(om, serializeContext));
-        model.SetDeserializeDelegate(GenerateDeserializeLambda(om, serializeContext));
+        model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext));
+        model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext));
 
         return model;
     }
 
 
-    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(ObjectModel<T> model, SerializerContext serializeContext)
+    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(SerializerContext serializeContext)
     {
-        var inst = Expression.Parameter(typeof(T), "inst");
+        var type = typeof(T);
+        var inst = Expression.Parameter(type, "inst");
         var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
-        var om = Expression.Parameter(typeof(ObjectModel<T>), "objectModel");
 
-        var propsArr = Expression.Parameter(typeof(object[]), "props");
+        var body = Expression.IfThenElse(
+            // CHECK NULL VALUE
+            Expression.NotEqual(
+                inst,
+                Expression.Default(type)),
 
-        var body = new List<Expression>
-        {
-            Expression.Call(
-                writer,
-                nameof(ISerializeWriter.WriteByte),
-                null,
+            // WRITE PROPERTIES AND NULLABLR BYTE!
+            Expression.Block(SerializeProperties(type, inst, writer, serializeContext)),
+
+            // WRITE NULLABLR BYTE!
+            SerializerHelper.WriteNullableByte(writer, 0));
+
+
+        var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
+        return lambda.Compile();
+    }
+
+    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(SerializerContext serializeContext)
+    {
+        var type = typeof(T);
+        var inst = Expression.Parameter(type, "inst");
+        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+
+        var body = Expression.IfThen(
+            // READ NULLABLE BYTE
+            Expression.Equal(
+                SerializerHelper.ReadNullableByte(reader),
                 Expression.Constant((byte)1)),
 
-            Expression.Assign(om, Expression.Constant(model)),
+            // READ PROPERTIES TO OBJECT
+            Expression.Block(DeserializeProperties(type, inst, reader, serializeContext)));
 
-            Expression.Assign(propsArr, Expression.Call(om, nameof(ObjectModel<T>.GetValues), null, Expression.Convert(inst, typeof(object))))
-        };
-
-        body.AddRange(WriteProperties(inst, writer, propsArr, model, serializeContext));
-
-        var block = 
-            Expression.IfThenElse(
-                Expression.NotEqual(
-                    inst,
-                    Expression.Constant(null)),
-
-                Expression.Block([om, propsArr], body),
-
-                Expression.Call(
-                    writer,
-                    nameof(ISerializeWriter.WriteByte),
-                    null,
-                    Expression.Constant((byte)0)));
-
-        var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(block, inst, writer);
+        var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(Expression.Block([inst], body, inst), reader);
         return lambda.Compile();
     }
 
-    private IEnumerable<Expression> WriteProperties<T>(Expression inst, Expression writer, Expression props, ObjectModel<T> model, SerializerContext serializeContext)
+    private IEnumerable<Expression> SerializeProperties(Type type, Expression inst, Expression writer, SerializerContext serializeContext)
     {
-        var i = 0;
-        foreach (var prop in model.EnumirateProps())
+        // WRITE NULLABLR BYTE!
+        yield return SerializerHelper.WriteNullableByte(writer, 1);
+
+        // WRITE OBJECT PROPERTIES!
+        foreach (var pi in EnumerateProperties(type))
         {
-            var sm = (ISerializeModel)SerializerHelper.InvokeGenerickMethod(serializeContext, nameof(SerializerContext.GetOrGenerate), [prop.PropertyType], [])!;
-            yield return Expression.Call(
-                Expression.Constant(sm),
-                nameof(ISerializeModel.SerializeObject),
-                null,
-                Expression.ArrayAccess(
-                    props,
-                    Expression.Constant(i)),
-                writer);
-            i++;
+            var model = SerializerHelper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+            var value = Expression.Property(inst, pi);
+            yield return SerializerHelper.CallSerialize(model, value, writer);
         }
-
-        yield break;
     }
 
-    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(ObjectModel<T> model, SerializerContext serializeContext)
+    private IEnumerable<Expression> DeserializeProperties(Type type, Expression inst, Expression reader, SerializerContext serializeContext)
     {
-        var inst = Expression.Parameter(typeof(T), "inst");
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
-        var om = Expression.Parameter(typeof(ObjectModel<T>), "objectModel");
+        // CREATE NEW INSTANCE!
+        yield return Expression.Assign(inst, Expression.New(type));
 
-        var isNull = Expression.Parameter(typeof(byte), "isNull");
-
-        var propsArr = Expression.Parameter(typeof(object[]), "props");
-
-        var body = new List<Expression>
+        // READ AND SET PROPERTIES!
+        foreach (var pi in EnumerateProperties(type))
         {
-            Expression.Assign(om, Expression.Constant(model)),
-
-            Expression.Assign(inst, Expression.New(typeof(T))),
-            Expression.Assign(propsArr, Expression.NewArrayBounds(typeof(object), Expression.Constant(model.PropertiesCount))),
-        };
-
-        body.AddRange(ReadProperties(inst, reader, propsArr, model, serializeContext));
-        body.Add(Expression.Call(om, nameof(ObjectModel<T>.SetValues), null, Expression.Convert(inst, typeof(object)), propsArr));
-
-        var block = Expression.Block([om, propsArr, inst, isNull],
-
-            Expression.Assign(isNull, Expression.Call(reader, nameof(ISerializeReader.ReadByte), null)),
-            Expression.IfThen(
-                Expression.Equal(
-                    isNull,
-                    Expression.Constant((byte)1)),
-                Expression.Block(body)),
-            inst);
-
-        var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(block, reader);
-        return lambda.Compile();
+            var model = SerializerHelper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+            var value = Expression.Property(inst, pi);
+            yield return Expression.Assign(value, SerializerHelper.CallDeserialize(model, reader));
+        }
     }
 
-    private IEnumerable<Expression> ReadProperties<T>(Expression inst, Expression reader, Expression props, ObjectModel<T> model, SerializerContext serializeContext)
+    private IEnumerable<PropertyInfo> EnumerateProperties(Type type)
     {
-        var i = 0;
-        foreach (var prop in model.EnumirateProps())
+        // GET ALL PROPERTIES.
+        var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty)
+            .OrderBy(prop => prop.Name);
+        foreach (var item in props)
         {
-            var sm = (ISerializeModel)SerializerHelper.InvokeGenerickMethod(serializeContext, nameof(SerializerContext.GetOrGenerate), [prop.PropertyType], [])!;
-
-            var desResult = Expression.Call(
-                Expression.Constant(sm), 
-                nameof(ISerializeModel.DeserializeToObject), 
-                null, 
-                reader);
-            yield return 
-                Expression.Assign(
-                    Expression.ArrayAccess(
-                        props, 
-                        Expression.Constant(i)),
-                    desResult);
-            i++;
+            yield return item;
         }
         yield break;
     }

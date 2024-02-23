@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using ASiNet.Data.Base.Serialization.Models;
-using ASiNet.Data.Serialization.Interfaces;
+﻿using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
@@ -10,37 +8,36 @@ namespace ASiNet.Data.Serialization;
 /// Содержит сериализаторы.
 /// </summary>
 /// <param name="omContext"></param>
-public class SerializerContext(ObjectModelsContext omContext)
+public class SerializerContext()
 {
-    public static SerializerContext FromDefaultModels(ObjectModelsContext omContext)
+    public static SerializerContext FromDefaultModels()
     {
-        var context = new SerializerContext(omContext);
+        var context = new SerializerContext();
         context.AddModel(new ByteModel());
         context.AddModel(new SbyteModel());
-        
+
         context.AddModel(new Int16Model());
         context.AddModel(new Int32Model());
         context.AddModel(new Int64Model());
-        
+
         context.AddModel(new UInt16Model());
         context.AddModel(new UInt32Model());
         context.AddModel(new UInt64Model());
-        
+
         context.AddModel(new SingleModel());
         context.AddModel(new DoubleModel());
-        
+
         context.AddModel(new CharModel());
         context.AddModel(new StringModel());
-        
+
         context.AddModel(new BooleanModel());
-        
+
         context.AddModel(new GuidModel());
-        
+
         return context;
     }
 
     public SerializerModelsGenerator Generator { get; init; } = new();
-    public ObjectModelsContext ObjectModelsContext { get; init; } = omContext;
 
     private Dictionary<Type, ISerializeModel> _models = [];
 
@@ -59,13 +56,13 @@ public class SerializerContext(ObjectModelsContext omContext)
         var type = typeof(T);
         if (type.IsArray)
         {
-            var arrModel = new ArrayModel<T>(); 
+            var arrModel = new ArrayModel<T>();
             _models.TryAdd(type, arrModel);
             return arrModel;
         }
         else
         {
-            var newModel = Generator.GenerateModel<T>(ObjectModelsContext, this);
+            var newModel = Generator.GenerateModel<T>(this);
             return newModel;
         }
     }
@@ -77,7 +74,7 @@ public class SerializerContext(ObjectModelsContext omContext)
 
         if (type.IsArray)
         {
-            var arrModel = (ISerializeModel?)Activator.CreateInstance(typeof(ArrayModel<>).MakeGenericType(type)) 
+            var arrModel = (ISerializeModel?)Activator.CreateInstance(typeof(ArrayModel<>).MakeGenericType(type))
                 ?? throw new Exception();
             _models.TryAdd(type, arrModel);
             return arrModel;
@@ -86,7 +83,7 @@ public class SerializerContext(ObjectModelsContext omContext)
         {
             var mi = typeof(SerializerModelsGenerator).GetMethod(nameof(SerializerModelsGenerator.GenerateModel))?.MakeGenericMethod(type)
                 ?? throw new Exception();
-            var newModel = (ISerializeModel?)mi.Invoke(Generator, [ObjectModelsContext, this])
+            var newModel = (ISerializeModel?)mi.Invoke(Generator, [this])
                 ?? throw new Exception();
             _models.TryAdd(type, newModel);
             return newModel;
