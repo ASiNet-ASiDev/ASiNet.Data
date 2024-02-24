@@ -4,9 +4,9 @@ using ASiNet.Data.Serialization.Interfaces;
 namespace ASiNet.Data.Serialization;
 public static class SerializerHelper
 {
-    public static TEnum ToEnum<TType, TEnum>(TType x) where TType : struct where TEnum : Enum
+    public static TEnum ToEnum<TType, TEnum>(TType x)
     {
-        return (TEnum)(object)x;
+        return (TEnum)(object)x!;
     }
 
     public static Enum ToEnum<TType>(TType x, Type type) where TType : struct

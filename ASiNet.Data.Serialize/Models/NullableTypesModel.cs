@@ -27,28 +27,28 @@ public class NullableTypesModel<T> : BaseSerializeModel<T?>
         var type = Nullable.GetUnderlyingType(typeof(T))!;
         
         var body = Expression.New(
-            typeof(T).GetConstructor(BindingFlags.Public|BindingFlags.Instance, new []{type}), 
+            typeof(T).GetConstructor(BindingFlags.Public|BindingFlags.Instance, new []{type})!, 
             Expression.Convert(instParam, type));    
         
         return Expression.Lambda<Func<object, T>>(body, instParam).Compile();
     });
     
     
-    public override void Serialize(T obj, ISerializeWriter writer)
+    public override void Serialize(T? obj, ISerializeWriter writer)
     {
         byte val = (byte)(obj is null ? 0 : 1);
         writer.WriteByte(val);
         
         if (val == 1)
         {
-            var instance = NullableGetValueLambda.Value(obj);
+            var instance = NullableGetValueLambda.Value(obj!);
             _underlyingSerializeModel.Value.SerializeObject(instance, writer);
         }
     }
 
     public override void SerializeObject(object? obj, ISerializeWriter writer)
     {
-        Serialize((T)obj, writer);
+        Serialize((T?)obj, writer);
     }
 
     public override T? Deserialize(ISerializeReader reader)
@@ -60,7 +60,7 @@ public class NullableTypesModel<T> : BaseSerializeModel<T?>
         if (val == 1)
         {
             var instance = _underlyingSerializeModel.Value.DeserializeToObject(reader);
-            return CreateNullableLambda.Value(instance);
+            return CreateNullableLambda.Value(instance!);
         }
 
         throw new Exception();

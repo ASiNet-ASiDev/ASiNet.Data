@@ -3,7 +3,6 @@ using ASiNet.Data.Serialization.Interfaces;
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 public class EnumModel<TEnum> : BaseSerializeModel<TEnum>
-    where TEnum : Enum
 {
     public override TEnum Deserialize(ISerializeReader reader)
     {

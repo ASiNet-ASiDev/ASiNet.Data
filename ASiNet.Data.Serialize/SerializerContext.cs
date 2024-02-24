@@ -58,7 +58,8 @@ public class SerializerContext()
         return context;
     }
 
-    public SerializerModelsGenerator Generator { get; init; } = new();
+    public ObjectsSerializerModelsGenerator ObjectsGenerator { get; init; } = new();
+    public StructuresSerializerModelsGenerator StructGenerator { get; init; } = new();
 
     private Dictionary<Type, ISerializeModel> _models = [];
 
@@ -81,35 +82,34 @@ public class SerializerContext()
             _models.TryAdd(type, arrModel);
             return arrModel;
         }
-        else
+        else if (type.IsEnum)
         {
-            var newModel = Generator.GenerateModel<T>(this);
-            return newModel;
+            var enumModel = new EnumModel<T>();
+            _models.TryAdd(type, enumModel);
+            return enumModel;
         }
-    }
-
-    public ISerializeModel GetOrGenerate(Type type)
-    {
-        if (GetModel(type) is ISerializeModel model)
-            return model;
-
-        if (type.IsArray)
+        else if(Nullable.GetUnderlyingType(type) is not null)
         {
-            var arrModel = (ISerializeModel?)Activator.CreateInstance(typeof(ArrayModel<>).MakeGenericType(type))
-                ?? throw new Exception();
-            _models.TryAdd(type, arrModel);
-            return arrModel;
+            var nullableModel = new NullableTypesModel<T>();
+            _models.TryAdd(type, nullableModel);
+            return nullableModel!;
+        }
+        else if (type.IsValueType)
+        {
+            var newStructModel = StructGenerator.GenerateModel<T>(this);
+            return newStructModel;
         }
         else
         {
-            var mi = typeof(SerializerModelsGenerator).GetMethod(nameof(SerializerModelsGenerator.GenerateModel))?.MakeGenericMethod(type)
-                ?? throw new Exception();
-            var newModel = (ISerializeModel?)mi.Invoke(Generator, [this])
-                ?? throw new Exception();
-            _models.TryAdd(type, newModel);
-            return newModel;
+            var newObjectModel = ObjectsGenerator.GenerateModel<T>(this);
+            return newObjectModel;
         }
     }
+
+    public ISerializeModel GetOrGenerate(Type type) => 
+        (ISerializeModel?)SerializerHelper.InvokeGenerickMethod(this, nameof(this.GetOrGenerate), [type], []) ??
+        throw new NullReferenceException();
+    
 
 
     public ISerializeModel? GetModel(Type type)
