@@ -99,7 +99,7 @@ public class SerializerContext()
             var newStructModel = StructGenerator.GenerateModel<T>(this);
             return newStructModel;
         }
-        else if (typeof(T).GetGenericTypeDefinition() == typeof(List<>))
+        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
         {
             var listModel = new ListModel<T>();
             _models.TryAdd(type, listModel);
