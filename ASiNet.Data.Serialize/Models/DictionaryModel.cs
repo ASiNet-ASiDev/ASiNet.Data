@@ -21,8 +21,16 @@ public class DictionaryModel<TDictionary> : BaseSerializeModel<TDictionary>
             ?? throw new Exception())
         ?? throw new Exception($"Invalid array element type."));
 
-    public override void Serialize(TDictionary obj, ISerializeWriter writer)
+    public override void Serialize(TDictionary? obj, ISerializeWriter writer)
     {
+        if(obj is null)
+        {
+            writer.WriteByte(0); 
+            return;
+        }
+        else 
+            writer.WriteByte(1);
+
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         BitConverter.TryWriteBytes(buffer, obj.Count);
         writer.WriteBytes(buffer); // Writing an array length
@@ -47,6 +55,9 @@ public class DictionaryModel<TDictionary> : BaseSerializeModel<TDictionary>
 
     public override TDictionary? Deserialize(ISerializeReader reader)
     {
+        if(reader.ReadByte() == 0)
+            return null;
+
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         reader.ReadBytes(buffer); // Read length
 
