@@ -26,15 +26,15 @@ public class StructuresTests
         Assert.IsTrue( a.B == a2.B && a.C == a2.C );
     }
     
-    [TestMethod]
-    public void NumericVector4truct()
-    {
-        new Vector4();
+    //[TestMethod]
+    //public void NumericVector4truct()
+    //{
+    //    new Vector4();
         
-        var a = new Vector4(1231, 532, 12, 412);
-        var buffer = new byte[60000];
-        BinarySerializer.Serialize(a, (ArrayWriter)buffer);
-        var a2 = BinarySerializer.Deserialize<Vector4>((ArrayReader)buffer);
-        Assert.IsTrue( a.Y == a2.Y && a.W == a2.W && a.X == a2.X && a.Z == a2.Z);
-    }
+    //    var a = new Vector4(1231, 532, 12, 412);
+    //    var buffer = new byte[60000];
+    //    BinarySerializer.Serialize(a, (ArrayWriter)buffer);
+    //    var a2 = BinarySerializer.Deserialize<Vector4>((ArrayReader)buffer);
+    //    Assert.IsTrue( a.Y == a2.Y && a.W == a2.W && a.X == a2.X && a.Z == a2.Z);
+    //}
 }

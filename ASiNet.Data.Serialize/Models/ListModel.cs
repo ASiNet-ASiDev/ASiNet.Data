@@ -4,34 +4,40 @@ using ASiNet.Data.Serialization.Interfaces;
 namespace ASiNet.Data.Serialization.Models;
 
 public class ListModel<TList> : BaseSerializeModel<TList>
-    where TList : class, IList, new()
 {
     private Lazy<ISerializeModel> _arrayElementSerializeModel = new(() =>
         BinarySerializer.SharedSerializeContext.GetOrGenerate(typeof(TList).GenericTypeArguments[0] ?? throw new Exception())
         ?? throw new Exception($"Invalid array element type."));
 
-    public override void Serialize(TList obj, ISerializeWriter writer)
+    public override void Serialize(TList? obj, ISerializeWriter writer)
     {
+        if(obj is null)
+        {
+            writer.WriteByte(0);
+            return;
+        }
+        else
+            writer.WriteByte(1);
+
         Span<byte> buffer = stackalloc byte[sizeof(int)];
-        BitConverter.TryWriteBytes(buffer, obj.Count);
+        BitConverter.TryWriteBytes(buffer, ((IList)obj).Count);
         writer.WriteBytes(buffer); // Writing an array length
 
         var model = _arrayElementSerializeModel.Value;
 
-        foreach (var element in obj)
+        foreach (var element in (IList)obj!)
             model.SerializeObject(element, writer);
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer)
-    {
-        var array = obj as TList
-                    ?? throw new Exception("Invalid array element type.");
-
-        Serialize(array, writer);
-    }
+    public override void SerializeObject(object? obj, ISerializeWriter writer) =>
+        Serialize((TList?)obj, writer);
+    
 
     public override TList? Deserialize(ISerializeReader reader)
     {
+        if(reader.ReadByte() == 0)
+            return default;
+
         Span<byte> buffer = stackalloc byte[sizeof(int)];
         reader.ReadBytes(buffer); // Read length
 
@@ -42,16 +48,15 @@ public class ListModel<TList> : BaseSerializeModel<TList>
 
         var model = _arrayElementSerializeModel.Value;
 
-        var arrResult = new TList();
+        var arrResult = (IList)Activator.CreateInstance(typeof(TList))!;
 
         for (int i = 0; i < arrayLength; i++)
             arrResult.Add(model.DeserializeToObject(reader));
 
-        return arrResult;
+        return (TList)arrResult;
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader)
-    {
-        return Deserialize(reader);
-    }
+    public override object? DeserializeToObject(ISerializeReader reader) => 
+        Deserialize(reader);
+    
 }

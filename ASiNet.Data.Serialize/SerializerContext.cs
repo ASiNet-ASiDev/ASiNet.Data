@@ -82,6 +82,12 @@ public class SerializerContext()
             _models.TryAdd(type, arrModel);
             return arrModel;
         }
+        else if(typeof(T).GetGenericTypeDefinition() == typeof(List<>))
+        {
+            var listModel = new ListModel<T>();
+            _models.TryAdd(type, listModel);
+            return listModel;
+        }
         else if (type.IsEnum)
         {
             var enumModel = new EnumModel<T>();
