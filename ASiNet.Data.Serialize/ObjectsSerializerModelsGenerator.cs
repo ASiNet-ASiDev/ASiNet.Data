@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization;
@@ -78,6 +79,14 @@ public class ObjectsSerializerModelsGenerator
             var value = Expression.Property(inst, pi);
             yield return SerializerHelper.CallSerialize(model, value, writer);
         }
+
+        // WRITE OBJECT FIELDS!
+        foreach (var fi in EnumerateFields(type))
+        {
+            var model = SerializerHelper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+            var value = Expression.Field(inst, fi);
+            yield return SerializerHelper.CallSerialize(model, value, writer);
+        }
     }
 
     private IEnumerable<Expression> DeserializeProperties(Type type, Expression inst, Expression reader, SerializerContext serializeContext)
@@ -92,6 +101,14 @@ public class ObjectsSerializerModelsGenerator
             var value = Expression.Property(inst, pi);
             yield return Expression.Assign(value, SerializerHelper.CallDeserialize(model, reader));
         }
+
+        // READ AND SET FIELDS!
+        foreach (var fi in EnumerateFields(type))
+        {
+            var model = SerializerHelper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+            var value = Expression.Field(inst, fi);
+            yield return Expression.Assign(value, SerializerHelper.CallDeserialize(model, reader));
+        }
     }
 
     private IEnumerable<PropertyInfo> EnumerateProperties(Type type)
@@ -100,6 +117,18 @@ public class ObjectsSerializerModelsGenerator
         var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty)
             .OrderBy(prop => prop.Name);
         foreach (var item in props)
+        {
+            yield return item;
+        }
+        yield break;
+    }
+
+    private IEnumerable<FieldInfo> EnumerateFields(Type type)
+    {
+        // GET ALL FIELDS.
+        var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField | BindingFlags.SetField)
+            .OrderBy(prop => prop.Name);
+        foreach (var item in fields)
         {
             yield return item;
         }
