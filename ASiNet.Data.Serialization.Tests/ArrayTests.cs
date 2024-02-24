@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ASiNet.Data.Serialization;
 using ASiNet.Data.Serialization.IO.Arrays;
 using JetBrains.Annotations;
@@ -50,8 +51,24 @@ public class ArrayTests
         var a2 = BinarySerializer.Deserialize<B>((ArrayReader)buffer);
         Assert.IsTrue( EqualArr(a.Arr, a2.Arr) && EqualArr(a.Brr, a2.Brr) && EqualArr(a.Drr, a2.Drr) );
     }
-    
-    
+
+    [TestMethod]
+    public void DictionaryTest()
+    {
+        var a = new Dictionary<int, string>();
+        a.TryAdd(1, "hello");
+        a.TryAdd(2, "world");
+        var buffer = new byte[60000];
+        BinarySerializer.Serialize(a, (ArrayWriter)buffer);
+        var a2 = BinarySerializer.Deserialize<Dictionary<int, string>>((ArrayReader)buffer);
+
+        var res = a.TryGetValue(1, out var a1res1) && a.TryGetValue(2, out var a1res2) 
+            && a2.TryGetValue(1, out var a2res1) && a2.TryGetValue(2, out var a2res2) &&
+            a1res1 == a2res1 && a1res2 == a2res2;
+        Assert.IsTrue(res);
+    }
+
+
     class A2
     {
         public int[] Arr { get; set; }

@@ -99,17 +99,24 @@ public class SerializerContext()
             var newStructModel = StructGenerator.GenerateModel<T>(this);
             return newStructModel;
         }
-        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        else if (type.IsGenericType)
         {
-            var listModel = new ListModel<T>();
-            _models.TryAdd(type, listModel);
-            return listModel;
+            var def = type.GetGenericTypeDefinition();
+            if (def == typeof(List<>))
+            {
+                var listModel = new ListModel<T>();
+                _models.TryAdd(type, listModel);
+                return listModel;
+            }
+            else if(def == typeof(Dictionary<,>))
+            {
+                var dickModel = (SerializeModel<T>)Activator.CreateInstance(typeof(DictionaryModel<>).MakeGenericType(type))!;
+                _models.TryAdd(type, dickModel);
+                return (SerializeModel<T>)dickModel;
+            }
         }
-        else
-        {
-            var newObjectModel = ObjectsGenerator.GenerateModel<T>(this);
-            return newObjectModel;
-        }
+        var newObjectModel = ObjectsGenerator.GenerateModel<T>(this);
+        return newObjectModel;
     }
 
     public ISerializeModel GetOrGenerate(Type type) => 

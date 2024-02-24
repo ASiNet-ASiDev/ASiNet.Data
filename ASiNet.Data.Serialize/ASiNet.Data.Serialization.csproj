@@ -5,6 +5,23 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>$(AssemblyName)</Title>
+    <Version>0.1.1</Version>
+    <Authors>ASiDev,Difoldery</Authors>
+    <Copyright>MIT</Copyright>
+    <Description>Binary Seializer</Description>
+    <PackageIcon>12.png</PackageIcon>
+    <RepositoryUrl>https://github.com/ASiNet-ASiDev/ASiNet.Data.Serialization</RepositoryUrl>
+    <PackageTags>Serialization;Serialize,Binary</PackageTags>
+    <Company>DiSi</Company>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Downloads\12.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
