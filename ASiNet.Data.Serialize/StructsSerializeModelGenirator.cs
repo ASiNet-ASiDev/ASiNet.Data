@@ -93,7 +93,7 @@ public class StructsSerializeModelGenirator
     {
         // GET ALL PROPERTIES.
         var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty)
-            .OrderBy(prop => prop.Name);
+            .OrderBy(prop => prop.Name).Where(x => x.GetIndexParameters().Length == 0);
         foreach (var item in props)
         {
             yield return item;
@@ -104,7 +104,8 @@ public class StructsSerializeModelGenirator
     private IEnumerable<FieldInfo> EnumerateFields(Type type)
     {
         // GET ALL FIELDS.
-        var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField | BindingFlags.SetField);
+        var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField | BindingFlags.SetField)
+            .OrderBy(prop => prop.Name);
         foreach (var item in fields)
         {
             yield return item;
