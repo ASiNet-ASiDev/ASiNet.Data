@@ -59,7 +59,7 @@ public class SerializerContext()
     }
 
     public ObjectsSerializerModelsGenerator ObjectsGenerator { get; init; } = new();
-    public StructuresSerializerModelsGenerator StructGenerator { get; init; } = new();
+    public StructsSerializeModelGenirator StructGenerator { get; init; } = new();
 
     private Dictionary<Type, ISerializeModel> _models = [];
 
