@@ -1,11 +1,13 @@
 ﻿using System.Linq.Expressions;
+using ASiNet.Data.Serialization.Attributes;
+using System.Reflection;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Generators;
 public class StructsSerializeModelGenirator
 {
-    public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in SerializerSettings settings)
+    public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
         {
@@ -25,7 +27,7 @@ public class StructsSerializeModelGenirator
     }
 
 
-    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(SerializerContext serializeContext, in SerializerSettings settings)
+    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
@@ -38,7 +40,7 @@ public class StructsSerializeModelGenirator
         return lambda.Compile();
     }
 
-    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(SerializerContext serializeContext, in SerializerSettings settings)
+    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
@@ -50,9 +52,9 @@ public class StructsSerializeModelGenirator
         return lambda.Compile();
     }
 
-    private IEnumerable<Expression> SerializeProperties(Type type, Expression inst, Expression writer, SerializerContext serializeContext, SerializerSettings settings)
+    private IEnumerable<Expression> SerializeProperties(Type type, Expression inst, Expression writer, SerializerContext serializeContext, GeneratorsSettings settings)
     {
-        if (!settings.IgnoreProperties)
+        if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {
             // WRITE OBJECT PROPERTIES!
             foreach (var pi in SerializerHelper.EnumerateProperties(type))
@@ -63,7 +65,7 @@ public class StructsSerializeModelGenirator
             }
         }
 
-        if (!settings.IgnoreFields)
+        if (!settings.GlobalIgnoreFields || type.GetCustomAttribute<IgnoreFieldsAttribute>() is not null)
         {
             // WRITE OBJECT FIELDS!
             foreach (var fi in SerializerHelper.EnumerateFields(type))
@@ -75,12 +77,12 @@ public class StructsSerializeModelGenirator
         }
     }
 
-    private IEnumerable<Expression> DeserializeProperties(Type type, Expression inst, Expression reader, SerializerContext serializeContext, SerializerSettings settings)
+    private IEnumerable<Expression> DeserializeProperties(Type type, Expression inst, Expression reader, SerializerContext serializeContext, GeneratorsSettings settings)
     {
         // CREATE NEW INSTANCE!
         yield return Expression.Assign(inst, Expression.New(type));
 
-        if (!settings.IgnoreProperties)
+        if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {
             // READ AND SET PROPERTIES!
             foreach (var pi in SerializerHelper.EnumerateProperties(type))
@@ -91,7 +93,7 @@ public class StructsSerializeModelGenirator
             }
         }
 
-        if (!settings.IgnoreFields)
+        if (!settings.GlobalIgnoreFields || type.GetCustomAttribute<IgnoreFieldsAttribute>() is not null)
         {
             // READ AND SET FIELDS!
             foreach (var fi in SerializerHelper.EnumerateFields(type))

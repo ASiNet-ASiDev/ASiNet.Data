@@ -121,7 +121,8 @@ public static class SerializerHelper
     {
         // GET ALL PROPERTIES.
         var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty)
-            .OrderBy(x => x.Name).Where(x => x.GetCustomAttribute<IgnorePropertyAttribute>() is null);
+            .OrderBy(x => x.Name)
+            .Where(x => x.GetIndexParameters().Length == 0 && x.GetCustomAttribute<IgnorePropertyAttribute>() is null);
         foreach (var item in props)
         {
             yield return item;
@@ -133,7 +134,8 @@ public static class SerializerHelper
     {
         // GET ALL FIELDS.
         var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField | BindingFlags.SetField)
-            .OrderBy(prop => prop.Name).Where(x => x.GetCustomAttribute<IgnoreFieldAttribute>() is null);
+            .OrderBy(prop => prop.Name)
+            .Where(x => x.GetCustomAttribute<IgnoreFieldAttribute>() is null);
         foreach (var item in fields)
         {
             yield return item;

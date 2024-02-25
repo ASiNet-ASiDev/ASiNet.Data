@@ -13,7 +13,7 @@ public static class BinarySerializer
         return serializerContext;
     });
 
-    public static SerializerSettings Settings { get; set; } = new();
+    public static GeneratorsSettings Settings { get; set; } = new();
 
     public static int Serialize<T>(T obj, ISerializeWriter writer)
     {
