@@ -9,9 +9,10 @@ ASiNet.Data.Serialization - простая и понятная в использ
 При сериализации больших данных аллоцируется минимальное количество памяти, что является большим плюсом и позволяет производить сериализацию и десериализацию неопределенное количество раз.
 
 ## Поддерживаемые типы:
-* `Все unmanaged типы`
+* `Byte`, `SByte`, `Int16`, `Int32`, `Int64`, `UInt16`, `UInt32`, `UInt64`, `Single`, `Double`, `Boolean`, `Char`, `String`
+* `Guid`, `DateTime`
 * `Arrays`
-* `Dicitonary< , >`, `List< >`
+* `Dicitonary<TKey, TValue>`, `List<T>`
 * `DateTime`, `Guid`, `Enum`
 * `Nullable`
 
