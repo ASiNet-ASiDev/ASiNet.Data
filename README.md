@@ -10,11 +10,10 @@ ASiNet.Data.Serialization - простая и понятная в использ
 
 ## Поддерживаемые типы:
 * `Byte`, `SByte`, `Int16`, `Int32`, `Int64`, `UInt16`, `UInt32`, `UInt64`, `Single`, `Double`, `Boolean`, `Char`, `String`
-* `Guid`, `DateTime`
 * `Arrays`
 * `Dicitonary<TKey, TValue>`, `List<T>`
-* `DateTime`, `Guid`, `Enum`
-* `Nullable`
+* `DateTime`, `Guid`, `Enum's`
+* `Nullable<T>`
 
 А также реализована автоматическая генерация кода для сериализации и десериализации любых классов и структур, реализованная с помощью _Expression`s_.
 
