@@ -12,8 +12,10 @@ namespace ASiNet.Data.Serialization;
 public class SerializerContext()
 {
 
-    public ObjectsSerializerModelsGenerator ObjectsGenerator { get; init; } = new();
-    public StructsSerializeModelGenirator StructGenerator { get; init; } = new();
+    public ObjectsModelsGenerator ObjectsGenerator { get; init; } = new();
+    public StructsModelGenirator StructGenerator { get; init; } = new();
+    public EnumsModelGenerator EnumGenerator { get; init; } = new();
+
 
     private Dictionary<Type, ISerializeModel> _models = [];
 
@@ -55,7 +57,7 @@ public class SerializerContext()
         }
         else if (type.IsEnum)
         {
-            var enumModel = new EnumModel<T>();
+            var enumModel = EnumGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
             _models.TryAdd(type, enumModel);
             return enumModel;
         }

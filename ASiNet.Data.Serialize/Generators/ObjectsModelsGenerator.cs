@@ -6,11 +6,7 @@ using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Generators;
 
-public delegate void SerializeObjectDelegate<T>(T? obj, ISerializeWriter writer);
-
-public delegate T? DeserializeObjectDelegate<T>(ISerializeReader reader);
-
-public class ObjectsSerializerModelsGenerator
+public class ObjectsModelsGenerator : IModelsGenerator
 {
     public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {

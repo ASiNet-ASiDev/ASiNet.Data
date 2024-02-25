@@ -7,7 +7,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <Authors>ASiDev,Difoldery</Authors>
     <Copyright>MIT</Copyright>
     <Description>Binary Seializer</Description>
@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/ASiNet-ASiDev/ASiNet.Data.Serialization</RepositoryUrl>
     <PackageTags>Serialization;Serialize,Binary</PackageTags>
     <Company>DiSi</Company>
+    <PackageReleaseNotes>bug fix &amp; add ignore property, or field attributes</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
