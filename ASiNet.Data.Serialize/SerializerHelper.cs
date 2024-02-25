@@ -14,9 +14,8 @@ public static class SerializerHelper
     }
 
 
-    public static void AddUnmanagedTypes()
+    public static void AddUnmanagedTypes(SerializerContext context)
     {
-        var context = BinarySerializer.SharedSerializeContext;
         context.AddModel(new ByteModel());
         context.AddModel(new SByteModel());
 
@@ -39,9 +38,8 @@ public static class SerializerHelper
         context.AddModel(new GuidModel());
     }
 
-    public static void AddUnsafeArraysTypes()
+    public static void AddUnsafeArraysTypes(SerializerContext context)
     {
-        var context = BinarySerializer.SharedSerializeContext;
         context.AddModel(new BooleanArrayModel());
 
         context.AddModel(new Int16ArrayModel());

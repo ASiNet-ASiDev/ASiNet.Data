@@ -8,8 +8,8 @@ public static class BinarySerializer
     private static Lazy<SerializerContext> _sharedSerializeContext = new(() => 
     {  
         var serializerContext = new SerializerContext();
-        SerializerHelper.AddUnsafeArraysTypes();
-        SerializerHelper.AddUnmanagedTypes();
+        SerializerHelper.AddUnsafeArraysTypes(serializerContext);
+        SerializerHelper.AddUnmanagedTypes(serializerContext);
         return serializerContext;
     });
 

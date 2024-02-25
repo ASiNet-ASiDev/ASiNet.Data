@@ -4,11 +4,7 @@ using ASiNet.Data.Serialization.Models.Arrays;
 
 var buf = new byte[64];
 
-var model = new Int32ArrayModel();
- 
-model.Serialize(null, (ArrayWriter)buf);
-
-var result = model.Deserialize((ArrayReader)buf);
+BinarySerializer.Serialize(new T1(), buf);
 
 Console.ReadLine();
 
