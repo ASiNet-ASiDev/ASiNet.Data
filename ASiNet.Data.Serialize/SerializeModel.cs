@@ -1,4 +1,5 @@
-﻿using ASiNet.Data.Serialization.Interfaces;
+﻿using ASiNet.Data.Serialization.Generators;
+using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization;
 public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, DeserializeObjectDelegate<T>? deserialize = null) : ISerializeModel

@@ -1,5 +1,9 @@
 ﻿using System.Linq.Expressions;
+using ASiNet.Data.Serialization.Attributes;
+using System.Reflection;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models.Arrays;
+using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization;
 public static class SerializerHelper
@@ -7,6 +11,56 @@ public static class SerializerHelper
     public static TEnum ToEnum<TType, TEnum>(TType x)
     {
         return (TEnum)(object)x!;
+    }
+
+
+    public static void AddUnmanagedTypes()
+    {
+        var context = BinarySerializer.SharedSerializeContext;
+        context.AddModel(new ByteModel());
+        context.AddModel(new SByteModel());
+
+        context.AddModel(new Int16Model());
+        context.AddModel(new Int32Model());
+        context.AddModel(new Int64Model());
+
+        context.AddModel(new UInt16Model());
+        context.AddModel(new UInt32Model());
+        context.AddModel(new UInt64Model());
+
+        context.AddModel(new SingleModel());
+        context.AddModel(new DoubleModel());
+
+        context.AddModel(new CharModel());
+        context.AddModel(new StringModel());
+
+        context.AddModel(new BooleanModel());
+
+        context.AddModel(new GuidModel());
+    }
+
+    public static void AddUnsafeArraysTypes()
+    {
+        var context = BinarySerializer.SharedSerializeContext;
+        context.AddModel(new BooleanArrayModel());
+
+        context.AddModel(new Int16ArrayModel());
+        context.AddModel(new UInt16ArrayModel());
+
+        context.AddModel(new Int32ArrayModel());
+        context.AddModel(new UInt32ArrayModel());
+
+        context.AddModel(new Int64ArrayModel());
+        context.AddModel(new UInt64ArrayModel());
+
+        context.AddModel(new SingleArrayModel());
+        context.AddModel(new DoubleArrayModel());
+
+        context.AddModel(new ByteArrayModel());
+        context.AddModel(new SByteArrayModel());
+
+        context.AddModel(new GuidArrayModel());
+        context.AddModel(new DateTimeArrayModel());
     }
 
     public static Enum ToEnum<TType>(TType x, Type type) where TType : struct
@@ -62,5 +116,30 @@ public static class SerializerHelper
         return method
             .MakeGenericMethod(genericParameters)
             .Invoke(inst, parameters);
+    }
+
+
+    public static IEnumerable<PropertyInfo> EnumerateProperties(Type type)
+    {
+        // GET ALL PROPERTIES.
+        var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty)
+            .OrderBy(x => x.Name).Where(x => x.GetCustomAttribute<IgnorePropertyAttribute>() is null);
+        foreach (var item in props)
+        {
+            yield return item;
+        }
+        yield break;
+    }
+
+    public static IEnumerable<FieldInfo> EnumerateFields(Type type)
+    {
+        // GET ALL FIELDS.
+        var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField | BindingFlags.SetField)
+            .OrderBy(prop => prop.Name).Where(x => x.GetCustomAttribute<IgnoreFieldAttribute>() is null);
+        foreach (var item in fields)
+        {
+            yield return item;
+        }
+        yield break;
     }
 }

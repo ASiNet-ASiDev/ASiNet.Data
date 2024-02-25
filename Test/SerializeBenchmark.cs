@@ -31,8 +31,8 @@ public class SerializeBenchmark
         for (int i = 0; i < arrsize; i++) _instance.Array[i] = Random.Shared.Next();
         
         _instance.TestClassik = null;
-        
-        BinarySerializer.Serialize(_instance, (ArrayWriter)_buffer2);
+
+        BinarySerializer.Serialize(_instance, (ASiNet.Data.Serialization.Interfaces.ISerializeWriter)(ArrayWriter)_buffer2);
         
         _mempBuf = MemoryPackSerializer.Serialize(_instance);
     }
@@ -40,7 +40,7 @@ public class SerializeBenchmark
     [Benchmark]
     public void DiSiSerializerTest()
     {
-        BinarySerializer.Serialize(_instance, (ArrayWriter)_buffer);
+        BinarySerializer.Serialize(_instance, (ASiNet.Data.Serialization.Interfaces.ISerializeWriter)(ArrayWriter)_buffer);
     }
 
     [Benchmark]
@@ -52,7 +52,7 @@ public class SerializeBenchmark
     [Benchmark]
     public void DiSiDeserializerTest()
     {
-        BinarySerializer.Deserialize<TestClass>((ArrayReader)_buffer2);
+        BinarySerializer.Deserialize<TestClass>((ASiNet.Data.Serialization.Interfaces.ISerializeReader)(ArrayReader)_buffer2);
     }
 
     [Benchmark]

@@ -31,7 +31,7 @@ public class BinarySerializerTest
     private bool Test<T>(int size, T val)
     {
         var b1 = new byte[size];
-        BinarySerializer.Serialize(val, (ArrayWriter)b1);
-        return BinarySerializer.Deserialize<T>((ArrayReader)b1).Equals(val);
+        BinarySerializer.Serialize(val, (Interfaces.ISerializeWriter)(ArrayWriter)b1);
+        return BinarySerializer.Deserialize<T>((Interfaces.ISerializeReader)(ArrayReader)b1).Equals(val);
     }
 }

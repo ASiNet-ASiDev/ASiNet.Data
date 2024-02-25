@@ -1,6 +1,6 @@
-﻿using ASiNet.Data.Serialization.Interfaces;
+﻿using ASiNet.Data.Serialization.Generators;
+using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
-using ASiNet.Data.Serialization.Models.Arrays;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization;
@@ -11,52 +11,6 @@ namespace ASiNet.Data.Serialization;
 /// <param name="omContext"></param>
 public class SerializerContext()
 {
-    public static SerializerContext FromDefaultModels()
-    {
-        var context = new SerializerContext();
-        context.AddModel(new ByteModel());
-        context.AddModel(new SByteModel());
-
-        context.AddModel(new Int16Model());
-        context.AddModel(new Int32Model());
-        context.AddModel(new Int64Model());
-
-        context.AddModel(new UInt16Model());
-        context.AddModel(new UInt32Model());
-        context.AddModel(new UInt64Model());
-
-        context.AddModel(new SingleModel());
-        context.AddModel(new DoubleModel());
-
-        context.AddModel(new CharModel());
-        context.AddModel(new StringModel());
-
-        context.AddModel(new BooleanModel());
-
-        context.AddModel(new GuidModel());
-        // ARRAYS
-        context.AddModel(new BooleanArrayModel());
-
-        context.AddModel(new Int16ArrayModel());
-        context.AddModel(new UInt16ArrayModel());
-
-        context.AddModel(new Int32ArrayModel());
-        context.AddModel(new UInt32ArrayModel());
-
-        context.AddModel(new Int64ArrayModel());
-        context.AddModel(new UInt64ArrayModel());
-
-        context.AddModel(new SingleArrayModel());
-        context.AddModel(new DoubleArrayModel());
-
-        context.AddModel(new ByteArrayModel());
-        context.AddModel(new SByteArrayModel());
-
-        context.AddModel(new GuidArrayModel());
-        context.AddModel(new DateTimeArrayModel());
-
-        return context;
-    }
 
     public ObjectsSerializerModelsGenerator ObjectsGenerator { get; init; } = new();
     public StructsSerializeModelGenirator StructGenerator { get; init; } = new();
@@ -69,6 +23,23 @@ public class SerializerContext()
     public void AddModel<T>(SerializeModel<T> model)
         => _models.Add(typeof(T), model);
 
+    public void AddOrReplaceModel<T>(SerializeModel<T> model) =>
+        AddOrReplaceModel((ISerializeModel)model);
+
+    public void AddOrReplaceModel(ISerializeModel model)
+    {
+        if (_models.ContainsKey(model.ObjType))
+        {
+            _models.Remove(model.ObjType);
+            _models.Add(model.ObjType, model);
+        }
+    }
+
+    public bool RemoveModel(ISerializeModel model) =>
+        _models.Remove(model.ObjType);
+
+    public bool RemoveModel<T>(SerializeModel<T> model) =>
+        _models.Remove(model.ObjType);
 
     public SerializeModel<T> GetOrGenerate<T>()
     {
@@ -88,7 +59,7 @@ public class SerializerContext()
             _models.TryAdd(type, enumModel);
             return enumModel;
         }
-        else if(Nullable.GetUnderlyingType(type) is not null)
+        else if (Nullable.GetUnderlyingType(type) is not null)
         {
             var nullableModel = new NullableTypesModel<T>();
             _models.TryAdd(type, nullableModel);
@@ -96,7 +67,7 @@ public class SerializerContext()
         }
         else if (type.IsValueType)
         {
-            var newStructModel = StructGenerator.GenerateModel<T>(this);
+            var newStructModel = StructGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
             return newStructModel;
         }
         else if (type.IsGenericType)
@@ -108,21 +79,21 @@ public class SerializerContext()
                 _models.TryAdd(type, listModel);
                 return listModel;
             }
-            else if(def == typeof(Dictionary<,>))
+            else if (def == typeof(Dictionary<,>))
             {
                 var dickModel = (SerializeModel<T>)Activator.CreateInstance(typeof(DictionaryModel<>).MakeGenericType(type))!;
                 _models.TryAdd(type, dickModel);
-                return (SerializeModel<T>)dickModel;
+                return dickModel;
             }
         }
-        var newObjectModel = ObjectsGenerator.GenerateModel<T>(this);
+        var newObjectModel = ObjectsGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
         return newObjectModel;
     }
 
-    public ISerializeModel GetOrGenerate(Type type) => 
+    public ISerializeModel GetOrGenerate(Type type) =>
         (ISerializeModel?)SerializerHelper.InvokeGenerickMethod(this, nameof(this.GetOrGenerate), [type], []) ??
         throw new NullReferenceException();
-    
+
 
 
     public ISerializeModel? GetModel(Type type)

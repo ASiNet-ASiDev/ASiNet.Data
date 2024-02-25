@@ -33,8 +33,8 @@ public class ArrayTests
             Drr = RandArr(99),
         };
         var buffer = new byte[60000];
-        BinarySerializer.Serialize(a, (ArrayWriter)buffer);
-        var a2 = BinarySerializer.Deserialize<A>((ArrayReader)buffer);
+        BinarySerializer.Serialize(a, (Interfaces.ISerializeWriter)(ArrayWriter)buffer);
+        var a2 = BinarySerializer.Deserialize<A>((Interfaces.ISerializeReader)(ArrayReader)buffer);
         Assert.IsTrue( EqualArr(a.Arr, a2.Arr) && EqualArr(a.Brr, a2.Brr) && EqualArr(a.Drr, a2.Drr) );
     }
     [TestMethod]
@@ -47,8 +47,8 @@ public class ArrayTests
             Drr = RandArr(99),
         };
         var buffer = new byte[60000];
-        BinarySerializer.Serialize(a, (ArrayWriter)buffer);
-        var a2 = BinarySerializer.Deserialize<B>((ArrayReader)buffer);
+        BinarySerializer.Serialize(a, (Interfaces.ISerializeWriter)(ArrayWriter)buffer);
+        var a2 = BinarySerializer.Deserialize<B>((Interfaces.ISerializeReader)(ArrayReader)buffer);
         Assert.IsTrue( EqualArr(a.Arr, a2.Arr) && EqualArr(a.Brr, a2.Brr) && EqualArr(a.Drr, a2.Drr) );
     }
 
@@ -59,8 +59,8 @@ public class ArrayTests
         a.TryAdd(1, "hello");
         a.TryAdd(2, "world");
         var buffer = new byte[60000];
-        BinarySerializer.Serialize(a, (ArrayWriter)buffer);
-        var a2 = BinarySerializer.Deserialize<Dictionary<int, string>>((ArrayReader)buffer);
+        BinarySerializer.Serialize(a, (Interfaces.ISerializeWriter)(ArrayWriter)buffer);
+        var a2 = BinarySerializer.Deserialize<Dictionary<int, string>>((Interfaces.ISerializeReader)(ArrayReader)buffer);
 
         var res = a.TryGetValue(1, out var a1res1) && a.TryGetValue(2, out var a1res2) 
             && a2.TryGetValue(1, out var a2res1) && a2.TryGetValue(2, out var a2res2) &&
@@ -94,8 +94,8 @@ public class ArrayTests
             Err = null,
         };
         var buffer = new byte[60000];
-        BinarySerializer.Serialize(a, (ArrayWriter)buffer);
-        var a2 = BinarySerializer.Deserialize<A2>((ArrayReader)buffer);
+        BinarySerializer.Serialize(a, (Interfaces.ISerializeWriter)(ArrayWriter)buffer);
+        var a2 = BinarySerializer.Deserialize<A2>((Interfaces.ISerializeReader)(ArrayReader)buffer);
         Assert.IsTrue( EqualArr(a.Arr, a2.Arr) && EqualArr(a.Brr, a2.Brr) && EqualArr(a.Drr, a2.Drr) && a.Err == a2.Err );
     }
     [TestMethod]
@@ -109,8 +109,8 @@ public class ArrayTests
             Err = null,
         };
         var buffer = new byte[60000];
-        BinarySerializer.Serialize(a, (ArrayWriter)buffer);
-        var a2 = BinarySerializer.Deserialize<B2>((ArrayReader)buffer);
+        BinarySerializer.Serialize(a, (Interfaces.ISerializeWriter)(ArrayWriter)buffer);
+        var a2 = BinarySerializer.Deserialize<B2>((Interfaces.ISerializeReader)(ArrayReader)buffer);
         Assert.IsTrue( EqualArr(a.Arr, a2.Arr) && EqualArr(a.Brr, a2.Brr) && EqualArr(a.Drr, a2.Drr) && a.Err == a2.Err );
     }
     

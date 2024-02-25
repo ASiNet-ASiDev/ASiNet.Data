@@ -5,7 +5,15 @@ namespace ASiNet.Data.Serialization;
 public static class BinarySerializer
 {
     public static SerializerContext SharedSerializeContext => _sharedSerializeContext.Value;
-    private static Lazy<SerializerContext> _sharedSerializeContext = new(() => SerializerContext.FromDefaultModels());
+    private static Lazy<SerializerContext> _sharedSerializeContext = new(() => 
+    {  
+        var serializerContext = new SerializerContext();
+        SerializerHelper.AddUnsafeArraysTypes();
+        SerializerHelper.AddUnmanagedTypes();
+        return serializerContext;
+    });
+
+    public static SerializerSettings Settings { get; set; } = new();
 
     public static int Serialize<T>(T obj, ISerializeWriter writer)
     {
@@ -20,9 +28,9 @@ public static class BinarySerializer
         return model.Deserialize(reader);
     }
 
-    public static int SerializeArray<T>(T obj, byte[] buffer)
-        => Serialize(obj, (ArrayWriter)buffer);
+    public static int Serialize<T>(T obj, byte[] buffer)
+        => Serialize<T>(obj, (ISerializeWriter)(ArrayWriter)buffer);
 
-    public static T? DeserializeArray<T>(byte[] buffer)
-        => Deserialize<T>((ArrayReader)buffer);
+    public static T? Deserialize<T>(byte[] buffer)
+        => Deserialize<T>((ISerializeReader)(ArrayReader)buffer);
 }
