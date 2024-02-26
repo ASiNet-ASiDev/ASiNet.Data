@@ -1,4 +1,5 @@
-﻿using ASiNet.Data.Serialization.Generators;
+﻿using ASiNet.Data.Serialization.Exceptions;
+using ASiNet.Data.Serialization.Generators;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
@@ -15,6 +16,7 @@ public class SerializerContext()
     public ObjectsModelsGenerator ObjectsGenerator { get; init; } = new();
     public StructsModelGenirator StructGenerator { get; init; } = new();
     public EnumsModelGenerator EnumGenerator { get; init; } = new();
+    public NullableTypesGenerator NullableGenerator { get; init; } = new();
 
 
     private Dictionary<Type, ISerializeModel> _models = [];
@@ -49,47 +51,31 @@ public class SerializerContext()
             return model;
 
         var type = typeof(T);
+        SerializeModel<T>? newModel;
         if (type.IsArray)
-        {
-            var arrModel = new ArrayModel<T>();
-            _models.TryAdd(type, arrModel);
-            return arrModel;
-        }
+            newModel = new ArrayModel<T>();
         else if (type.IsEnum)
-        {
-            var enumModel = EnumGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-            _models.TryAdd(type, enumModel);
-            return enumModel;
-        }
+            newModel = EnumGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
         else if (Nullable.GetUnderlyingType(type) is not null)
-        {
-            var nullableModel = new NullableTypesModel<T>();
-            _models.TryAdd(type, nullableModel);
-            return nullableModel!;
-        }
+            newModel = NullableGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
         else if (type.IsValueType)
-        {
-            var newStructModel = StructGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-            return newStructModel;
-        }
+            newModel = StructGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
         else if (type.IsGenericType)
         {
             var def = type.GetGenericTypeDefinition();
             if (def == typeof(List<>))
-            {
-                var listModel = new ListModel<T>();
-                _models.TryAdd(type, listModel);
-                return listModel;
-            }
+                newModel = new ListModel<T>();
             else if (def == typeof(Dictionary<,>))
-            {
-                var dickModel = (SerializeModel<T>)Activator.CreateInstance(typeof(DictionaryModel<>).MakeGenericType(type))!;
-                _models.TryAdd(type, dickModel);
-                return dickModel;
-            }
+                newModel = (SerializeModel<T>)Activator.CreateInstance(typeof(DictionaryModel<>).MakeGenericType(type))!;
+            else
+                newModel = ObjectsGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
         }
-        var newObjectModel = ObjectsGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-        return newObjectModel;
+        else
+            newModel = ObjectsGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
+        if(newModel is null)
+            throw new GeneratorException(new NullReferenceException("model is null"));
+        _models.TryAdd(type, newModel);
+        return newModel;
     }
 
     public ISerializeModel GetOrGenerate(Type type) =>
