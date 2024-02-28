@@ -39,7 +39,7 @@ public class EnumsModelGeneratorTests
     [TestMethod()]
     public void GenerateModelTest()
     {
-        var generator = new EnumsModelGenerator();
+        var generator = new EnumsModelsGenerator();
         
         var aModel = generator.GenerateModel<A>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
 

@@ -3,7 +3,7 @@ using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Generators;
-public class NullableTypesGenerator : IModelsGenerator
+public class NullableModelsGenerator : IModelsGenerator
 {
 
     public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in GeneratorsSettings settings)

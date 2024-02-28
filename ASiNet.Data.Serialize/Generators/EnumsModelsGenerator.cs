@@ -3,7 +3,7 @@ using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Generators;
-public class EnumsModelGenerator : IModelsGenerator
+public class EnumsModelsGenerator : IModelsGenerator
 {
     public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {

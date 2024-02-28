@@ -16,7 +16,7 @@ public class NullableTypesGeneratorTests
     [TestMethod()]
     public void GenerateSerializeLambdaTest()
     {
-        var generator = new NullableTypesGenerator();
+        var generator = new NullableModelsGenerator();
 
         var res = generator.GenerateSerializeLambda<int?>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
 
@@ -25,7 +25,7 @@ public class NullableTypesGeneratorTests
     [TestMethod()]
     public void GenerateDeserializeLambdaTest()
     {
-        var generator = new NullableTypesGenerator();
+        var generator = new NullableModelsGenerator();
 
         var res = generator.GenerateDeserializeLambda<int?>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
     }
@@ -33,7 +33,7 @@ public class NullableTypesGeneratorTests
     [TestMethod()]
     public void NullableTest()
     {
-        var generator = new NullableTypesGenerator();
+        var generator = new NullableModelsGenerator();
 
 
         int? val = 10;

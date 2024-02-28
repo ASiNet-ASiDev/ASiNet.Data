@@ -14,12 +14,28 @@ public class SerializerContext()
 {
 
     public ObjectsModelsGenerator ObjectsGenerator { get; init; } = new();
-    public StructsModelGenirator StructGenerator { get; init; } = new();
-    public EnumsModelGenerator EnumGenerator { get; init; } = new();
-    public NullableTypesGenerator NullableGenerator { get; init; } = new();
-
 
     private Dictionary<Type, ISerializeModel> _models = [];
+
+    private List<(Predicate<Type> Comparer, IModelsGenerator Generator)> _generators = [
+        (type => type.IsEnum, 
+            new EnumsModelsGenerator()),
+
+        (type => type.IsValueType && Nullable.GetUnderlyingType(type) is not null, 
+            new NullableModelsGenerator()),
+
+        (type => type.IsValueType && !type.IsEnum, 
+            new StructsModelsGenirator()),
+        
+        (type => type.IsArray, 
+            new ArraysModelsGenerator()),
+
+        (type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>), 
+            new ListModelsGenerator()),
+
+        (type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>), 
+            new DictionaryModelsGenerator()),
+        ];
 
     public void AddModel(ISerializeModel model)
         => _models.Add(model.ObjType, model);
@@ -51,29 +67,13 @@ public class SerializerContext()
             return model;
 
         var type = typeof(T);
-        SerializeModel<T>? newModel;
-        if (type.IsArray)
-            newModel = new ArrayModel<T>();
-        else if (type.IsEnum)
-            newModel = EnumGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-        else if (Nullable.GetUnderlyingType(type) is not null)
-            newModel = NullableGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-        else if (type.IsValueType)
-            newModel = StructGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-        else if (type.IsGenericType)
-        {
-            var def = type.GetGenericTypeDefinition();
-            if (def == typeof(List<>))
-                newModel = new ListModel<T>();
-            else if (def == typeof(Dictionary<,>))
-                newModel = (SerializeModel<T>)Activator.CreateInstance(typeof(DictionaryModel<>).MakeGenericType(type))!;
-            else
-                newModel = ObjectsGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-        }
-        else
-            newModel = ObjectsGenerator.GenerateModel<T>(this, BinarySerializer.Settings);
-        if(newModel is null)
-            throw new GeneratorException(new NullReferenceException("model is null"));
+        
+        var generator = _generators.FirstOrDefault(x => x.Comparer.Invoke(type)).Generator 
+            ?? ObjectsGenerator;
+
+        var newModel = (generator.GenerateModel<T>(this, BinarySerializer.Settings)) 
+            ?? throw new GeneratorException(new NullReferenceException("model is null"));
+
         _models.TryAdd(type, newModel);
         return newModel;
     }

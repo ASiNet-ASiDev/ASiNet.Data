@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using Test;
 
-//BenchmarkRunner.Run<NullableSpeedTests>();
+BenchmarkRunner.Run<ListBm>();
 
 Console.ReadLine();
