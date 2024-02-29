@@ -32,18 +32,18 @@ public class NullableModelsGenerator : IModelsGenerator
         var inst = Expression.Parameter(typeof(T), "inst");
         var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
 
-        var model = SerializerHelper.GetOrGenerateSerializeModelConstant(Nullable.GetUnderlyingType(type)!, serializeContext);
+        var model = Helper.GetOrGenerateSerializeModelConstant(Nullable.GetUnderlyingType(type)!, serializeContext);
 
         var body = Expression.IfThenElse(
             HashValue(inst),
             Expression.Block(
-                SerializerHelper.WriteNullableByte(writer, 1),
-                SerializerHelper.CallSerialize(
+                Helper.WriteNullableByte(writer, 1),
+                Helper.CallSerialize(
                     model,
                     Value(inst),
                     writer)
                 ),
-            SerializerHelper.WriteNullableByte(writer, 0));
+            Helper.WriteNullableByte(writer, 0));
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
         return lambda.Compile();
@@ -56,7 +56,7 @@ public class NullableModelsGenerator : IModelsGenerator
 
         var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
 
-        var model = SerializerHelper.GetOrGenerateSerializeModelConstant(underlyingType, serializeContext);
+        var model = Helper.GetOrGenerateSerializeModelConstant(underlyingType, serializeContext);
 
         var inst = Expression.Parameter(type, "inst");
         var constructor = type.GetConstructor(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public, [underlyingType]) ??
@@ -65,13 +65,13 @@ public class NullableModelsGenerator : IModelsGenerator
         var body = Expression.Block([inst],
             Expression.IfThenElse(
                 Expression.Equal(
-                    SerializerHelper.ReadNullableByte(reader),
+                    Helper.ReadNullableByte(reader),
                     Expression.Constant((byte)1)),
                 Expression.Assign(
                     inst,
                     Expression.New(
                         constructor,
-                        SerializerHelper.CallDeserialize(model, reader))),
+                        Helper.CallDeserialize(model, reader))),
                 Expression.Assign(
                     inst,
                     Expression.Default(type))

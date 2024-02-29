@@ -15,7 +15,7 @@ public class ListModelsGeneratorTests
     [TestMethod()]
     public void GenerateModelTest()
     {
-        var model = BinarySerializer.SharedSerializeContext.GetOrGenerate<List<int>>();
+        var model = BinarySerializer.SerializeContext.GetOrGenerate<List<int>>();
         
         var val = new List<int>() { 1, 2, 3, 4 };
         
@@ -37,7 +37,7 @@ public class ListModelsGeneratorTests
     [TestMethod()]
     public void GenerateNullModelTest()
     {
-        var model = BinarySerializer.SharedSerializeContext.GetOrGenerate<List<int>>();
+        var model = BinarySerializer.SerializeContext.GetOrGenerate<List<int>>();
 
         List<int> val = null;
 

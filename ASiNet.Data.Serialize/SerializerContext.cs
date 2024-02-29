@@ -61,6 +61,28 @@ public class SerializerContext()
     public bool RemoveModel<T>(SerializeModel<T> model) =>
         _models.Remove(model.ObjType);
 
+    public ISerializeModel GenerateModel(Type type) =>
+        (ISerializeModel?)Helper.InvokeGenerickMethod(this, nameof(this.GenerateModel), [type], []) ??
+        throw new NullReferenceException();
+
+    public SerializeModel<T> GenerateModel<T>()
+    {
+        var type = typeof(T);
+
+        var generator = _generators.FirstOrDefault(x => x.Comparer.Invoke(type)).Generator
+            ?? ObjectsGenerator;
+
+        var newModel = (generator.GenerateModel<T>(this, BinarySerializer.Settings))
+            ?? throw new GeneratorException(new NullReferenceException("model is null"));
+
+        _models.TryAdd(type, newModel);
+        return newModel;
+    }
+
+    public ISerializeModel GetOrGenerate(Type type) =>
+        (ISerializeModel?)Helper.InvokeGenerickMethod(this, nameof(this.GetOrGenerate), [type], []) ??
+        throw new NullReferenceException();
+
     public SerializeModel<T> GetOrGenerate<T>()
     {
         if (GetModel<T>() is SerializeModel<T> model)
@@ -78,12 +100,6 @@ public class SerializerContext()
         return newModel;
     }
 
-    public ISerializeModel GetOrGenerate(Type type) =>
-        (ISerializeModel?)SerializerHelper.InvokeGenerickMethod(this, nameof(this.GetOrGenerate), [type], []) ??
-        throw new NullReferenceException();
-
-
-
     public ISerializeModel? GetModel(Type type)
     {
         if (_models.TryGetValue(type, out ISerializeModel? model))
@@ -96,6 +112,17 @@ public class SerializerContext()
         if (_models.TryGetValue(typeof(T), out ISerializeModel? model))
             return (SerializeModel<T>)model;
         return null;
+    }
+
+    public void AddGegerator(Predicate<Type> Comparer, IModelsGenerator Generator) =>
+        _generators.Add((Comparer, Generator));
+
+    public bool RemoveGegerator(IModelsGenerator Generator)
+    {
+        var it = _generators.FirstOrDefault(x => x.Generator == Generator);
+        if(it == default)
+            return false;
+        return _generators.Remove(it);
     }
 
     public bool ContainsModel<T>() =>

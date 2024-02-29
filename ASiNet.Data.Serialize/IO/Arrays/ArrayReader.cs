@@ -4,15 +4,15 @@ namespace ASiNet.Data.Serialization.IO.Arrays;
 
 public class ArrayReader(byte[] c_src) : ISerializeReader
 {
-    public int TotalAreaSize => _src.Length;
-    public int AvalibleAreaSize => 0;
-    public int FilledAreaSize => _src.Length;
+    public int Length => _src.Length;
+    public int AvalibleBytes => 0;
+    public int ReadedBytes => _src.Length;
 
     private int _position;
     private byte[] _src = c_src;
 
     public bool CanReadSize(int size)
-        => FilledAreaSize - _position >= size;
+        => ReadedBytes - _position >= size;
 
     public void ReadBytes(Span<byte> data)
     {

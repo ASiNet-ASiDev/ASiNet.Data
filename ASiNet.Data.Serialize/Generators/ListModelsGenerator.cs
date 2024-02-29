@@ -33,8 +33,8 @@ public class ListModelsGenerator : IModelsGenerator
         var inst = Expression.Parameter(type, "inst");
         var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
 
-        var model = SerializerHelper.GetOrGenerateSerializeModelConstant(itemsType, serializeContext);
-        var intModel = SerializerHelper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
+        var model = Helper.GetOrGenerateSerializeModelConstant(itemsType, serializeContext);
+        var intModel = Helper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
 
         var count = Expression.Parameter(typeof(int), "count");
 
@@ -44,12 +44,12 @@ public class ListModelsGenerator : IModelsGenerator
                     inst,
                     Expression.Default(type)),
                 Expression.Block([count],
-                    SerializerHelper.WriteNullableByte(writer, 1),
+                    Helper.WriteNullableByte(writer, 1),
                     Expression.Assign(count, GetCount(inst)),
-                    SerializerHelper.CallSerialize(intModel, count, writer),
+                    Helper.CallSerialize(intModel, count, writer),
                     SerializeElements(count, inst, model, writer)
                     ),
-                SerializerHelper.WriteNullableByte(writer, 0)
+                Helper.WriteNullableByte(writer, 0)
                 );
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
@@ -64,8 +64,8 @@ public class ListModelsGenerator : IModelsGenerator
 
         var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
 
-        var model = SerializerHelper.GetOrGenerateSerializeModelConstant(itemsType, serializeContext);
-        var intModel = SerializerHelper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
+        var model = Helper.GetOrGenerateSerializeModelConstant(itemsType, serializeContext);
+        var intModel = Helper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
 
         var inst = Expression.Parameter(type, "inst");
         var count = Expression.Parameter(typeof(int), "count");
@@ -77,11 +77,11 @@ public class ListModelsGenerator : IModelsGenerator
             Expression.IfThen(
                 // READ NULLABLE BYTE
                 Expression.Equal(
-                    SerializerHelper.ReadNullableByte(reader),
+                    Helper.ReadNullableByte(reader),
                     Expression.Constant((byte)1)),
 
                 Expression.Block(
-                    Expression.Assign(count, SerializerHelper.CallDeserialize(intModel, reader)),
+                    Expression.Assign(count, Helper.CallDeserialize(intModel, reader)),
                     Expression.Assign(inst, Expression.New(ctor, count)),
                     DeserializeElements(count, inst, model, reader)
                     )
@@ -109,7 +109,7 @@ public class ListModelsGenerator : IModelsGenerator
                     Expression.Break(breakLabel),
                     // ADD AND DESERIALIZE ELEMENT
                     Expression.Block(
-                        SerializerHelper.CallSerialize(model, Expression.Property(list, "Item", i), writer),
+                        Helper.CallSerialize(model, Expression.Property(list, "Item", i), writer),
                         Expression.AddAssign(i, Expression.Constant(1)))
                     ),
                 breakLabel)
@@ -129,7 +129,7 @@ public class ListModelsGenerator : IModelsGenerator
                     Expression.Break(breakLabel),
                     // ADD AND DESERIALIZE ELEMENT
                     Expression.Block(
-                        Expression.Call(list, nameof(List<byte>.Add), null, SerializerHelper.CallDeserialize(model, reader)),
+                        Expression.Call(list, nameof(List<byte>.Add), null, Helper.CallDeserialize(model, reader)),
                         Expression.AddAssign(i, Expression.Constant(1)))  
                     ),
                 breakLabel)

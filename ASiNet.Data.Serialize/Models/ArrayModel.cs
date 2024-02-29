@@ -9,7 +9,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
         typeof(T).GetElementType() ?? throw new Exception());
 
     private Lazy<ISerializeModel> _arrayElementSerializeModel = new(() =>
-        BinarySerializer.SharedSerializeContext.GetOrGenerate(typeof(T).GetElementType() ?? throw new Exception()) ?? throw new Exception());
+        BinarySerializer.SerializeContext.GetOrGenerate(typeof(T).GetElementType() ?? throw new Exception()) ?? throw new Exception());
 
     public override void Serialize(T obj, ISerializeWriter writer)
     {
@@ -53,7 +53,7 @@ public class ArrayModel<T> : BaseSerializeModel<T>
 
         int arrayLength = BitConverter.ToInt32(buffer);
 
-        if (reader.AvalibleAreaSize % arrayLength != 0)
+        if (reader.AvalibleBytes % arrayLength != 0)
             throw new Exception("Invalid data to deserealize in array.");
 
         var model = _arrayElementSerializeModel.Value;

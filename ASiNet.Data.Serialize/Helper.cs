@@ -6,7 +6,7 @@ using ASiNet.Data.Serialization.Models.Arrays;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization;
-public static class SerializerHelper
+internal static class Helper
 {
     public static TEnum ToEnum<TType, TEnum>(TType x)
     {
@@ -64,6 +64,17 @@ public static class SerializerHelper
     public static Enum ToEnum<TType>(TType x, Type type) where TType : struct
     {
         return (Enum)(object)x;
+    }
+
+    public static IEnumerable<Type> EnumiratePreGenerateModels()
+    {
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            foreach (var type in assembly.GetTypes().Where(x => x.GetCustomAttribute<PreGenerateModelAttribute>() is not null))
+            {
+                yield return type;
+            }
+        }
     }
 
     static bool IsNullable<T>(T obj)

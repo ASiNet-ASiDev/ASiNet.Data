@@ -5,7 +5,7 @@ namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class DateTimeModel : BaseSerializeModel<DateTime>
 {
     private Lazy<ISerializeModel> _longSerializeModel = 
-        new(() => BinarySerializer.SharedSerializeContext.GetOrGenerate(typeof(long))!);
+        new(() => BinarySerializer.SerializeContext.GetOrGenerate(typeof(long))!);
     
     public override DateTime Deserialize(ISerializeReader reader)
     {

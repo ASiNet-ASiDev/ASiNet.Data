@@ -41,21 +41,21 @@ public class EnumsModelGeneratorTests
     {
         var generator = new EnumsModelsGenerator();
         
-        var aModel = generator.GenerateModel<A>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var aModel = generator.GenerateModel<A>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
-        var bModel = generator.GenerateModel<B>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var bModel = generator.GenerateModel<B>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
-        var cModel = generator.GenerateModel<C>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var cModel = generator.GenerateModel<C>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
-        var dModel = generator.GenerateModel<D>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var dModel = generator.GenerateModel<D>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
-        var eModel = generator.GenerateModel<E>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var eModel = generator.GenerateModel<E>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
-        var fModel = generator.GenerateModel<F>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var fModel = generator.GenerateModel<F>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
-        var gModel = generator.GenerateModel<G>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var gModel = generator.GenerateModel<G>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
-        var hModel = generator.GenerateModel<H>(BinarySerializer.SharedSerializeContext, BinarySerializer.Settings);
+        var hModel = generator.GenerateModel<H>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
 
         var buf = new byte[64];
 

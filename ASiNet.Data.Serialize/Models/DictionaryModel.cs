@@ -10,13 +10,13 @@ public class DictionaryModel<TDictionary> : BaseSerializeModel<TDictionary>
         typeof(TDictionary).GenericTypeArguments[0] ?? throw new Exception());
 
     private Lazy<ISerializeModel> _keyElementSerializeModel = new(() =>
-        BinarySerializer.SharedSerializeContext.GetOrGenerate(
+        BinarySerializer.SerializeContext.GetOrGenerate(
             typeof(TDictionary).GenericTypeArguments[0]
             ?? throw new Exception())
         ?? throw new Exception($"Invalid array element type."));
 
     private Lazy<ISerializeModel> _valueElementSerializeModel = new(() =>
-        BinarySerializer.SharedSerializeContext.GetOrGenerate(
+        BinarySerializer.SerializeContext.GetOrGenerate(
             typeof(TDictionary).GenericTypeArguments[1]
             ?? throw new Exception())
         ?? throw new Exception($"Invalid array element type."));
@@ -63,7 +63,7 @@ public class DictionaryModel<TDictionary> : BaseSerializeModel<TDictionary>
 
         int arrayLength = BitConverter.ToInt32(buffer);
 
-        if (reader.AvalibleAreaSize % arrayLength != 0)
+        if (reader.AvalibleBytes % arrayLength != 0)
             throw new Exception("Invalid data to deserealize in array.");
 
         var keyModel = _keyElementSerializeModel.Value;

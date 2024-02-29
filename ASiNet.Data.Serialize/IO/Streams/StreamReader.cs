@@ -5,7 +5,7 @@ namespace ASiNet.Data.Serialization.IO.Streams;
 
 public class StreamReader(Stream c_stream) : ISerializeReader
 {
-    public int TotalAreaSize
+    public int Length
     {
         get
         {
@@ -16,7 +16,7 @@ public class StreamReader(Stream c_stream) : ISerializeReader
             throw new NotImplementedException();
         }
     }
-    public int AvalibleAreaSize
+    public int AvalibleBytes
     {
         get
         {
@@ -27,7 +27,7 @@ public class StreamReader(Stream c_stream) : ISerializeReader
             throw new NotImplementedException();
         }
     }
-    public int FilledAreaSize
+    public int ReadedBytes
     {
         get
         {

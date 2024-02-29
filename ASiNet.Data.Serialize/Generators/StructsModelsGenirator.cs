@@ -57,22 +57,22 @@ public class StructsModelsGenirator : IModelsGenerator
         if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {
             // WRITE OBJECT PROPERTIES!
-            foreach (var pi in SerializerHelper.EnumerateProperties(type))
+            foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = SerializerHelper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return SerializerHelper.CallSerialize(model, value, writer);
+                yield return Helper.CallSerialize(model, value, writer);
             }
         }
 
         if (!settings.GlobalIgnoreFields || type.GetCustomAttribute<IgnoreFieldsAttribute>() is not null)
         {
             // WRITE OBJECT FIELDS!
-            foreach (var fi in SerializerHelper.EnumerateFields(type))
+            foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = SerializerHelper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return SerializerHelper.CallSerialize(model, value, writer);
+                yield return Helper.CallSerialize(model, value, writer);
             }
         }
     }
@@ -85,22 +85,22 @@ public class StructsModelsGenirator : IModelsGenerator
         if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {
             // READ AND SET PROPERTIES!
-            foreach (var pi in SerializerHelper.EnumerateProperties(type))
+            foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = SerializerHelper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Expression.Assign(value, SerializerHelper.CallDeserialize(model, reader));
+                yield return Expression.Assign(value, Helper.CallDeserialize(model, reader));
             }
         }
 
         if (!settings.GlobalIgnoreFields || type.GetCustomAttribute<IgnoreFieldsAttribute>() is not null)
         {
             // READ AND SET FIELDS!
-            foreach (var fi in SerializerHelper.EnumerateFields(type))
+            foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = SerializerHelper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Expression.Assign(value, SerializerHelper.CallDeserialize(model, reader));
+                yield return Expression.Assign(value, Helper.CallDeserialize(model, reader));
             }
         }
     }
