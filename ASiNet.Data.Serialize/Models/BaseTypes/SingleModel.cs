@@ -50,4 +50,7 @@ public class SingleModel : BaseSerializeModel<float>
         }
         throw new Exception();
     }
+
+
+    public override int ObjectSerializedSize(float obj) => sizeof(float);
 }

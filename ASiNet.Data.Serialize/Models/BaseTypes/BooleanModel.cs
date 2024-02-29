@@ -50,4 +50,6 @@ public class BooleanModel : BaseSerializeModel<bool>
         }
         throw new Exception();
     }
+
+    public override int ObjectSerializedSize(bool obj) => sizeof(bool);
 }

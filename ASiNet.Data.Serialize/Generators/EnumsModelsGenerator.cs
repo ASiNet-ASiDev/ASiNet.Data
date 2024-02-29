@@ -54,4 +54,9 @@ public class EnumsModelsGenerator : IModelsGenerator
         var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(body, reader);
         return lambda.Compile();
     }
+
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -50,4 +50,6 @@ public class CharModel : BaseSerializeModel<char>
         }
         throw new Exception();
     }
+
+    public override int ObjectSerializedSize(char obj) => sizeof(char);
 }

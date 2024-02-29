@@ -6,6 +6,7 @@ public abstract class BaseSerializeModel<T> : SerializeModel<T>
 {
     public override bool ContainsDeserializeDelegate => true;
     public override bool ContainsSerializeDelegate => true;
+    public override bool ContainsGetSizeDelegate => true;
 
     /// <summary>
     /// Reads an object from byte data.
@@ -25,4 +26,6 @@ public abstract class BaseSerializeModel<T> : SerializeModel<T>
     public override abstract object? DeserializeToObject(ISerializeReader reader);
 
     public override abstract void SerializeObject(object? obj, ISerializeWriter writer);
+
+    public override abstract int ObjectSerializedSize(T? obj);
 }

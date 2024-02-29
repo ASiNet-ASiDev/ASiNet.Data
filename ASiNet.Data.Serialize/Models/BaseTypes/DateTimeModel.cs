@@ -26,4 +26,6 @@ public class DateTimeModel : BaseSerializeModel<DateTime>
     {
         Serialize((DateTime)obj, writer);
     }
+
+    public override int ObjectSerializedSize(DateTime obj) => sizeof(long);
 }

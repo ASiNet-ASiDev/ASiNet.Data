@@ -4,6 +4,7 @@ public delegate void SerializeObjectDelegate<T>(T? obj, ISerializeWriter writer)
 
 public delegate T? DeserializeObjectDelegate<T>(ISerializeReader reader);
 
+public delegate int GetObjectSizeDelegate<T>(T? obj);
 /// <summary>
 /// The model generator is used to create models of various types.
 /// </summary>
@@ -21,4 +22,6 @@ public interface IModelsGenerator
     public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings);
 
     public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings);
+
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings);
 }

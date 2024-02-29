@@ -50,4 +50,6 @@ public class Int32Model : BaseSerializeModel<int>
         }
         throw new Exception();
     }
+
+    public override int ObjectSerializedSize(int obj) => sizeof(int);
 }

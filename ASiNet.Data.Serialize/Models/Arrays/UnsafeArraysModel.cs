@@ -3,7 +3,7 @@ using ASiNet.Data.Serialization.Models.Arrays.Unsafe;
 
 namespace ASiNet.Data.Serialization.Models.Arrays;
 
-file static class ArrayHalper
+file static class ArrayHelper
 {
     public static bool IsNullArray<T>(T obj, ISerializeWriter writer)
     {
@@ -43,22 +43,26 @@ file static class ArrayHalper
         writer.WriteBytes(buffer);
     }
 
+    public static int GetArraySize(int? arrayLength, int? elementSize, bool isNull) =>
+        !isNull ? arrayLength!.Value * elementSize!.Value + sizeof(int) + sizeof(byte)
+        : sizeof(byte);
+
 }
 
 public class Int32ArrayModel : BaseSerializeModel<int[]>
 {
     public override void Serialize(int[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
             
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(int);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override int[]? Deserialize(ISerializeReader reader)
@@ -66,7 +70,7 @@ public class Int32ArrayModel : BaseSerializeModel<int[]>
         if(reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(int)];
         reader.ReadBytes(bytes);
@@ -79,22 +83,26 @@ public class Int32ArrayModel : BaseSerializeModel<int[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(int[]? obj) => 
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(int), obj is null);
+    
 }
 
 public class UInt32ArrayModel : BaseSerializeModel<uint[]>
 {
     public override void Serialize(uint[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(uint);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override uint[]? Deserialize(ISerializeReader reader)
@@ -102,7 +110,7 @@ public class UInt32ArrayModel : BaseSerializeModel<uint[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(int)];
         reader.ReadBytes(bytes);
@@ -115,22 +123,25 @@ public class UInt32ArrayModel : BaseSerializeModel<uint[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(uint[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(uint), obj is null);
 }
 
 public class Int16ArrayModel : BaseSerializeModel<short[]>
 {
     public override void Serialize(short[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(short);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override short[]? Deserialize(ISerializeReader reader)
@@ -138,7 +149,7 @@ public class Int16ArrayModel : BaseSerializeModel<short[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(short)];
         reader.ReadBytes(bytes);
@@ -151,22 +162,25 @@ public class Int16ArrayModel : BaseSerializeModel<short[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(short[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(short), obj is null);
 }
 
 public class UInt16ArrayModel : BaseSerializeModel<ushort[]>
 {
     public override void Serialize(ushort[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(ushort);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override ushort[]? Deserialize(ISerializeReader reader)
@@ -174,7 +188,7 @@ public class UInt16ArrayModel : BaseSerializeModel<ushort[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(ushort)];
         reader.ReadBytes(bytes);
@@ -187,22 +201,25 @@ public class UInt16ArrayModel : BaseSerializeModel<ushort[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(ushort[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(ushort), obj is null);
 }
 
 public class Int64ArrayModel : BaseSerializeModel<long[]>
 {
     public override void Serialize(long[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(long);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override long[]? Deserialize(ISerializeReader reader)
@@ -210,7 +227,7 @@ public class Int64ArrayModel : BaseSerializeModel<long[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(long)];
         reader.ReadBytes(bytes);
@@ -223,22 +240,25 @@ public class Int64ArrayModel : BaseSerializeModel<long[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(long[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(long), obj is null);
 }
 
 public class UInt64ArrayModel : BaseSerializeModel<ulong[]>
 {
     public override void Serialize(ulong[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(ulong);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override ulong[]? Deserialize(ISerializeReader reader)
@@ -246,7 +266,7 @@ public class UInt64ArrayModel : BaseSerializeModel<ulong[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(ulong)];
         reader.ReadBytes(bytes);
@@ -259,22 +279,25 @@ public class UInt64ArrayModel : BaseSerializeModel<ulong[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(ulong[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(ulong), obj is null);
 }
 
 public class CharArrayModel : BaseSerializeModel<char[]>
 {
     public override void Serialize(char[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(char);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override char[]? Deserialize(ISerializeReader reader)
@@ -282,7 +305,7 @@ public class CharArrayModel : BaseSerializeModel<char[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(char)];
         reader.ReadBytes(bytes);
@@ -295,22 +318,25 @@ public class CharArrayModel : BaseSerializeModel<char[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(char[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(char), obj is null);
 }
 
 public class BooleanArrayModel : BaseSerializeModel<bool[]>
 {
     public override void Serialize(bool[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(bool);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override bool[]? Deserialize(ISerializeReader reader)
@@ -318,7 +344,7 @@ public class BooleanArrayModel : BaseSerializeModel<bool[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(bool)];
         reader.ReadBytes(bytes);
@@ -331,22 +357,25 @@ public class BooleanArrayModel : BaseSerializeModel<bool[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(bool[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(bool), obj is null);
 }
 
 public class DateTimeArrayModel : BaseSerializeModel<DateTime[]>
 {
     public override void Serialize(DateTime[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(long);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override DateTime[]? Deserialize(ISerializeReader reader)
@@ -354,7 +383,7 @@ public class DateTimeArrayModel : BaseSerializeModel<DateTime[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(long)];
         reader.ReadBytes(bytes);
@@ -367,22 +396,25 @@ public class DateTimeArrayModel : BaseSerializeModel<DateTime[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(DateTime[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(long), obj is null);
 }
 
 public class DoubleArrayModel : BaseSerializeModel<double[]>
 {
     public override void Serialize(double[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(double);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override double[]? Deserialize(ISerializeReader reader)
@@ -390,7 +422,7 @@ public class DoubleArrayModel : BaseSerializeModel<double[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(double)];
         reader.ReadBytes(bytes);
@@ -403,22 +435,25 @@ public class DoubleArrayModel : BaseSerializeModel<double[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(double[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(double), obj is null);
 }
 
 public class SingleArrayModel : BaseSerializeModel<float[]>
 {
     public override void Serialize(float[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(float);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override float[]? Deserialize(ISerializeReader reader)
@@ -426,7 +461,7 @@ public class SingleArrayModel : BaseSerializeModel<float[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(float)];
         reader.ReadBytes(bytes);
@@ -439,22 +474,25 @@ public class SingleArrayModel : BaseSerializeModel<float[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(float[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(float), obj is null);
 }
 
 public class GuidArrayModel : BaseSerializeModel<Guid[]>
 {
     public override void Serialize(Guid[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(decimal);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override Guid[]? Deserialize(ISerializeReader reader)
@@ -462,7 +500,7 @@ public class GuidArrayModel : BaseSerializeModel<Guid[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(decimal)];
         reader.ReadBytes(bytes);
@@ -475,22 +513,25 @@ public class GuidArrayModel : BaseSerializeModel<Guid[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(Guid[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(decimal), obj is null);
 }
 
 public class SByteArrayModel : BaseSerializeModel<sbyte[]>
 {
     public override void Serialize(sbyte[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(sbyte);
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override sbyte[]? Deserialize(ISerializeReader reader)
@@ -498,7 +539,7 @@ public class SByteArrayModel : BaseSerializeModel<sbyte[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length * sizeof(sbyte)];
         reader.ReadBytes(bytes);
@@ -511,22 +552,25 @@ public class SByteArrayModel : BaseSerializeModel<sbyte[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(sbyte[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(sbyte), obj is null);
 }
 
 public class ByteArrayModel : BaseSerializeModel<byte[]>
 {
     public override void Serialize(byte[]? obj, ISerializeWriter writer)
     {
-        if (ArrayHalper.IsNullArray(obj, writer))
+        if (ArrayHelper.IsNullArray(obj, writer))
             return;
 
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length;
 
-        ArrayHalper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
-        ArrayHalper.WriteLength(obj.Length, writer);
-        ArrayHalper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
+        ArrayHelper.WriteLength(obj.Length, writer);
+        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
     }
 
     public override byte[]? Deserialize(ISerializeReader reader)
@@ -534,7 +578,7 @@ public class ByteArrayModel : BaseSerializeModel<byte[]>
         if (reader.ReadByte() == 0)
             return null;
 
-        var length = ArrayHalper.ReadLength(reader);
+        var length = ArrayHelper.ReadLength(reader);
 
         var bytes = new byte[length];
         reader.ReadBytes(bytes);
@@ -547,4 +591,7 @@ public class ByteArrayModel : BaseSerializeModel<byte[]>
 
     public override object? DeserializeToObject(ISerializeReader reader) =>
         Deserialize(reader);
+
+    public override int ObjectSerializedSize(byte[]? obj) =>
+        ArrayHelper.GetArraySize(obj?.Length, sizeof(byte), obj is null);
 }

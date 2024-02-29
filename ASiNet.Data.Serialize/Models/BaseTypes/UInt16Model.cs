@@ -50,4 +50,6 @@ public class UInt16Model : BaseSerializeModel<ushort>
         }
         throw new Exception();
     }
+
+    public override int ObjectSerializedSize(ushort obj) => sizeof(ushort);
 }

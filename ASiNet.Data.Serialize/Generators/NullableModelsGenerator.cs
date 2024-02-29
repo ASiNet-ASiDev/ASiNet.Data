@@ -88,4 +88,27 @@ public class NullableModelsGenerator : IModelsGenerator
 
     private static Expression Value(Expression inst) =>
         Expression.Property(inst, nameof(Nullable<byte>.Value));
+
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings)
+    {
+        var type = typeof(T);
+        var underlyingType = Nullable.GetUnderlyingType(type)!;
+        
+        var inst = Expression.Parameter(typeof(T), "inst");
+        var result = Expression.Parameter(typeof(int), "size");
+
+        var model = Helper.GetOrGenerateSerializeModelConstant(underlyingType, serializeContext);
+
+        var body = Expression.Block([result],
+            Expression.Assign(result, Expression.Constant(1, typeof(int))),
+            Expression.IfThen(
+                HashValue(inst), 
+                Expression.AddAssign(result, Helper.CallGetSize(model, inst))
+                ),
+            result
+            );
+
+        var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
+        return lambda.Compile();
+    }
 }

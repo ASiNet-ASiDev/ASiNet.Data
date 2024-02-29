@@ -135,4 +135,9 @@ public class ListModelsGenerator : IModelsGenerator
                 breakLabel)
             );
     }
+
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -70,4 +70,12 @@ public class ArrayModel<T> : BaseSerializeModel<T>
     {
         return Deserialize(reader);
     }
+
+    public override int ObjectSerializedSize(T? obj)
+    {
+        if(obj == null)
+            return 1;
+        else
+            throw new NotImplementedException();
+    }
 }

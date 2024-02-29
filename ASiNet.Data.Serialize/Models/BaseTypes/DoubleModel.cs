@@ -32,4 +32,7 @@ public class DoubleModel : BaseSerializeModel<double>
 
     public override void SerializeObject(object? obj, ISerializeWriter writer) =>
         Serialize((double)obj!, writer);
+
+
+    public override int ObjectSerializedSize(double obj) => sizeof(double);
 }

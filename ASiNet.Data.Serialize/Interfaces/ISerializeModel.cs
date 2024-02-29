@@ -11,6 +11,8 @@ public interface ISerializeModel : IDisposable
     /// </summary>
     public Type ObjType { get; }
 
+    public int ObjectSerializedSize(object? obj);
+
     /// <summary>
     /// For the model generator, the default is always true
     /// </summary>
@@ -19,6 +21,8 @@ public interface ISerializeModel : IDisposable
     /// For the model generator, the default is always true
     /// </summary>
     public bool ContainsDeserializeDelegate { get; }
+
+    public bool ContainsGetSizeDelegate { get; }
 
     /// <summary>
     /// Writes an object as byte data.

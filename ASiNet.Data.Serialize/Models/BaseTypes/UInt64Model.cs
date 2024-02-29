@@ -50,4 +50,7 @@ public class UInt64Model : BaseSerializeModel<ulong>
         }
         throw new Exception();
     }
+
+    public override int ObjectSerializedSize(ulong obj) => sizeof(ulong);
+
 }

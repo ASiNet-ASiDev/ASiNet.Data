@@ -50,4 +50,7 @@ public class Int64Model : BaseSerializeModel<long>
         }
         throw new Exception();
     }
+
+    public override int ObjectSerializedSize(long obj) => sizeof(long);
+
 }

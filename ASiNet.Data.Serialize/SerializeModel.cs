@@ -2,7 +2,7 @@
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization;
-public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, DeserializeObjectDelegate<T>? deserialize = null) : ISerializeModel
+public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, DeserializeObjectDelegate<T>? deserialize = null, GetObjectSizeDelegate<T>? getSize = null) : ISerializeModel
 {
     public Type ObjType => _objType.Value;
 
@@ -10,10 +10,12 @@ public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, Des
 
     public virtual bool ContainsSerializeDelegate => _serializeDelegate is not null;
     public virtual bool ContainsDeserializeDelegate => _deserializeDelegate is not null;
+    public virtual bool ContainsGetSizeDelegate => _deserializeDelegate is not null;
 
 
     private SerializeObjectDelegate<T>? _serializeDelegate = serialize;
     private DeserializeObjectDelegate<T>? _deserializeDelegate = deserialize;
+    private GetObjectSizeDelegate<T>? _getSizeDelegate = getSize;
 
     public virtual void SerializeObject(object? obj, ISerializeWriter writer)
     {
@@ -49,6 +51,16 @@ public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, Des
         _serializeDelegate = set;
     internal void SetDeserializeDelegate(DeserializeObjectDelegate<T>? get) =>
         _deserializeDelegate = get;
+
+    public virtual int ObjectSerializedSize(object? obj) =>
+        ObjectSerializedSize((T?)obj);
+
+    public virtual int ObjectSerializedSize(T? obj)
+    {
+        if (_getSizeDelegate is null)
+            throw new NullReferenceException();
+        return _getSizeDelegate(obj);
+    }
 
     public void Dispose()
     {

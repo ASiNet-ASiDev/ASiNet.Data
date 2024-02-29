@@ -90,4 +90,9 @@ public class DictionaryModel<TDictionary> : BaseSerializeModel<TDictionary>
     {
         return Deserialize(reader);
     }
+
+    public override int ObjectSerializedSize(TDictionary? obj)
+    {
+        throw new NotImplementedException();
+    }
 }

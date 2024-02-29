@@ -36,4 +36,7 @@ public class SByteModel : BaseSerializeModel<sbyte>
         }
         throw new Exception();
     }
+
+    public override int ObjectSerializedSize(sbyte obj) => sizeof(sbyte);
+
 }
