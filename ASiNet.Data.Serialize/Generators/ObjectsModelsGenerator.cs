@@ -18,6 +18,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
 
             model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext, settings));
             model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext, settings));
+            model.SetGetSizeDelegate(GenerateGetSerializedObjectSizeDelegate<T>(serializeContext, settings));
 
             return model;
         }
@@ -127,8 +128,51 @@ public class ObjectsModelsGenerator : IModelsGenerator
         }
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
-        throw new NotImplementedException();
+        var type = typeof(T);
+
+        var inst = Expression.Parameter(typeof(T), "inst");
+        var result = Expression.Parameter(typeof(int), "size");
+
+        var body = Expression.Block([result],
+            Expression.Assign(result, Expression.Constant(1, typeof(int))),
+            Expression.IfThen(
+                Expression.NotEqual(
+                    inst,
+                    Expression.Default(type)),
+                Expression.Block(
+                    GetSizeEnumirable(type, inst, result, serializeContext, settings)
+                    )
+                ),
+            result
+            );
+
+        var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
+        return lambda.Compile();
+    }
+
+
+    private IEnumerable<Expression> GetSizeEnumirable(Type type, Expression inst, Expression result, SerializerContext serializeContext, GeneratorsSettings settings)
+    {
+        if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
+        {
+            foreach (var pi in Helper.EnumerateProperties(type))
+            {
+                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var value = Expression.Property(inst, pi);
+                yield return Expression.AddAssign(result, Helper.CallGetSize(model, value));
+            }
+        }
+
+        if (!settings.GlobalIgnoreFields || type.GetCustomAttribute<IgnoreFieldsAttribute>() is not null)
+        {
+            foreach (var fi in Helper.EnumerateFields(type))
+            {
+                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var value = Expression.Field(inst, fi);
+                yield return Expression.AddAssign(result, Helper.CallGetSize(model, value));
+            }
+        }
     }
 }

@@ -114,7 +114,7 @@ internal static class Helper
         Expression.Call(serializeModel, nameof(SerializeModel<byte>.Serialize), null, value, writer);
 
     public static Expression CallGetSize(Expression serializeModel, Expression inst) =>
-        Expression.Call(serializeModel, nameof(SerializeModel<byte>.ObjectSerializedSize), null, inst);
+        Expression.Call(serializeModel, serializeModel.Type.GetMethod(nameof(ISerializeModel.ObjectSerializedSize), [inst.Type])!, inst);
 
     public static object? InvokeGenerickMethod(object inst, string methodName, Type[] genericParameters, object?[] parameters)
     {

@@ -16,6 +16,9 @@ public static class BinarySerializer
     /// </summary>
     public static GeneratorsSettings Settings { get; set; } = new();
 
+    public static int GetSize<T>(T? obj) =>
+        SerializeContext.GetOrGenerate<T>().ObjectSerializedSize(obj);
+
     /// <summary>
     /// Serializes an object into bytes
     /// </summary>

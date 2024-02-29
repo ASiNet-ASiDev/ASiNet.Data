@@ -52,6 +52,9 @@ public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, Des
     internal void SetDeserializeDelegate(DeserializeObjectDelegate<T>? get) =>
         _deserializeDelegate = get;
 
+    internal void SetGetSizeDelegate(GetObjectSizeDelegate<T>? get) =>
+        _getSizeDelegate = get;
+
     public virtual int ObjectSerializedSize(object? obj) =>
         ObjectSerializedSize((T?)obj);
 

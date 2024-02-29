@@ -25,7 +25,7 @@ internal class DictionaryModelsGenerator : IModelsGenerator
         throw new NotImplementedException();
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
         throw new NotImplementedException();
     }

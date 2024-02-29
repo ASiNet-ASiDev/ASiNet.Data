@@ -16,6 +16,7 @@ public class ListModelsGenerator : IModelsGenerator
 
             model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext, settings));
             model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext, settings));
+            model.SetGetSizeDelegate(GenerateGetSerializedObjectSizeDelegate<T>(serializeContext, settings));
 
             return model;
         }
@@ -136,8 +137,53 @@ public class ListModelsGenerator : IModelsGenerator
             );
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings)
+    public Expression GetElementsSize(Expression count, Expression list, Expression model, Expression result)
     {
-        throw new NotImplementedException();
+        var i = Expression.Parameter(typeof(int), "i");
+        var breakLabel = Expression.Label("LoopBreak");
+        return Expression.Block([i],
+            Expression.Assign(i, Expression.Constant(0)),
+            Expression.Loop(
+                Expression.IfThenElse(
+                    Expression.Equal(i, count),
+                    //
+                    Expression.Break(breakLabel),
+                    // ADD AND DESERIALIZE ELEMENT
+                    Expression.Block(
+                        Expression.AddAssign(result, Helper.CallGetSize(model, Expression.Property(list, "Item", i))),
+                        Expression.AddAssign(i, Expression.Constant(1)))
+                    ),
+                breakLabel)
+            );
+    }
+
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    {
+        var type = typeof(T);
+        var underlyingType = type.GetGenericArguments().First();
+
+        var inst = Expression.Parameter(typeof(T), "inst");
+        var result = Expression.Parameter(typeof(int), "size");
+        var count = Expression.Parameter(typeof(int), "count");
+
+        var model = Helper.GetOrGenerateSerializeModelConstant(underlyingType, serializeContext);
+
+        var body = Expression.Block([result, count],
+            Expression.Assign(result, Expression.Constant(1, typeof(int))),
+            Expression.IfThen(
+                Expression.NotEqual(
+                    inst,
+                    Expression.Default(type)),
+                Expression.Block(
+                    Expression.Assign(count, GetCount(inst)),
+                    Expression.AddAssign(result, Expression.Constant(4, typeof(int))),
+                    GetElementsSize(count, inst, model, result)
+                    )
+                ),
+            result
+            );
+
+        var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
+        return lambda.Compile();
     }
 }

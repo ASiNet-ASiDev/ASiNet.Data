@@ -15,6 +15,7 @@ public class EnumsModelsGenerator : IModelsGenerator
 
             model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext, settings));
             model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext, settings));
+            model.SetGetSizeDelegate(GenerateGetSerializedObjectSizeDelegate<T>(serializeContext, settings));
 
             return model;
         }
@@ -55,8 +56,30 @@ public class EnumsModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(T? obj, SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
-        throw new NotImplementedException();
+        var type = typeof(T);
+        var enumUnderlyingType = type.GetEnumUnderlyingType();
+
+        var inst = Expression.Parameter(type, "inst");
+        var result = Expression.Parameter(typeof(int), "size");
+
+        var model = Helper.GetOrGenerateSerializeModelConstant(enumUnderlyingType, serializeContext);
+
+        var body = Expression.Block([result],
+            Expression.Assign(
+                result,
+                Helper.CallGetSize(
+                    model, 
+                    Expression.Convert(
+                        inst, 
+                        enumUnderlyingType)
+                    )
+                ),
+            result
+            );
+
+        var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
+        return lambda.Compile();
     }
 }
