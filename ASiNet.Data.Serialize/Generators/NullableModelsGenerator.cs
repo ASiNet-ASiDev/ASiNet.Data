@@ -16,7 +16,7 @@ public class NullableModelsGenerator : IModelsGenerator
 
             model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext, settings));
             model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext, settings));
-            model.SetGetSizeDelegate(GenerateGetSerializedObjectSizeDelegate<T>(serializeContext, settings));
+            model.SetGetSizeDelegate(GenerateGetSizeDelegate<T>(serializeContext, settings));
 
             return model;
         }
@@ -84,17 +84,11 @@ public class NullableModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    private static Expression HashValue(Expression inst) =>
-        Expression.Property(inst, nameof(Nullable<byte>.HasValue));
-
-    private static Expression Value(Expression inst) =>
-        Expression.Property(inst, nameof(Nullable<byte>.Value));
-
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var underlyingType = Nullable.GetUnderlyingType(type)!;
-        
+
         var inst = Expression.Parameter(typeof(T), "inst");
         var result = Expression.Parameter(typeof(int), "size");
 
@@ -103,7 +97,7 @@ public class NullableModelsGenerator : IModelsGenerator
         var body = Expression.Block([result],
             Expression.Assign(result, Expression.Constant(1, typeof(int))),
             Expression.IfThen(
-                HashValue(inst), 
+                HashValue(inst),
                 Expression.AddAssign(result, Helper.CallGetSize(model, Expression.Convert(inst, underlyingType)))
                 ),
             result
@@ -112,4 +106,10 @@ public class NullableModelsGenerator : IModelsGenerator
         var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
         return lambda.Compile();
     }
+
+    private static Expression HashValue(Expression inst) =>
+        Expression.Property(inst, nameof(Nullable<byte>.HasValue));
+
+    private static Expression Value(Expression inst) =>
+        Expression.Property(inst, nameof(Nullable<byte>.Value));
 }

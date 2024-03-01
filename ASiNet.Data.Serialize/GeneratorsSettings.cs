@@ -7,7 +7,7 @@
 /// <para/>
 /// When changing the settings, it is recommended to recreate the context using <see cref="BinarySerializer.RegenerateContext"/>
 /// </summary>
-public struct GeneratorsSettings
+public class GeneratorsSettings
 {
     public GeneratorsSettings()
     {

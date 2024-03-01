@@ -15,7 +15,7 @@ public class EnumsModelsGenerator : IModelsGenerator
 
             model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext, settings));
             model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext, settings));
-            model.SetGetSizeDelegate(GenerateGetSerializedObjectSizeDelegate<T>(serializeContext, settings));
+            model.SetGetSizeDelegate(GenerateGetSizeDelegate<T>(serializeContext, settings));
 
             return model;
         }
@@ -56,7 +56,7 @@ public class EnumsModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var enumUnderlyingType = type.GetEnumUnderlyingType();

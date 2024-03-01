@@ -18,7 +18,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
 
             model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext, settings));
             model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext, settings));
-            model.SetGetSizeDelegate(GenerateGetSerializedObjectSizeDelegate<T>(serializeContext, settings));
+            model.SetGetSizeDelegate(GenerateGetSizeDelegate<T>(serializeContext, settings));
 
             return model;
         }
@@ -69,6 +69,30 @@ public class ObjectsModelsGenerator : IModelsGenerator
             Expression.Block(DeserializeProperties(type, inst, reader, serializeContext, settings)));
 
         var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(Expression.Block([inst], body, inst), reader);
+        return lambda.Compile();
+    }
+
+    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    {
+        var type = typeof(T);
+
+        var inst = Expression.Parameter(typeof(T), "inst");
+        var result = Expression.Parameter(typeof(int), "size");
+
+        var body = Expression.Block([result],
+            Expression.Assign(result, Expression.Constant(1, typeof(int))),
+            Expression.IfThen(
+                Expression.NotEqual(
+                    inst,
+                    Expression.Default(type)),
+                Expression.Block(
+                    GetSizeEnumirable(type, inst, result, serializeContext, settings)
+                    )
+                ),
+            result
+            );
+
+        var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
         return lambda.Compile();
     }
 
@@ -127,31 +151,6 @@ public class ObjectsModelsGenerator : IModelsGenerator
             }
         }
     }
-
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
-    {
-        var type = typeof(T);
-
-        var inst = Expression.Parameter(typeof(T), "inst");
-        var result = Expression.Parameter(typeof(int), "size");
-
-        var body = Expression.Block([result],
-            Expression.Assign(result, Expression.Constant(1, typeof(int))),
-            Expression.IfThen(
-                Expression.NotEqual(
-                    inst,
-                    Expression.Default(type)),
-                Expression.Block(
-                    GetSizeEnumirable(type, inst, result, serializeContext, settings)
-                    )
-                ),
-            result
-            );
-
-        var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
-        return lambda.Compile();
-    }
-
 
     private IEnumerable<Expression> GetSizeEnumirable(Type type, Expression inst, Expression result, SerializerContext serializeContext, GeneratorsSettings settings)
     {

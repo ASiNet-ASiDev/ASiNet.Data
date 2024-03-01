@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using Test;
 
-//BenchmarkRunner.Run<ListBm>();
+BenchmarkRunner.Run<ArrBenchmark>();
 
 Console.ReadLine();

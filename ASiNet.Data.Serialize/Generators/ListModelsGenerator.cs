@@ -16,7 +16,7 @@ public class ListModelsGenerator : IModelsGenerator
 
             model.SetSerializeDelegate(GenerateSerializeLambda<T>(serializeContext, settings));
             model.SetDeserializeDelegate(GenerateDeserializeLambda<T>(serializeContext, settings));
-            model.SetGetSizeDelegate(GenerateGetSerializedObjectSizeDelegate<T>(serializeContext, settings));
+            model.SetGetSizeDelegate(GenerateGetSizeDelegate<T>(serializeContext, settings));
 
             return model;
         }
@@ -94,70 +94,7 @@ public class ListModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public Expression GetCount(Expression inst) =>
-        Expression.Property(inst, nameof(ICollection<byte>.Count));
-
-    public Expression SerializeElements(Expression count, Expression list, Expression model, Expression writer)
-    {
-        var i = Expression.Parameter(typeof(int), "i");
-        var breakLabel = Expression.Label("LoopBreak");
-        return Expression.Block([i],
-            Expression.Assign(i, Expression.Constant(0)),
-            Expression.Loop(
-                Expression.IfThenElse(
-                    Expression.Equal(i, count),
-                    //
-                    Expression.Break(breakLabel),
-                    // ADD AND DESERIALIZE ELEMENT
-                    Expression.Block(
-                        Helper.CallSerialize(model, Expression.Property(list, "Item", i), writer),
-                        Expression.AddAssign(i, Expression.Constant(1)))
-                    ),
-                breakLabel)
-            );
-    }
-
-    public Expression DeserializeElements(Expression count, Expression list, Expression model, Expression reader)
-    {
-        var i = Expression.Parameter(typeof(int), "i");
-        var breakLabel = Expression.Label("LoopBreak");
-        return Expression.Block([i],
-            Expression.Assign(i, Expression.Constant(0)),
-            Expression.Loop(
-                Expression.IfThenElse(
-                    Expression.Equal(i, count),
-                    //
-                    Expression.Break(breakLabel),
-                    // ADD AND DESERIALIZE ELEMENT
-                    Expression.Block(
-                        Expression.Call(list, nameof(List<byte>.Add), null, Helper.CallDeserialize(model, reader)),
-                        Expression.AddAssign(i, Expression.Constant(1)))  
-                    ),
-                breakLabel)
-            );
-    }
-
-    public Expression GetElementsSize(Expression count, Expression list, Expression model, Expression result)
-    {
-        var i = Expression.Parameter(typeof(int), "i");
-        var breakLabel = Expression.Label("LoopBreak");
-        return Expression.Block([i],
-            Expression.Assign(i, Expression.Constant(0)),
-            Expression.Loop(
-                Expression.IfThenElse(
-                    Expression.Equal(i, count),
-                    //
-                    Expression.Break(breakLabel),
-                    // ADD AND DESERIALIZE ELEMENT
-                    Expression.Block(
-                        Expression.AddAssign(result, Helper.CallGetSize(model, Expression.Property(list, "Item", i))),
-                        Expression.AddAssign(i, Expression.Constant(1)))
-                    ),
-                breakLabel)
-            );
-    }
-
-    public GetObjectSizeDelegate<T> GenerateGetSerializedObjectSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var underlyingType = type.GetGenericArguments().First();
@@ -185,5 +122,68 @@ public class ListModelsGenerator : IModelsGenerator
 
         var lambda = Expression.Lambda<GetObjectSizeDelegate<T>>(body, inst);
         return lambda.Compile();
+    }
+
+    public Expression SerializeElements(Expression count, Expression list, Expression model, Expression writer)
+    {
+        var i = Expression.Parameter(typeof(int), "i");
+        var breakLabel = Expression.Label("LoopBreak");
+        return Expression.Block([i],
+            Expression.Assign(i, Expression.Constant(0)),
+            Expression.Loop(
+                Expression.IfThenElse(
+                    Expression.Equal(i, count),
+                    //
+                    Expression.Break(breakLabel),
+                    // ADD AND DESERIALIZE ELEMENT
+                    Expression.Block(
+                        Helper.CallSerialize(model, Expression.Property(list, "Item", i), writer),
+                        Expression.AddAssign(i, Expression.Constant(1)))
+                    ),
+                breakLabel)
+            );
+    }
+
+    private Expression GetCount(Expression inst) =>
+    Expression.Property(inst, nameof(ICollection<byte>.Count));
+
+    private Expression DeserializeElements(Expression count, Expression list, Expression model, Expression reader)
+    {
+        var i = Expression.Parameter(typeof(int), "i");
+        var breakLabel = Expression.Label("LoopBreak");
+        return Expression.Block([i],
+            Expression.Assign(i, Expression.Constant(0)),
+            Expression.Loop(
+                Expression.IfThenElse(
+                    Expression.Equal(i, count),
+                    //
+                    Expression.Break(breakLabel),
+                    // ADD AND DESERIALIZE ELEMENT
+                    Expression.Block(
+                        Expression.Call(list, nameof(List<byte>.Add), null, Helper.CallDeserialize(model, reader)),
+                        Expression.AddAssign(i, Expression.Constant(1)))  
+                    ),
+                breakLabel)
+            );
+    }
+
+    private Expression GetElementsSize(Expression count, Expression list, Expression model, Expression result)
+    {
+        var i = Expression.Parameter(typeof(int), "i");
+        var breakLabel = Expression.Label("LoopBreak");
+        return Expression.Block([i],
+            Expression.Assign(i, Expression.Constant(0)),
+            Expression.Loop(
+                Expression.IfThenElse(
+                    Expression.Equal(i, count),
+                    //
+                    Expression.Break(breakLabel),
+                    // ADD AND DESERIALIZE ELEMENT
+                    Expression.Block(
+                        Expression.AddAssign(result, Helper.CallGetSize(model, Expression.Property(list, "Item", i))),
+                        Expression.AddAssign(i, Expression.Constant(1)))
+                    ),
+                breakLabel)
+            );
     }
 }

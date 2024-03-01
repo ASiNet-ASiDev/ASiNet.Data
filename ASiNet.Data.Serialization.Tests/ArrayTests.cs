@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ASiNet.Data.Serialization;
 using ASiNet.Data.Serialization.IO.Arrays;
 using JetBrains.Annotations;
+using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ASiNet.Data.Serialization.Tests;
@@ -75,6 +76,10 @@ public class ArrayTests
         public int[]? Brr { get; set; }
         public int[] Drr { get; set; }
         public int[]? Err { get; set; }
+
+        public A3[] ArrObjects { get; set; }
+
+        public A3[] ArrObjectsNull { get; set; }
     }
     class B2
     {
@@ -83,6 +88,14 @@ public class ArrayTests
         public int[]? Arr { get; set; }
         public int[] Brr { get; set; }
     }
+
+    class A3
+    {
+        public int A { get; set; }
+
+        public int B { get; set; }
+    }
+
     [TestMethod]
     public void ClassNullablePropertOrderAlphabet()
     {
@@ -92,11 +105,12 @@ public class ArrayTests
             Brr = RandArr(999),
             Drr = RandArr(99),
             Err = null,
+            ArrObjects = [new(), new()],
         };
         var buffer = new byte[60000];
         BinarySerializer.Serialize(a, (Interfaces.ISerializeWriter)(ArrayWriter)buffer);
         var a2 = BinarySerializer.Deserialize<A2>((Interfaces.ISerializeReader)(ArrayReader)buffer);
-        Assert.IsTrue( EqualArr(a.Arr, a2.Arr) && EqualArr(a.Brr, a2.Brr) && EqualArr(a.Drr, a2.Drr) && a.Err == a2.Err );
+        Assert.IsTrue( EqualArr(a.Arr, a2.Arr) && EqualArr(a.Brr, a2.Brr) && EqualArr(a.Drr, a2.Drr) && a.Err == a2.Err && a.ArrObjects.Length == a2.ArrObjects.Length);
     }
     [TestMethod]
     public void ClassNullablePropertOrderRand()
@@ -126,6 +140,7 @@ public class ArrayTests
         }
         return true;
     }
+
     private int[] RandArr(int size)
     {
         int[] res = new int[size];
