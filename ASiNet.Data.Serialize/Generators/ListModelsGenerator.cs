@@ -124,7 +124,7 @@ public class ListModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public Expression SerializeElements(Expression count, Expression list, Expression model, Expression writer)
+    private Expression SerializeElements(Expression count, Expression list, Expression model, Expression writer)
     {
         var i = Expression.Parameter(typeof(int), "i");
         var breakLabel = Expression.Label("LoopBreak");

@@ -4,6 +4,7 @@ using System.Reflection;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models.Arrays;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
+using System.Collections;
 
 namespace ASiNet.Data.Serialization;
 internal static class Helper
@@ -115,6 +116,19 @@ internal static class Helper
 
     public static Expression CallGetSize(Expression serializeModel, Expression inst) =>
         Expression.Call(serializeModel, serializeModel.Type.GetMethod(nameof(ISerializeModel.ObjectSerializedSize), [inst.Type])!, inst);
+
+    public static Expression CallEnumiratorMoveNext(Expression enumirator) =>
+        Expression.Call(Expression.Convert(enumirator, typeof(IEnumerator)), nameof(IEnumerator<byte>.MoveNext), null);
+
+    public static Expression CallEnumiratorCurrent(Expression enumirator) =>
+        Expression.Property(enumirator, nameof(IEnumerator<byte>.Current), null);
+
+    public static Expression CallGetEnumirator(Expression collection, Type valueType)
+    {
+        var t = collection.Type;
+        var mi = t.GetMethod(nameof(ICollection.GetEnumerator))!;
+        return Expression.Convert(Expression.Call(collection, mi), typeof(IEnumerator<>).MakeGenericType(valueType));
+    }
 
     public static object? InvokeGenerickMethod(object inst, string methodName, Type[] genericParameters, object?[] parameters)
     {

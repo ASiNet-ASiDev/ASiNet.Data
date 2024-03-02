@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using Test;
 
-BenchmarkRunner.Run<ArrBenchmark>();
+//BenchmarkRunner.Run<DictionaryBenchmark>();
 
 Console.ReadLine();
