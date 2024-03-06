@@ -7,7 +7,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>0.2.2</Version>
+    <Version>0.2.3</Version>
     <Authors>ASiDev,Difoldery</Authors>
     <Copyright>MIT</Copyright>
     <Description>Binary Seializer</Description>

@@ -37,6 +37,8 @@ internal static class Helper
         context.AddModel(new BooleanModel());
 
         context.AddModel(new GuidModel());
+        context.AddModel(new DateTimeModel());
+        context.AddModel(new TimeSpanModel());
     }
 
     public static void AddUnsafeArraysTypes(SerializerContext context)
