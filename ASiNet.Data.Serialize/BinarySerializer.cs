@@ -112,7 +112,8 @@ public static class BinarySerializer
         {
             foreach (var type in Helper.EnumiratePreGenerateModels())
             {
-                serializerContext.GenerateModel(type);
+                if(!serializerContext.ContainsModel(type))
+                    serializerContext.GenerateModel(type);
             }
         }
 
