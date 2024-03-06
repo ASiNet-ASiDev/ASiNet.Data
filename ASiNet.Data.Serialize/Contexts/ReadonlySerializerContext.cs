@@ -40,7 +40,7 @@ public class ReadonlySerializerContext : BaseSerializerContext
 
     public override SerializeModel<T> GetOrGenerate<T>()
     {
-        if (GetModel<T>() is SerializeModel<T> model)
+        if (_models.TryGetValue(typeof(T), out var m) && m is SerializeModel<T> model)
             return model;
 
         throw new ContextException(new NotImplementedException("Method not supported!"));

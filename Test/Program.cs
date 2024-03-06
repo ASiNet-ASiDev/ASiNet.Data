@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using Test;
 
-//BenchmarkRunner.Run<DictionaryBenchmark>();
+BenchmarkRunner.Run<SerializeBenchmark>();
 
 Console.ReadLine();

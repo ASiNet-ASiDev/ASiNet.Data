@@ -2,6 +2,8 @@ using System.Drawing;
 using System.Text;
 using System.Text.Json;
 using ASiNet.Data.Serialization;
+using ASiNet.Data.Serialization.Attributes;
+using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.IO.Arrays;
 using BenchmarkDotNet.Attributes;
 using MemoryPack;
@@ -16,12 +18,17 @@ public class SerializeBenchmark
 
     private byte[] _mempBuf;
 
-    private string _line;
     
     private TestClass _instance = new();
 
+    private IBinarySerializer _default;
+    private IBinarySerializer _readonly;
+
     public SerializeBenchmark()
     {
+        _default = BinarySerializer.NewDefaultSerializer();
+        _readonly = BinarySerializer.NewReadonlySerializer();
+
         _instance.Ulong = (ulong)Random.Shared.Next();
         var buf = new byte[sizeof(char) * 1000];
         _instance.String = Encoding.UTF8.GetString(buf);
@@ -32,15 +39,21 @@ public class SerializeBenchmark
         
         _instance.TestClassik = null;
 
-        BinarySerializer.Serialize(_instance, (ASiNet.Data.Serialization.Interfaces.ISerializeWriter)(ArrayWriter)_buffer2);
+        _default.Serialize(_instance, _buffer2);
         
         _mempBuf = MemoryPackSerializer.Serialize(_instance);
     }
     
     [Benchmark]
-    public void DiSiSerializerTest()
+    public void DiSi_Default_SerializerTest()
     {
-        BinarySerializer.Serialize(_instance, (ASiNet.Data.Serialization.Interfaces.ISerializeWriter)(ArrayWriter)_buffer);
+        _default.Serialize(_instance, _buffer);
+    }
+
+    [Benchmark]
+    public void DiSi_Readonly_SerializerTest()
+    {
+        _readonly.Serialize(_instance, _buffer);
     }
 
     [Benchmark]
@@ -50,9 +63,15 @@ public class SerializeBenchmark
     }
     
     [Benchmark]
-    public void DiSiDeserializerTest()
+    public void DiSi_Default_DeserializerTest()
     {
-        BinarySerializer.Deserialize<TestClass>((ASiNet.Data.Serialization.Interfaces.ISerializeReader)(ArrayReader)_buffer2);
+        _default.Deserialize<TestClass>(_buffer2);
+    }
+
+    [Benchmark]
+    public void DiSi_Readonly_DeserializerTest()
+    {
+        _readonly.Deserialize<TestClass>(_buffer2);
     }
 
     [Benchmark]
@@ -62,6 +81,7 @@ public class SerializeBenchmark
     }
 }
 
+[PreGenerate]
 [MemoryPackable]
 public partial class TestClass
 {
