@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using ASiNet.Data.Serialization.Attributes;
+using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 
@@ -8,7 +9,7 @@ namespace ASiNet.Data.Serialization.Generators;
 
 public class ObjectsModelsGenerator : IModelsGenerator
 {
-    public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
         {
@@ -29,7 +30,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
     }
 
 
-    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
@@ -53,7 +54,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
@@ -72,7 +73,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
 
@@ -96,7 +97,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    private IEnumerable<Expression> SerializeProperties(Type type, Expression inst, Expression writer, SerializerContext serializeContext, GeneratorsSettings settings)
+    private IEnumerable<Expression> SerializeProperties(Type type, Expression inst, Expression writer, ISerializerContext serializeContext, GeneratorsSettings settings)
     {
         // WRITE NULLABLR BYTE!
         yield return Helper.WriteNullableByte(writer, 1);
@@ -124,7 +125,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
         }
     }
 
-    private IEnumerable<Expression> DeserializeProperties(Type type, Expression inst, Expression reader, SerializerContext serializeContext, GeneratorsSettings settings)
+    private IEnumerable<Expression> DeserializeProperties(Type type, Expression inst, Expression reader, ISerializerContext serializeContext, GeneratorsSettings settings)
     {
         // CREATE NEW INSTANCE!
         yield return Expression.Assign(inst, Expression.New(type));
@@ -152,7 +153,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
         }
     }
 
-    private IEnumerable<Expression> GetSizeEnumirable(Type type, Expression inst, Expression result, SerializerContext serializeContext, GeneratorsSettings settings)
+    private IEnumerable<Expression> GetSizeEnumirable(Type type, Expression inst, Expression result, ISerializerContext serializeContext, GeneratorsSettings settings)
     {
         if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {

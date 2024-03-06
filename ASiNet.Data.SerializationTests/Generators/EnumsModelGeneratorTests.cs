@@ -41,21 +41,21 @@ public class EnumsModelGeneratorTests
     {
         var generator = new EnumsModelsGenerator();
         
-        var aModel = generator.GenerateModel<A>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var aModel = generator.GenerateModel<A>(BinarySerializer.SerializeContext, new());
 
-        var bModel = generator.GenerateModel<B>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var bModel = generator.GenerateModel<B>(BinarySerializer.SerializeContext, new());
 
-        var cModel = generator.GenerateModel<C>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var cModel = generator.GenerateModel<C>(BinarySerializer.SerializeContext, new());
 
-        var dModel = generator.GenerateModel<D>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var dModel = generator.GenerateModel<D>(BinarySerializer.SerializeContext, new());
 
-        var eModel = generator.GenerateModel<E>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var eModel = generator.GenerateModel<E>(BinarySerializer.SerializeContext, new());
 
-        var fModel = generator.GenerateModel<F>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var fModel = generator.GenerateModel<F>(BinarySerializer.SerializeContext, new());
 
-        var gModel = generator.GenerateModel<G>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var gModel = generator.GenerateModel<G>(BinarySerializer.SerializeContext, new());
 
-        var hModel = generator.GenerateModel<H>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var hModel = generator.GenerateModel<H>(BinarySerializer.SerializeContext, new());
 
         var buf = new byte[64];
 

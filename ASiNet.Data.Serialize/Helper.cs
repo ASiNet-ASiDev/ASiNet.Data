@@ -5,6 +5,7 @@ using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models.Arrays;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 using System.Collections;
+using ASiNet.Data.Serialization.Contexts;
 
 namespace ASiNet.Data.Serialization;
 internal static class Helper
@@ -15,7 +16,7 @@ internal static class Helper
     }
 
 
-    public static void AddUnmanagedTypes(SerializerContext context)
+    public static void AddUnmanagedTypes(ISerializerContext context)
     {
         context.AddModel(new ByteModel());
         context.AddModel(new SByteModel());
@@ -41,7 +42,7 @@ internal static class Helper
         context.AddModel(new TimeSpanModel());
     }
 
-    public static void AddUnsafeArraysTypes(SerializerContext context)
+    public static void AddUnsafeArraysTypes(ISerializerContext context)
     {
         context.AddModel(new BooleanArrayModel());
 
@@ -73,7 +74,7 @@ internal static class Helper
     {
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            foreach (var type in assembly.GetTypes().Where(x => x.GetCustomAttribute<PreGenerateModelAttribute>() is not null))
+            foreach (var type in assembly.GetTypes().Where(x => x.GetCustomAttribute<PreGenerateAttribute>() is not null))
             {
                 yield return type;
             }
@@ -101,11 +102,11 @@ internal static class Helper
     public static Expression ReadNullableByte(Expression reader) =>
         Expression.Call(reader, nameof(ISerializeReader.ReadByte), null);
 
-    public static Expression GetOrGenerateSerializeModelConstant(Type type, SerializerContext serializeContext) =>
+    public static Expression GetOrGenerateSerializeModelConstant(Type type, ISerializerContext serializeContext) =>
         Expression.Constant(
             InvokeGenerickMethod(
                 serializeContext,
-                nameof(SerializerContext.GetOrGenerate),
+                nameof(ISerializerContext.GetOrGenerate),
                 [type],
                 [])!,
             typeof(SerializeModel<>).MakeGenericType(type));

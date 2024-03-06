@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
@@ -13,7 +14,7 @@ using ASiNet.Data.Serialization.Models;
 namespace ASiNet.Data.Serialization.Generators;
 public class DictionaryModelsGenerator : IModelsGenerator
 {
-    public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
         {
@@ -33,7 +34,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
         }
     }
 
-    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var keyType = type.GenericTypeArguments[0];
@@ -70,7 +71,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
     }
 
 
-    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var keyType = type.GenericTypeArguments[0];
@@ -104,7 +105,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var keyType = type.GenericTypeArguments[0];

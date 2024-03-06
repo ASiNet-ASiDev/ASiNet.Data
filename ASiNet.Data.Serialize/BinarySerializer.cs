@@ -1,4 +1,6 @@
-﻿using ASiNet.Data.Serialization.Interfaces;
+﻿using System.Collections.Generic;
+using ASiNet.Data.Serialization.Contexts;
+using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.IO.Arrays;
 
 namespace ASiNet.Data.Serialization;
@@ -7,15 +9,16 @@ public static class BinarySerializer
     /// <summary>
     /// The serializer context stores models and model generators.
     /// </summary>
-    public static SerializerContext SerializeContext => _sharedSerializeContext.Value;
+    public static ISerializerContext SerializeContext => _sharedSerializeContext.Value;
 
-    private static Lazy<SerializerContext> _sharedSerializeContext = new(InitContextBase);
+    private static Lazy<ISerializerContext> _sharedSerializeContext = new(() => InitDefaultContext());
 
     /// <summary>
-    /// Context Settings and Model Generators0
+    /// Get the size of the object in bytes before it is serialized. It may be useful if you are not sure about choosing the buffer size.
+    /// <para/>
+    /// Attention! This method may attempt to generate models if they have not been generated yet!
     /// </summary>
-    public static GeneratorsSettings Settings { get; set; } = new();
-
+    /// <returns> Bytes size. </returns>
     public static int GetSize<T>(T? obj) =>
         SerializeContext.GetOrGenerate<T>().ObjectSerializedSize(obj);
 
@@ -77,6 +80,13 @@ public static class BinarySerializer
     }
 
     /// <summary>
+    /// If the context is initialized, it will return its type.
+    /// </summary>
+    /// <returns> <see cref="SerializeContext"/> type or <see cref="null"/></returns>
+    public static Type? InitedContextType() =>
+        _sharedSerializeContext.IsValueCreated ? _sharedSerializeContext.Value.GetType() : null;
+
+    /// <summary>
     /// Checks whether the context has been created
     /// </summary>
     /// <returns> True if <see cref="SerializeContext"/> is created, other false</returns>
@@ -84,39 +94,29 @@ public static class BinarySerializer
         _sharedSerializeContext.IsValueCreated;
 
     /// <summary>
-    /// Forcibly creates a context if it hasn't been created yet
+    /// Use the default context.
     /// </summary>
-    public static SerializerContext Init() =>
-        _sharedSerializeContext.Value;
+    /// <param name="settings"> Generators and Context settings. </param>
+    /// <returns><see cref="DefaultSerializerContext"/></returns>
+    public static ISerializerContext InitDefaultContext(GeneratorsSettings? settings = null) => 
+        (_sharedSerializeContext = new Lazy<ISerializerContext>(() => new DefaultSerializerContext(settings ?? new()))).Value;
 
     /// <summary>
-    /// Recreates the current context
+    /// Cannot generate models during execution. 
+    /// Use the <see cref="Attributes.PreGenerateAttribute"/> attribute to mark all types that should be used by the serializer.
+    /// <para/>
+    /// Uses a <see cref="System.Collections.Frozen.FrozenDictionary{TKey, TValue}"/> to speed up work.
     /// </summary>
-    public static SerializerContext RegenerateContext()
-    {
-        _sharedSerializeContext = new(InitContextBase);
-        return _sharedSerializeContext.Value;
-    }
+    /// <param name="settings"> Generators and Context settings. </param>
+    /// <returns><see cref="ReadonlySerializerContext"/></returns>
+    public static ISerializerContext InitReadonlyContext(GeneratorsSettings? settings = null) =>
+        (_sharedSerializeContext = new Lazy<ISerializerContext>(() => new ReadonlySerializerContext(settings ?? new()))).Value;
 
-    private static SerializerContext InitContextBase()
-    {
-        var serializerContext = new SerializerContext();
-
-        if (Settings.UseDefaultBaseTypesModels)
-            Helper.AddUnmanagedTypes(serializerContext);
-        if (Settings.UseDefaultUnsafeArraysModels)
-            Helper.AddUnsafeArraysTypes(serializerContext);
-
-
-        if (Settings.AllowPreGenerateModelAttribute)
-        {
-            foreach (var type in Helper.EnumiratePreGenerateModels())
-            {
-                if(!serializerContext.ContainsModel(type))
-                    serializerContext.GenerateModel(type);
-            }
-        }
-
-        return serializerContext;
-    }
+    /// <summary>
+    /// Use your own context.
+    /// </summary>
+    /// <param name="factory"></param>
+    /// <returns></returns>
+    public static ISerializerContext InitCustomContext(Func<ISerializerContext> factory) =>
+        (_sharedSerializeContext = new Lazy<ISerializerContext>(factory)).Value;
 }

@@ -19,7 +19,7 @@ public class DictionaryModelGeneratorTests
     {
         var generator = new DictionaryModelsGenerator();
 
-        var model = generator.GenerateModel<Dictionary<int, string>>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var model = generator.GenerateModel<Dictionary<int, string>>(BinarySerializer.SerializeContext, new());
 
         var test = new Dictionary<int, string>
         {
@@ -56,9 +56,9 @@ public class DictionaryModelGeneratorTests
     {
         var generator = new DictionaryModelsGenerator();
 
-        var model = generator.GenerateModel<Dictionary<int, string>>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var model = generator.GenerateModel<Dictionary<int, double>>(BinarySerializer.SerializeContext, new());
 
-        Dictionary<int, string> test = null;
+        Dictionary<int, double> test = null;
 
         var buff = new byte[512];
         var wr = (ArrayWriter)buff;
@@ -71,8 +71,5 @@ public class DictionaryModelGeneratorTests
         Assert.AreEqual(model.ObjectSerializedSize(test), wr.FilledBytes);
 
         Assert.IsNull(res);
-
-        Assert.IsTrue(test.Count == res.Count);
-
     }
 }

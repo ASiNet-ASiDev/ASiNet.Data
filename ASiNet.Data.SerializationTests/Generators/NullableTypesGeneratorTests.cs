@@ -18,7 +18,7 @@ public class NullableTypesGeneratorTests
     {
         var generator = new NullableModelsGenerator();
 
-        var res = generator.GenerateSerializeLambda<int?>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var res = generator.GenerateSerializeLambda<int?>(BinarySerializer.SerializeContext, new());
 
     }
 
@@ -27,7 +27,7 @@ public class NullableTypesGeneratorTests
     {
         var generator = new NullableModelsGenerator();
 
-        var res = generator.GenerateDeserializeLambda<int?>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var res = generator.GenerateDeserializeLambda<int?>(BinarySerializer.SerializeContext, new());
     }
 
     [TestMethod()]
@@ -38,7 +38,7 @@ public class NullableTypesGeneratorTests
 
         int? val = 10;
 
-        var model = generator.GenerateModel<int?>(BinarySerializer.SerializeContext, BinarySerializer.Settings);
+        var model = generator.GenerateModel<int?>(BinarySerializer.SerializeContext, new());
 
         var buff = new byte[16];
         

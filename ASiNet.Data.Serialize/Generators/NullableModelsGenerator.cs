@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 
@@ -6,7 +7,7 @@ namespace ASiNet.Data.Serialization.Generators;
 public class NullableModelsGenerator : IModelsGenerator
 {
 
-    public SerializeModel<T> GenerateModel<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
         {
@@ -27,7 +28,7 @@ public class NullableModelsGenerator : IModelsGenerator
     }
 
 
-    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public SerializeObjectDelegate<T> GenerateSerializeLambda<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var inst = Expression.Parameter(typeof(T), "inst");
@@ -50,7 +51,7 @@ public class NullableModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var underlyingType = Nullable.GetUnderlyingType(type)!;
@@ -84,7 +85,7 @@ public class NullableModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(SerializerContext serializeContext, in GeneratorsSettings settings)
+    public GetObjectSizeDelegate<T> GenerateGetSizeDelegate<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         var type = typeof(T);
         var underlyingType = Nullable.GetUnderlyingType(type)!;

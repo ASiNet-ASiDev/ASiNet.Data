@@ -1,4 +1,6 @@
-﻿namespace ASiNet.Data.Serialization;
+﻿using ASiNet.Data.Serialization.Contexts;
+
+namespace ASiNet.Data.Serialization;
 
 /// <summary>
 /// Settings for model generators and context. 
@@ -24,7 +26,7 @@ public class GeneratorsSettings
     public bool GlobalIgnoreFields { get; set; }
 
     /// <summary>
-    /// Allow generation of models marked with the <see cref="Attributes.PreGenerateModelAttribute"/> attribute WHEN CREATING a <see cref="SerializerContext"/>
+    /// Allow generation of models marked with the <see cref="Attributes.PreGenerateAttribute"/> attribute WHEN CREATING a <see cref="DefaultSerializerContext"/>
     /// </summary>
     public bool AllowPreGenerateModelAttribute { get; set; } = true;
 
