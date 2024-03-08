@@ -2,7 +2,7 @@ using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
-public class DateTimeModel : BaseSerializeModel<DateTime>
+public class DateTimeModel : SerializeModelBase<DateTime>
 {
     private Lazy<SerializeModel<long>> _longSerializeModel =
         new(() => BinarySerializer.SerializeContext.GetOrGenerate<long>()!);
@@ -30,7 +30,7 @@ public class DateTimeModel : BaseSerializeModel<DateTime>
     public override int ObjectSerializedSize(DateTime obj) => sizeof(long);
 }
 
-public class TimeSpanModel : BaseSerializeModel<TimeSpan>
+public class TimeSpanModel : SerializeModelBase<TimeSpan>
 {
     private Lazy<SerializeModel<long>> _longSerializeModel =
         new(() => BinarySerializer.SerializeContext.GetOrGenerate<long>()!);

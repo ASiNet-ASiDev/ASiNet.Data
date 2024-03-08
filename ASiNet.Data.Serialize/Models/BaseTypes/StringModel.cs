@@ -2,7 +2,7 @@
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
-public class StringModel : BaseSerializeModel<string>
+public class StringModel : SerializeModelBase<string>
 {
     public override string? Deserialize(ISerializeReader reader)
     {

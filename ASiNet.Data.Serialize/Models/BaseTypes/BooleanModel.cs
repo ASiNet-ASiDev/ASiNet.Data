@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
-public class BooleanModel : BaseSerializeModel<bool>
+public class BooleanModel : SerializeModelBase<bool>
 {
     public override bool Deserialize(ISerializeReader reader)
     {

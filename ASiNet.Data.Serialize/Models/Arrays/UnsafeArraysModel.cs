@@ -49,7 +49,7 @@ file static class ArrayHelper
 
 }
 
-public class Int32ArrayModel : BaseSerializeModel<int[]>
+public class Int32ArrayModel : SerializeModelBase<int[]>
 {
     public override void Serialize(int[]? obj, ISerializeWriter writer)
     {
@@ -89,7 +89,7 @@ public class Int32ArrayModel : BaseSerializeModel<int[]>
     
 }
 
-public class UInt32ArrayModel : BaseSerializeModel<uint[]>
+public class UInt32ArrayModel : SerializeModelBase<uint[]>
 {
     public override void Serialize(uint[]? obj, ISerializeWriter writer)
     {
@@ -128,7 +128,7 @@ public class UInt32ArrayModel : BaseSerializeModel<uint[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(uint), obj is null);
 }
 
-public class Int16ArrayModel : BaseSerializeModel<short[]>
+public class Int16ArrayModel : SerializeModelBase<short[]>
 {
     public override void Serialize(short[]? obj, ISerializeWriter writer)
     {
@@ -167,7 +167,7 @@ public class Int16ArrayModel : BaseSerializeModel<short[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(short), obj is null);
 }
 
-public class UInt16ArrayModel : BaseSerializeModel<ushort[]>
+public class UInt16ArrayModel : SerializeModelBase<ushort[]>
 {
     public override void Serialize(ushort[]? obj, ISerializeWriter writer)
     {
@@ -206,7 +206,7 @@ public class UInt16ArrayModel : BaseSerializeModel<ushort[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(ushort), obj is null);
 }
 
-public class Int64ArrayModel : BaseSerializeModel<long[]>
+public class Int64ArrayModel : SerializeModelBase<long[]>
 {
     public override void Serialize(long[]? obj, ISerializeWriter writer)
     {
@@ -245,7 +245,7 @@ public class Int64ArrayModel : BaseSerializeModel<long[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(long), obj is null);
 }
 
-public class UInt64ArrayModel : BaseSerializeModel<ulong[]>
+public class UInt64ArrayModel : SerializeModelBase<ulong[]>
 {
     public override void Serialize(ulong[]? obj, ISerializeWriter writer)
     {
@@ -284,7 +284,7 @@ public class UInt64ArrayModel : BaseSerializeModel<ulong[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(ulong), obj is null);
 }
 
-public class CharArrayModel : BaseSerializeModel<char[]>
+public class CharArrayModel : SerializeModelBase<char[]>
 {
     public override void Serialize(char[]? obj, ISerializeWriter writer)
     {
@@ -323,7 +323,7 @@ public class CharArrayModel : BaseSerializeModel<char[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(char), obj is null);
 }
 
-public class BooleanArrayModel : BaseSerializeModel<bool[]>
+public class BooleanArrayModel : SerializeModelBase<bool[]>
 {
     public override void Serialize(bool[]? obj, ISerializeWriter writer)
     {
@@ -362,7 +362,7 @@ public class BooleanArrayModel : BaseSerializeModel<bool[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(bool), obj is null);
 }
 
-public class DateTimeArrayModel : BaseSerializeModel<DateTime[]>
+public class DateTimeArrayModel : SerializeModelBase<DateTime[]>
 {
     public override void Serialize(DateTime[]? obj, ISerializeWriter writer)
     {
@@ -405,7 +405,7 @@ public class DateTimeArrayModel : BaseSerializeModel<DateTime[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(long), obj is null);
 }
 
-public class DoubleArrayModel : BaseSerializeModel<double[]>
+public class DoubleArrayModel : SerializeModelBase<double[]>
 {
     public override void Serialize(double[]? obj, ISerializeWriter writer)
     {
@@ -444,7 +444,7 @@ public class DoubleArrayModel : BaseSerializeModel<double[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(double), obj is null);
 }
 
-public class SingleArrayModel : BaseSerializeModel<float[]>
+public class SingleArrayModel : SerializeModelBase<float[]>
 {
     public override void Serialize(float[]? obj, ISerializeWriter writer)
     {
@@ -483,7 +483,7 @@ public class SingleArrayModel : BaseSerializeModel<float[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(float), obj is null);
 }
 
-public class GuidArrayModel : BaseSerializeModel<Guid[]>
+public class GuidArrayModel : SerializeModelBase<Guid[]>
 {
     public override void Serialize(Guid[]? obj, ISerializeWriter writer)
     {
@@ -526,7 +526,7 @@ public class GuidArrayModel : BaseSerializeModel<Guid[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(decimal), obj is null);
 }
 
-public class SByteArrayModel : BaseSerializeModel<sbyte[]>
+public class SByteArrayModel : SerializeModelBase<sbyte[]>
 {
     public override void Serialize(sbyte[]? obj, ISerializeWriter writer)
     {
@@ -565,7 +565,7 @@ public class SByteArrayModel : BaseSerializeModel<sbyte[]>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(sbyte), obj is null);
 }
 
-public class ByteArrayModel : BaseSerializeModel<byte[]>
+public class ByteArrayModel : SerializeModelBase<byte[]>
 {
     public override void Serialize(byte[]? obj, ISerializeWriter writer)
     {

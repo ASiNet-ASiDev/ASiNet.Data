@@ -2,7 +2,7 @@
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
-public class DoubleModel : BaseSerializeModel<double>
+public class DoubleModel : SerializeModelBase<double>
 {
     public override double Deserialize(ISerializeReader reader)
     {

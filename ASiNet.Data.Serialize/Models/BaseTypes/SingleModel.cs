@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
-public class SingleModel : BaseSerializeModel<float>
+public class SingleModel : SerializeModelBase<float>
 {
     public override float Deserialize(ISerializeReader reader)
     {

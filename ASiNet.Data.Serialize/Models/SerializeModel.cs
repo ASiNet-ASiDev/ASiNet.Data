@@ -1,13 +1,12 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using ASiNet.Data.Serialization.Generators;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models;
 public class SerializeModel<T>(
     SerializeObjectDelegate<T>? serialize = null,
     DeserializeObjectDelegate<T>? deserialize = null,
-    GetObjectSizeDelegate<T>? getSize = null) : ISerializeModel
+    GetObjectSizeDelegate<T>? getSize = null) : ISerializeModel<T>
 {
 
     public string TypeHash => _typeHash.Value.Hash;
@@ -84,6 +83,7 @@ public class SerializeModel<T>(
     {
         _serializeDelegate = null;
         _deserializeDelegate = null;
+        _getSizeDelegate = null;
         GC.SuppressFinalize(this);
     }
 }

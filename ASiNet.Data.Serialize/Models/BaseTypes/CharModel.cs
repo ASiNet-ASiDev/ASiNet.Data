@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
-public class CharModel : BaseSerializeModel<char>
+public class CharModel : SerializeModelBase<char>
 {
     public override char Deserialize(ISerializeReader reader)
     {

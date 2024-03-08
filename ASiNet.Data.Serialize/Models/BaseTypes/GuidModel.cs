@@ -2,7 +2,7 @@ using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
-public class GuidModel : BaseSerializeModel<Guid>
+public class GuidModel : SerializeModelBase<Guid>
 {
     public const int GUID_SIZE = 16;
     

@@ -2,9 +2,9 @@
 /// <summary>
 /// An interface that provides an API for creating serializer models.
 /// <para/>
-/// To create your own models, it is better to use <see cref="Models.BaseSerializeModel{T}"/>
+/// To create your own models, it is better to use <see cref="Models.SerializeModelBase{T}"/>
 /// </summary>
-public interface ISerializeModel : IDisposable
+public interface ISerializeModel
 {
 
     public string TypeHash { get; }
@@ -13,8 +13,6 @@ public interface ISerializeModel : IDisposable
     /// The type of the object of the current model
     /// </summary>
     public Type ObjType { get; }
-
-    public int ObjectSerializedSize(object? obj);
 
     /// <summary>
     /// For the model generator, the default is always true
@@ -26,6 +24,8 @@ public interface ISerializeModel : IDisposable
     public bool ContainsDeserializeDelegate { get; }
 
     public bool ContainsGetSizeDelegate { get; }
+
+    public int ObjectSerializedSize(object? obj);
 
     /// <summary>
     /// Writes an object as byte data.
@@ -40,4 +40,22 @@ public interface ISerializeModel : IDisposable
     /// <param name="reader"> Byte space from where the object is read. </param>
     /// <returns></returns>
     public object? DeserializeToObject(ISerializeReader reader);
+}
+
+
+public interface ISerializeModel<T> : ISerializeModel
+{
+    /// <summary>
+    /// Writes an object as byte data.
+    /// </summary>
+    /// <param name="obj"> The object being recorded. </param>
+    /// <param name="writer"> The byte space where the object is written to. </param>
+    public void Serialize(T obj, ISerializeWriter writer);
+
+    /// <summary>
+    /// Reads an object from byte data.
+    /// </summary>
+    /// <param name="reader"> Byte space from where the object is read. </param>
+    /// <returns></returns>
+    public T? Deserialize(ISerializeReader reader);
 }

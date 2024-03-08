@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
-public class UInt16Model : BaseSerializeModel<ushort>
+public class UInt16Model : SerializeModelBase<ushort>
 {
     public override ushort Deserialize(ISerializeReader reader)
     {

@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
-public class UInt64Model : BaseSerializeModel<ulong>
+public class UInt64Model : SerializeModelBase<ulong>
 {
     public override ulong Deserialize(ISerializeReader reader)
     {

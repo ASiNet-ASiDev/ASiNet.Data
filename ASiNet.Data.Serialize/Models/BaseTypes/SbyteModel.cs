@@ -2,7 +2,7 @@ using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
-public class SByteModel : BaseSerializeModel<sbyte>
+public class SByteModel : SerializeModelBase<sbyte>
 {
     public override sbyte Deserialize(ISerializeReader reader)
     {

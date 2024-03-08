@@ -2,7 +2,7 @@
 
 namespace ASiNet.Data.Serialization.Models;
 
-public abstract class BaseSerializeModel<T> : SerializeModel<T>
+public abstract class SerializeModelBase<T> : SerializeModel<T>
 {
     public override bool ContainsDeserializeDelegate => true;
     public override bool ContainsSerializeDelegate => true;

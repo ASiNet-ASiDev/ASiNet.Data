@@ -1,7 +1,7 @@
 ﻿using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
-public class Int32Model : BaseSerializeModel<int>
+public class Int32Model : SerializeModelBase<int>
 {
     public override int Deserialize(ISerializeReader reader)
     {
