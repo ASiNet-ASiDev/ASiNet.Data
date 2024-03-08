@@ -62,6 +62,9 @@ public class DefaultSerializerContext : BaseSerializerContext
     public Dictionary<Type, ISerializeModel> GetModels() =>
         _models;
 
+    public Dictionary<string, ISerializeModel> GetModelsByHash() =>
+        _modelsByHash.Value;
+
     public override void AddModel(ISerializeModel model)
         => _models.Add(model.ObjType, model);
 

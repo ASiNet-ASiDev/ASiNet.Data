@@ -12,10 +12,12 @@ public class ReadonlySerializerContext : BaseSerializerContext
         var defaultContext = new DefaultSerializerContext(settings);
 
         _models = defaultContext.GetModels().ToFrozenDictionary();
+        _modelsByHash = defaultContext.GetModelsByHash().ToFrozenDictionary();
     }
 
     private readonly FrozenDictionary<Type, ISerializeModel> _models;
 
+    private FrozenDictionary<string, ISerializeModel> _modelsByHash;
 
     public override bool ContainsModel<T>() =>
         _models.ContainsKey(typeof(T));
@@ -66,11 +68,17 @@ public class ReadonlySerializerContext : BaseSerializerContext
 
     public override ISerializeModel GetModelByHash(string hash)
     {
-        throw new NotImplementedException();
+        if (_modelsByHash.TryGetValue(hash, out ISerializeModel? model))
+            return model;
+
+        throw new ContextException(new ArgumentException("The model for this hash was not found."));
     }
 
     public override ISerializeModel GetOrGenerateByHash(string hash)
     {
-        throw new NotImplementedException();
+        if (_modelsByHash.TryGetValue(hash, out ISerializeModel? model))
+            return model;
+
+        throw new ContextException(new NotImplementedException("This context does not support hash key model generation."));
     }
 }
