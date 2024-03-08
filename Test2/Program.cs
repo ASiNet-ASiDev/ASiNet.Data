@@ -1,19 +1,33 @@
-﻿
-using ASiNet.Data.Serialization;
+﻿using ASiNet.Data.Serialization;
 
-var v = new A() { DT = DateTime.Now, TS = TimeSpan.FromSeconds(5)};
-var buff = new byte[128];
+var buffer = new byte[128];
 
-BinarySerializer.Serialize<A>(v, buff);
+var p = new Person() 
+{ 
+    Id = 10, 
+    Test = new Test()
+};
 
-var result = BinarySerializer.Deserialize<A>(buff);
+var type = p.Test.GetType(); 
 
 Console.WriteLine();
 
 
-class A
+public class Person
 {
-    public TimeSpan TS { get; set; }
+    public int Id { get; set; }
 
-    public DateTime DT { get; set; }
+    public ITest Test { get; set; }
+}
+
+public interface ITest
+{
+
+}
+
+public  class Test : ITest
+{
+    public int A {  get; set; }
+
+    public int B { get; set; }
 }

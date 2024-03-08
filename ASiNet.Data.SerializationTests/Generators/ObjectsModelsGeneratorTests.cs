@@ -11,27 +11,27 @@ using ASiNet.Data.Serialization.IO.Arrays;
 namespace ASiNet.Data.Serialization.Generators.Tests;
 
 [TestClass()]
-public class ObjectsModelsGeneratorTests
+public class InterfacesModelsGenerator
 {
     [TestMethod()]
     public void Test1()
     {
-        //var context = new DefaultSerializerContext(new());
-        
-        //context.GenerateModel<TestInterfaceInstance>();
+        var context = new DefaultSerializerContext(new());
 
-        //var model = context.GenerateModel<Test1>();
+        context.GenerateModel<TestInterfaceInstance>();
 
-        //var buff = new byte[128];
+        var model = context.GenerateModel<Test1>();
 
-        //var val = new Test1()
-        //{
-        //    //Property1 = new TestInterfaceInstance() { A = 10, B = 15 }
-        //};
+        var buff = new byte[128];
 
-        //model.Serialize(val, (ArrayWriter)buff);
+        var val = new Test1()
+        {
+            Property1 = new TestInterfaceInstance() { A = 10, B = 15 }
+        };
 
-        //var res = model.Deserialize((ArrayReader)buff);
+        model.Serialize(val, (ArrayWriter)buff);
+
+        var res = model.Deserialize((ArrayReader)buff);
 
     }
 }
@@ -41,7 +41,7 @@ public class Test1
     public ITestInterface Property1 { get; set; }
 }
 
-public interface ITestInterface
+public abstract class ITestInterface
 {
 
 }

@@ -40,6 +40,9 @@ public class DefaultSerializerContext : BaseSerializerContext
         (type => type.IsEnum,
             new EnumsModelsGenerator()),
 
+        (type => type.IsInterface || type.IsAbstract,
+            new InterfacesModelsGenerator()),
+
         (type => type.IsValueType && Nullable.GetUnderlyingType(type) is not null,
             new NullableModelsGenerator()),
 

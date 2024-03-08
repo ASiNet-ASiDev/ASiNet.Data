@@ -7,7 +7,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
     <Authors>ASiDev,Difoldery</Authors>
     <Copyright>MIT</Copyright>
     <Description>Binary Seializer</Description>
@@ -16,6 +16,14 @@
     <PackageTags>Serialization;Serialize,Binary</PackageTags>
     <Company>DiSi</Company>
     <PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

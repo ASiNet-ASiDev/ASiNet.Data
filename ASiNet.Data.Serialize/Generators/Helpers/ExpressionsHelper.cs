@@ -24,18 +24,20 @@ internal static class ExpressionsHelper
                 [])!,
             typeof(SerializeModel<>).MakeGenericType(type));
 
-    public static Expression GetOrGenerateModelSerializeTime(Expression value, Expression serializeContext) =>
+    public static Expression GetOrGenerateModelSerializeTime(Expression type, Expression serializeContext) =>
         Expression.Call(
             serializeContext, 
             nameof(ISerializerContext.GetOrGenerate), 
             null,
-            Expression.Call(
-                Expression.Convert(value, typeof(object)), 
-                nameof(object.GetType), 
-                null,
-                []
-                )
+            type
             );
+
+    public static Expression CallGetType(Expression value) =>
+        Expression.Call(
+                Expression.Convert(value, typeof(object)),
+                nameof(object.GetType),
+                null
+                );
 
     public static Expression GetOrGenerateModelByHash(Expression reader, Expression serializeContext) =>
         Expression.Call(
