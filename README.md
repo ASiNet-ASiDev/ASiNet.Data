@@ -44,3 +44,5 @@ var size = BinarySerializer.Serialize<Person>(person, buffer); // Данный �
 var result = BinarySerializer.Deserialize<Person>(buffer); // Данный метод прочитает объект из массива байт и в result мы получим нашего персона
 
 ```
+
+# Создание собственных моделей.
