@@ -11,7 +11,7 @@ public static class BinarySerializer
     /// </summary>
     public static ISerializerContext SerializeContext => _sharedSerializeContext.Value;
 
-    private static Lazy<ISerializerContext> _sharedSerializeContext = new(() => InitDefaultContext());
+    private static Lazy<ISerializerContext> _sharedSerializeContext = new(() => InitContext());
 
     /// <summary>
     /// Get the size of the object in bytes before it is serialized. It may be useful if you are not sure about choosing the buffer size.
@@ -98,7 +98,7 @@ public static class BinarySerializer
     /// </summary>
     /// <param name="settings"> Generators and Context settings. </param>
     /// <returns><see cref="DefaultSerializerContext"/></returns>
-    public static ISerializerContext InitDefaultContext(GeneratorsSettings? settings = null) =>
+    public static ISerializerContext InitContext(GeneratorsSettings? settings = null) =>
         (_sharedSerializeContext = new Lazy<ISerializerContext>(() => new DefaultSerializerContext(settings ?? new()))).Value;
 
     /// <summary>
@@ -121,7 +121,7 @@ public static class BinarySerializer
         (_sharedSerializeContext = new Lazy<ISerializerContext>(factory)).Value;
 
 
-    public static IBinarySerializer NewDefaultSerializer(GeneratorsSettings? settings = null) =>
+    public static IBinarySerializer NewSerializer(GeneratorsSettings? settings = null) =>
         new BinarySerializer<DefaultSerializerContext>(new(settings ?? new()));
 
     public static IBinarySerializer NewReadonlySerializer(GeneratorsSettings? settings = null) =>

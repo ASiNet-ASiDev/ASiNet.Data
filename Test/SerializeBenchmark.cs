@@ -26,7 +26,7 @@ public class SerializeBenchmark
 
     public SerializeBenchmark()
     {
-        _default = BinarySerializer.NewDefaultSerializer();
+        _default = BinarySerializer.NewSerializer();
         _readonly = BinarySerializer.NewReadonlySerializer();
 
         _instance.Ulong = (ulong)Random.Shared.Next();
