@@ -1,7 +1,9 @@
 ﻿using System.Linq.Expressions;
 using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
+using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Generators;
 public class EnumsModelsGenerator : IModelsGenerator
@@ -34,9 +36,9 @@ public class EnumsModelsGenerator : IModelsGenerator
         var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
         var inst = Expression.Parameter(type, "inst");
 
-        var model = Helper.GetOrGenerateSerializeModelConstant(enumUnderlyingType, serializeContext);
+        var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(enumUnderlyingType, serializeContext);
 
-        var body = Helper.CallSerialize(model, Expression.Convert(inst, enumUnderlyingType), writer);
+        var body = ExpressionsHelper.CallSerialize(model, Expression.Convert(inst, enumUnderlyingType), writer);
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
         return lambda.Compile();
@@ -49,9 +51,9 @@ public class EnumsModelsGenerator : IModelsGenerator
 
         var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
 
-        var model = Helper.GetOrGenerateSerializeModelConstant(enumUnderlyingType, serializeContext);
+        var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(enumUnderlyingType, serializeContext);
 
-        var body = Expression.Convert(Helper.CallDeserialize(model, reader), type);
+        var body = Expression.Convert(ExpressionsHelper.CallDeserialize(model, reader), type);
 
         var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(body, reader);
         return lambda.Compile();
@@ -65,12 +67,12 @@ public class EnumsModelsGenerator : IModelsGenerator
         var inst = Expression.Parameter(type, "inst");
         var result = Expression.Parameter(typeof(int), "size");
 
-        var model = Helper.GetOrGenerateSerializeModelConstant(enumUnderlyingType, serializeContext);
+        var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(enumUnderlyingType, serializeContext);
 
         var body = Expression.Block([result],
             Expression.Assign(
                 result,
-                Helper.CallGetSize(
+                ExpressionsHelper.CallGetSizeGenerateTime(
                     model, 
                     Expression.Convert(
                         inst, 

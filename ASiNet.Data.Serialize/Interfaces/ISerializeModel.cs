@@ -6,6 +6,9 @@
 /// </summary>
 public interface ISerializeModel : IDisposable
 {
+
+    public string TypeHash { get; }
+    public byte[] TypeHashBytes { get; }
     /// <summary>
     /// The type of the object of the current model
     /// </summary>

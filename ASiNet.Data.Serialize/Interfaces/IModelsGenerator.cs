@@ -1,4 +1,4 @@
-﻿using ASiNet.Data.Serialization.Contexts;
+﻿using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Interfaces;
 

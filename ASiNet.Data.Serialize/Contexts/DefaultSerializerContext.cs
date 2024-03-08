@@ -1,6 +1,7 @@
 ﻿using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Contexts;
 
@@ -26,12 +27,14 @@ public class DefaultSerializerContext : BaseSerializerContext
                     GenerateModel(type);
             }
         }
+        _modelsByHash = new(GenerateModelsByHashDictionary);
     }
 
     private ObjectsModelsGenerator _objectsGenerator { get; init; } = new();
 
     private Dictionary<Type, ISerializeModel> _models = [];
 
+    private Lazy<Dictionary<string, ISerializeModel>> _modelsByHash;
 
     private List<(Predicate<Type> Comparer, IModelsGenerator Generator)> _generators = [
         (type => type.IsEnum,
@@ -121,6 +124,22 @@ public class DefaultSerializerContext : BaseSerializerContext
         return null;
     }
 
+    public override ISerializeModel GetModelByHash(string hash)
+    {
+        if(_modelsByHash.Value.TryGetValue(hash, out ISerializeModel? model))
+            return model;
+
+        throw new ContextException(new ArgumentException("The model for this hash was not found."));
+    }
+
+    public override ISerializeModel GetOrGenerateByHash(string hash)
+    {
+        if (_modelsByHash.Value.TryGetValue(hash, out ISerializeModel? model))
+            return model;
+
+        throw new ContextException(new NotImplementedException("This context does not support hash key model generation."));
+    }
+
     public override void AddGegerator(Predicate<Type> Comparer, IModelsGenerator Generator) =>
         _generators.Add((Comparer, Generator));
 
@@ -137,4 +156,28 @@ public class DefaultSerializerContext : BaseSerializerContext
 
     public override bool ContainsModel(Type type) =>
         _models.ContainsKey(type);
+
+
+    private Dictionary<string, ISerializeModel> GenerateModelsByHashDictionary()
+    {
+        var result = new Dictionary<string, ISerializeModel>();
+        foreach (var item in _models.Values)
+        {
+            if(!result.TryAdd(item.TypeHash, item))
+                throw new ContextException(
+                    new Exception($"It was not possible to add a model with <{item.ObjType.FullName}, {item.TypeHash}> cache, since a model with this hash already exists."));
+        }
+
+        return result;
+    }
+
+    private void AddByHashModel(ISerializeModel model)
+    {
+        if(_modelsByHash.IsValueCreated)
+        {
+            if(!_modelsByHash.Value.TryAdd(model.TypeHash, model))
+                throw new ContextException(
+                    new Exception($"It was not possible to add a model with <{model.ObjType.FullName}, {model.TypeHash}> cache, since a model with this hash already exists."));
+        }
+    }
 }

@@ -2,6 +2,7 @@
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Contexts;
 public class ReadonlySerializerContext : BaseSerializerContext
@@ -62,4 +63,14 @@ public class ReadonlySerializerContext : BaseSerializerContext
     public override void AddGegerator(Predicate<Type> Comparer, IModelsGenerator Generator) => throw new ContextException(new NotImplementedException("Method not supported!"));
 
     public override bool RemoveGegerator(IModelsGenerator Generator) => throw new ContextException(new NotImplementedException("Method not supported!"));
+
+    public override ISerializeModel GetModelByHash(string hash)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override ISerializeModel GetOrGenerateByHash(string hash)
+    {
+        throw new NotImplementedException();
+    }
 }

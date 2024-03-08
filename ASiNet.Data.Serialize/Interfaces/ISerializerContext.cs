@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Interfaces;
 public interface ISerializerContext
@@ -29,6 +30,10 @@ public interface ISerializerContext
     public ISerializeModel? GetModel(Type type);
 
     public SerializeModel<T>? GetModel<T>();
+
+
+    public ISerializeModel GetOrGenerateByHash(string hash);
+    public ISerializeModel GetModelByHash(string hash);
 
 
     public void AddGegerator(Predicate<Type> Comparer, IModelsGenerator Generator);

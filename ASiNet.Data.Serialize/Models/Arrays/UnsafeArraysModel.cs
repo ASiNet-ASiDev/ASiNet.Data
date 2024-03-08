@@ -35,7 +35,7 @@ file static class ArrayHelper
             throw new Exception();
     }
 
-    public static void BlokcCopyElements<T>(T[] src, int bytesSize, ISerializeWriter writer) where T : unmanaged
+    public static void BlokcCopyElementsUnmanaged<T>(T[] src, int bytesSize, ISerializeWriter writer) where T : unmanaged
     {
         var buffer = new byte[bytesSize];
         Buffer.BlockCopy(src, 0, buffer, 0, buffer.Length);
@@ -62,7 +62,7 @@ public class Int32ArrayModel : BaseSerializeModel<int[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override int[]? Deserialize(ISerializeReader reader)
@@ -102,7 +102,7 @@ public class UInt32ArrayModel : BaseSerializeModel<uint[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override uint[]? Deserialize(ISerializeReader reader)
@@ -141,7 +141,7 @@ public class Int16ArrayModel : BaseSerializeModel<short[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override short[]? Deserialize(ISerializeReader reader)
@@ -180,7 +180,7 @@ public class UInt16ArrayModel : BaseSerializeModel<ushort[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override ushort[]? Deserialize(ISerializeReader reader)
@@ -219,7 +219,7 @@ public class Int64ArrayModel : BaseSerializeModel<long[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override long[]? Deserialize(ISerializeReader reader)
@@ -258,7 +258,7 @@ public class UInt64ArrayModel : BaseSerializeModel<ulong[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override ulong[]? Deserialize(ISerializeReader reader)
@@ -297,7 +297,7 @@ public class CharArrayModel : BaseSerializeModel<char[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override char[]? Deserialize(ISerializeReader reader)
@@ -336,7 +336,7 @@ public class BooleanArrayModel : BaseSerializeModel<bool[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override bool[]? Deserialize(ISerializeReader reader)
@@ -375,7 +375,11 @@ public class DateTimeArrayModel : BaseSerializeModel<DateTime[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+
+        var dist = new DateTime[obj.Length];
+        obj.CopyTo(dist, 0);
+
+        writer.WriteBytes(dist.AsByteArray());
     }
 
     public override DateTime[]? Deserialize(ISerializeReader reader)
@@ -414,7 +418,7 @@ public class DoubleArrayModel : BaseSerializeModel<double[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override double[]? Deserialize(ISerializeReader reader)
@@ -453,7 +457,7 @@ public class SingleArrayModel : BaseSerializeModel<float[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override float[]? Deserialize(ISerializeReader reader)
@@ -492,7 +496,11 @@ public class GuidArrayModel : BaseSerializeModel<Guid[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+
+        var dist = new Guid[obj.Length];
+        obj.CopyTo(dist, 0);
+
+        writer.WriteBytes(dist.AsByteArray());
     }
 
     public override Guid[]? Deserialize(ISerializeReader reader)
@@ -531,7 +539,7 @@ public class SByteArrayModel : BaseSerializeModel<sbyte[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override sbyte[]? Deserialize(ISerializeReader reader)
@@ -570,7 +578,7 @@ public class ByteArrayModel : BaseSerializeModel<byte[]>
 
         ArrayHelper.ThrowIsIndexOutOfRange(arrBytesLength, writer);
         ArrayHelper.WriteLength(obj.Length, writer);
-        ArrayHelper.BlokcCopyElements(obj, arrBytesLength, writer);
+        ArrayHelper.BlokcCopyElementsUnmanaged(obj, arrBytesLength, writer);
     }
 
     public override byte[]? Deserialize(ISerializeReader reader)

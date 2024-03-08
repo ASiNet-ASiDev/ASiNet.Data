@@ -1,12 +1,28 @@
-﻿using ASiNet.Data.Serialization.Generators;
+﻿using System.Security.Cryptography;
+using System.Text;
+using ASiNet.Data.Serialization.Generators;
 using ASiNet.Data.Serialization.Interfaces;
 
-namespace ASiNet.Data.Serialization;
-public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, DeserializeObjectDelegate<T>? deserialize = null, GetObjectSizeDelegate<T>? getSize = null) : ISerializeModel
+namespace ASiNet.Data.Serialization.Models;
+public class SerializeModel<T>(
+    SerializeObjectDelegate<T>? serialize = null,
+    DeserializeObjectDelegate<T>? deserialize = null,
+    GetObjectSizeDelegate<T>? getSize = null) : ISerializeModel
 {
+
+    public string TypeHash => _typeHash.Value.Hash;
+    public byte[] TypeHashBytes => _typeHash.Value.BytesHash;
+
     public Type ObjType => _objType.Value;
 
-    private Lazy<Type> _objType = new Lazy<Type>(() => typeof(T));
+    private readonly Lazy<Type> _objType = new(() => typeof(T));
+
+    private readonly Lazy<(byte[] BytesHash, string Hash)> _typeHash = new(() => 
+    { 
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(typeof(T).FullName ?? typeof(T).Name));
+        var str = Convert.ToHexString(bytes);
+        return (bytes, str);
+    });
 
     public virtual bool ContainsSerializeDelegate => _serializeDelegate is not null;
     public virtual bool ContainsDeserializeDelegate => _deserializeDelegate is not null;
@@ -23,7 +39,6 @@ public class SerializeModel<T>(SerializeObjectDelegate<T>? serialize = null, Des
             throw new NullReferenceException();
         if (obj is T value)
             _serializeDelegate(value, writer);
-        //throw new Exception();
     }
 
     public virtual object? DeserializeToObject(ISerializeReader reader)

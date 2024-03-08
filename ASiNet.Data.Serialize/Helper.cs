@@ -6,16 +6,11 @@ using ASiNet.Data.Serialization.Models.Arrays;
 using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 using System.Collections;
 using ASiNet.Data.Serialization.Contexts;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization;
 internal static class Helper
 {
-    public static TEnum ToEnum<TType, TEnum>(TType x)
-    {
-        return (TEnum)(object)x!;
-    }
-
-
     public static void AddUnmanagedTypes(ISerializerContext context)
     {
         context.AddModel(new ByteModel());
@@ -65,11 +60,6 @@ internal static class Helper
         context.AddModel(new DateTimeArrayModel());
     }
 
-    public static Enum ToEnum<TType>(TType x, Type type) where TType : struct
-    {
-        return (Enum)(object)x;
-    }
-
     public static IEnumerable<Type> EnumiratePreGenerateModels()
     {
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -79,58 +69,6 @@ internal static class Helper
                 yield return type;
             }
         }
-    }
-
-    static bool IsNullable<T>(T obj)
-    {
-        if (obj is null) 
-            return true; 
-        Type type = typeof(T);
-        if (!type.IsValueType) 
-            return true;
-        if (Nullable.GetUnderlyingType(type) != null) 
-            return true;
-        return false;
-    }
-
-    public static Expression WriteNullableByte(Expression writer, byte value) =>
-        Expression.Call(writer, nameof(ISerializeWriter.WriteByte), null, Expression.Constant(value));
-
-    public static Expression WriteNullableByte(Expression writer, Expression value) =>
-        Expression.Call(writer, nameof(ISerializeWriter.WriteByte), null, value);
-
-    public static Expression ReadNullableByte(Expression reader) =>
-        Expression.Call(reader, nameof(ISerializeReader.ReadByte), null);
-
-    public static Expression GetOrGenerateSerializeModelConstant(Type type, ISerializerContext serializeContext) =>
-        Expression.Constant(
-            InvokeGenerickMethod(
-                serializeContext,
-                nameof(ISerializerContext.GetOrGenerate),
-                [type],
-                [])!,
-            typeof(SerializeModel<>).MakeGenericType(type));
-
-    public static Expression CallDeserialize(Expression serializeModel, Expression reader) =>
-        Expression.Call(serializeModel, nameof(SerializeModel<byte>.Deserialize), null, reader);
-
-    public static Expression CallSerialize(Expression serializeModel, Expression value, Expression writer) =>
-        Expression.Call(serializeModel, nameof(SerializeModel<byte>.Serialize), null, value, writer);
-
-    public static Expression CallGetSize(Expression serializeModel, Expression inst) =>
-        Expression.Call(serializeModel, serializeModel.Type.GetMethod(nameof(ISerializeModel.ObjectSerializedSize), [inst.Type])!, inst);
-
-    public static Expression CallEnumiratorMoveNext(Expression enumirator) =>
-        Expression.Call(Expression.Convert(enumirator, typeof(IEnumerator)), nameof(IEnumerator<byte>.MoveNext), null);
-
-    public static Expression CallEnumiratorCurrent(Expression enumirator) =>
-        Expression.Property(enumirator, nameof(IEnumerator<byte>.Current), null);
-
-    public static Expression CallGetEnumirator(Expression collection, Type valueType)
-    {
-        var t = collection.Type;
-        var mi = t.GetMethod(nameof(ICollection.GetEnumerator))!;
-        return Expression.Convert(Expression.Call(collection, mi), typeof(IEnumerator<>).MakeGenericType(valueType));
     }
 
     public static object? InvokeGenerickMethod(object inst, string methodName, Type[] genericParameters, object?[] parameters)
@@ -147,6 +85,19 @@ internal static class Helper
             .Invoke(inst, parameters);
     }
 
+
+    public static void WriteTypeHash(ISerializeWriter writer, ISerializeModel model)
+    {
+        writer.WriteBytes(model.TypeHashBytes);
+    }
+
+    public static string ReadTypeHash(ISerializeReader reader)
+    {
+        var buff = (stackalloc byte[32]);
+        reader.ReadBytes(buff);
+        var hashString = Convert.ToHexString(buff);
+        return hashString;
+    }
 
     public static IEnumerable<PropertyInfo> EnumerateProperties(Type type)
     {

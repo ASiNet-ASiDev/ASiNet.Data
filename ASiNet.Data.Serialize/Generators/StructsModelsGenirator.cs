@@ -4,6 +4,8 @@ using System.Reflection;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Contexts;
+using ASiNet.Data.Serialization.Models;
+using ASiNet.Data.Serialization.Generators.Helpers;
 
 namespace ASiNet.Data.Serialization.Generators;
 public class StructsModelsGenirator : IModelsGenerator
@@ -75,9 +77,9 @@ public class StructsModelsGenirator : IModelsGenerator
             // WRITE OBJECT PROPERTIES!
             foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Helper.CallSerialize(model, value, writer);
+                yield return ExpressionsHelper.CallSerialize(model, value, writer);
             }
         }
 
@@ -86,9 +88,9 @@ public class StructsModelsGenirator : IModelsGenerator
             // WRITE OBJECT FIELDS!
             foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Helper.CallSerialize(model, value, writer);
+                yield return ExpressionsHelper.CallSerialize(model, value, writer);
             }
         }
     }
@@ -103,9 +105,9 @@ public class StructsModelsGenirator : IModelsGenerator
             // READ AND SET PROPERTIES!
             foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Expression.Assign(value, Helper.CallDeserialize(model, reader));
+                yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
             }
         }
 
@@ -114,9 +116,9 @@ public class StructsModelsGenirator : IModelsGenerator
             // READ AND SET FIELDS!
             foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Expression.Assign(value, Helper.CallDeserialize(model, reader));
+                yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
             }
         }
     }
@@ -129,9 +131,9 @@ public class StructsModelsGenirator : IModelsGenerator
         {
             foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Expression.AddAssign(result, Helper.CallGetSize(model, value));
+                yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
             }
         }
 
@@ -139,9 +141,9 @@ public class StructsModelsGenirator : IModelsGenerator
         {
             foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Expression.AddAssign(result, Helper.CallGetSize(model, value));
+                yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
             }
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Contexts;
 public abstract class BaseSerializerContext(GeneratorsSettings settings) : ISerializerContext
@@ -28,6 +29,11 @@ public abstract class BaseSerializerContext(GeneratorsSettings settings) : ISeri
     public abstract ISerializeModel GetOrGenerate(Type type);
 
     public abstract SerializeModel<T> GetOrGenerate<T>();
+
+
+    public abstract ISerializeModel GetModelByHash(string hash);
+    public abstract ISerializeModel GetOrGenerateByHash(string hash);
+
 
     public abstract bool RemoveGegerator(IModelsGenerator Generator);
 

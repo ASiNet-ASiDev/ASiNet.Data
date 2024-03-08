@@ -3,7 +3,9 @@ using System.Reflection;
 using ASiNet.Data.Serialization.Attributes;
 using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
+using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Generators;
 
@@ -47,7 +49,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
             Expression.Block(SerializeProperties(type, inst, writer, serializeContext, settings)),
 
             // WRITE NULLABLR BYTE!
-            Helper.WriteNullableByte(writer, 0));
+            ExpressionsHelper.WriteNullableByteGenerateTime(writer, 0));
 
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
@@ -63,7 +65,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
         var body = Expression.IfThen(
             // READ NULLABLE BYTE
             Expression.Equal(
-                Helper.ReadNullableByte(reader),
+                ExpressionsHelper.ReadNullableByteGenerateTime(reader),
                 Expression.Constant((byte)1)),
 
             // READ PROPERTIES TO OBJECT
@@ -100,16 +102,16 @@ public class ObjectsModelsGenerator : IModelsGenerator
     private IEnumerable<Expression> SerializeProperties(Type type, Expression inst, Expression writer, ISerializerContext serializeContext, GeneratorsSettings settings)
     {
         // WRITE NULLABLR BYTE!
-        yield return Helper.WriteNullableByte(writer, 1);
+        yield return ExpressionsHelper.WriteNullableByteGenerateTime(writer, 1);
 
         if(!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {
             // WRITE OBJECT PROPERTIES!
             foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Helper.CallSerialize(model, value, writer);
+                yield return ExpressionsHelper.CallSerialize(model, value, writer);
             }
         }
 
@@ -118,9 +120,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             // WRITE OBJECT FIELDS!
             foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Helper.CallSerialize(model, value, writer);
+                yield return ExpressionsHelper.CallSerialize(model, value, writer);
             }
         }
     }
@@ -135,9 +137,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             // READ AND SET PROPERTIES!
             foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Expression.Assign(value, Helper.CallDeserialize(model, reader));
+                yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
             }
         }
 
@@ -146,9 +148,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             // READ AND SET FIELDS!
             foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Expression.Assign(value, Helper.CallDeserialize(model, reader));
+                yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
             }
         }
     }
@@ -159,19 +161,20 @@ public class ObjectsModelsGenerator : IModelsGenerator
         {
             foreach (var pi in Helper.EnumerateProperties(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(pi.PropertyType, serializeContext);
+
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Expression.AddAssign(result, Helper.CallGetSize(model, value));
-            }
+                yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
+        }
         }
 
         if (!settings.GlobalIgnoreFields || type.GetCustomAttribute<IgnoreFieldsAttribute>() is not null)
         {
             foreach (var fi in Helper.EnumerateFields(type))
             {
-                var model = Helper.GetOrGenerateSerializeModelConstant(fi.FieldType, serializeContext);
+                var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Expression.AddAssign(result, Helper.CallGetSize(model, value));
+                yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
             }
         }
     }

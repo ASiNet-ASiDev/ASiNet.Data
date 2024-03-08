@@ -2,7 +2,9 @@
 using System.Reflection;
 using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
+using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Generators;
 public class ListModelsGenerator : IModelsGenerator
@@ -35,8 +37,8 @@ public class ListModelsGenerator : IModelsGenerator
         var inst = Expression.Parameter(type, "inst");
         var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
 
-        var model = Helper.GetOrGenerateSerializeModelConstant(itemsType, serializeContext);
-        var intModel = Helper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
+        var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(itemsType, serializeContext);
+        var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);
 
         var count = Expression.Parameter(typeof(int), "count");
 
@@ -46,12 +48,12 @@ public class ListModelsGenerator : IModelsGenerator
                     inst,
                     Expression.Default(type)),
                 Expression.Block([count],
-                    Helper.WriteNullableByte(writer, 1),
+                    ExpressionsHelper.WriteNullableByteGenerateTime(writer, 1),
                     Expression.Assign(count, GetCount(inst)),
-                    Helper.CallSerialize(intModel, count, writer),
+                    ExpressionsHelper.CallSerialize(intModel, count, writer),
                     SerializeElements(count, inst, model, writer)
                     ),
-                Helper.WriteNullableByte(writer, 0)
+                ExpressionsHelper.WriteNullableByteGenerateTime(writer, 0)
                 );
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
@@ -66,8 +68,8 @@ public class ListModelsGenerator : IModelsGenerator
 
         var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
 
-        var model = Helper.GetOrGenerateSerializeModelConstant(itemsType, serializeContext);
-        var intModel = Helper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
+        var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(itemsType, serializeContext);
+        var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);
 
         var inst = Expression.Parameter(type, "inst");
         var count = Expression.Parameter(typeof(int), "count");
@@ -79,11 +81,11 @@ public class ListModelsGenerator : IModelsGenerator
             Expression.IfThen(
                 // READ NULLABLE BYTE
                 Expression.Equal(
-                    Helper.ReadNullableByte(reader),
+                    ExpressionsHelper.ReadNullableByteGenerateTime(reader),
                     Expression.Constant((byte)1)),
 
                 Expression.Block(
-                    Expression.Assign(count, Helper.CallDeserialize(intModel, reader)),
+                    Expression.Assign(count, ExpressionsHelper.CallDeserialize(intModel, reader)),
                     Expression.Assign(inst, Expression.New(ctor, count)),
                     DeserializeElements(count, inst, model, reader)
                     )
@@ -104,7 +106,7 @@ public class ListModelsGenerator : IModelsGenerator
         var result = Expression.Parameter(typeof(int), "size");
         var count = Expression.Parameter(typeof(int), "count");
 
-        var model = Helper.GetOrGenerateSerializeModelConstant(underlyingType, serializeContext);
+        var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(underlyingType, serializeContext);
 
         var body = Expression.Block([result, count],
             Expression.Assign(result, Expression.Constant(1, typeof(int))),
@@ -138,7 +140,7 @@ public class ListModelsGenerator : IModelsGenerator
                     Expression.Break(breakLabel),
                     // ADD AND DESERIALIZE ELEMENT
                     Expression.Block(
-                        Helper.CallSerialize(model, Expression.Property(list, "Item", i), writer),
+                        ExpressionsHelper.CallSerialize(model, Expression.Property(list, "Item", i), writer),
                         Expression.AddAssign(i, Expression.Constant(1)))
                     ),
                 breakLabel)
@@ -161,7 +163,7 @@ public class ListModelsGenerator : IModelsGenerator
                     Expression.Break(breakLabel),
                     // ADD AND DESERIALIZE ELEMENT
                     Expression.Block(
-                        Expression.Call(list, nameof(List<byte>.Add), null, Helper.CallDeserialize(model, reader)),
+                        Expression.Call(list, nameof(List<byte>.Add), null, ExpressionsHelper.CallDeserialize(model, reader)),
                         Expression.AddAssign(i, Expression.Constant(1)))  
                     ),
                 breakLabel)
@@ -181,7 +183,7 @@ public class ListModelsGenerator : IModelsGenerator
                     Expression.Break(breakLabel),
                     // ADD AND DESERIALIZE ELEMENT
                     Expression.Block(
-                        Expression.AddAssign(result, Helper.CallGetSize(model, Expression.Property(list, "Item", i))),
+                        Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, Expression.Property(list, "Item", i))),
                         Expression.AddAssign(i, Expression.Constant(1)))
                     ),
                 breakLabel)

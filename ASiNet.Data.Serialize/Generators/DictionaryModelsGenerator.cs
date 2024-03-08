@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
+using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
 
@@ -46,9 +47,9 @@ public class DictionaryModelsGenerator : IModelsGenerator
         var keysEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(keyType), "ke");
         var valuesEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(valueType), "ve");
         
-        var intModel = Helper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
-        var keyModel = Helper.GetOrGenerateSerializeModelConstant(keyType, serializeContext);
-        var valueModel = Helper.GetOrGenerateSerializeModelConstant(valueType, serializeContext);
+        var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);
+        var keyModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(keyType, serializeContext);
+        var valueModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(valueType, serializeContext);
 
         var body = 
             Expression.IfThenElse(
@@ -57,13 +58,13 @@ public class DictionaryModelsGenerator : IModelsGenerator
                     inst,
                     Expression.Default(type)),
                 Expression.Block([keysEnumirator, valuesEnumirator],
-                    Helper.WriteNullableByte(writer, 1),
-                    Helper.CallSerialize(intModel, GetCount(inst), writer),
+                    ExpressionsHelper.WriteNullableByteGenerateTime(writer, 1),
+                    ExpressionsHelper.CallSerialize(intModel, GetCount(inst), writer),
                     Expression.Assign(keysEnumirator, GetKeysEnumirator(inst, keyType)),
                     Expression.Assign(valuesEnumirator, GetValuesEnumirator(inst, valueType)),
                     SerializeDictionary(keysEnumirator, valuesEnumirator, keyModel, valueModel, writer)
                 ),
-                Helper.WriteNullableByte(writer, 0)
+                ExpressionsHelper.WriteNullableByteGenerateTime(writer, 0)
             );
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
@@ -81,19 +82,19 @@ public class DictionaryModelsGenerator : IModelsGenerator
         var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
         var count = Expression.Parameter(typeof(int), "count");
 
-        var intModel = Helper.GetOrGenerateSerializeModelConstant(typeof(int), serializeContext);
-        var keyModel = Helper.GetOrGenerateSerializeModelConstant(keyType, serializeContext);
-        var valueModel = Helper.GetOrGenerateSerializeModelConstant(valueType, serializeContext);
+        var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);
+        var keyModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(keyType, serializeContext);
+        var valueModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(valueType, serializeContext);
 
         var ctor = type.GetConstructor([typeof(int)])!;
 
         var body = Expression.Block([inst],
             Expression.IfThen(
                 Expression.Equal(
-                    Helper.ReadNullableByte(reader),
+                    ExpressionsHelper.ReadNullableByteGenerateTime(reader),
                     Expression.Constant((byte)1)),
                 Expression.Block([count],
-                    Expression.Assign(count, Helper.CallDeserialize(intModel, reader)),
+                    Expression.Assign(count, ExpressionsHelper.CallDeserialize(intModel, reader)),
                     Expression.Assign(inst, Expression.New(ctor, count)),
                     DeserializeDictionary(count, inst, keyModel, valueModel, reader)
                     )
@@ -117,8 +118,8 @@ public class DictionaryModelsGenerator : IModelsGenerator
         var keysEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(keyType), "ke");
         var valuesEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(valueType), "ve");
 
-        var keyModel = Helper.GetOrGenerateSerializeModelConstant(keyType, serializeContext);
-        var valueModel = Helper.GetOrGenerateSerializeModelConstant(valueType, serializeContext);
+        var keyModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(keyType, serializeContext);
+        var valueModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(valueType, serializeContext);
 
         var body = Expression.Block([result],
             Expression.Assign(result, Expression.Constant(1, typeof(int))),
@@ -157,9 +158,9 @@ public class DictionaryModelsGenerator : IModelsGenerator
                             Expression.Call(
                                 inst, 
                                 nameof(Dictionary<byte, byte>.Add), 
-                                null, 
-                                Helper.CallDeserialize(keyMode, reader), 
-                                Helper.CallDeserialize(valueModel, reader)),
+                                null,
+                                ExpressionsHelper.CallDeserialize(keyMode, reader),
+                                ExpressionsHelper.CallDeserialize(valueModel, reader)),
 
                             Expression.AddAssign(i, Expression.Constant(1)))
                         ),
@@ -174,12 +175,12 @@ public class DictionaryModelsGenerator : IModelsGenerator
             Expression.Loop(
                 Expression.IfThenElse(
                     Expression.And(
-                        Helper.CallEnumiratorMoveNext(keysEnumirator),
-                        Helper.CallEnumiratorMoveNext(valuesEnumirator)
+                        ExpressionsHelper.CallEnumiratorMoveNextGenerateTime(keysEnumirator),
+                        ExpressionsHelper.CallEnumiratorMoveNextGenerateTime(valuesEnumirator)
                         ),
                     Expression.Block(
-                        Helper.CallSerialize(keyMode, Helper.CallEnumiratorCurrent(keysEnumirator), writer),
-                        Helper.CallSerialize(valueModel, Helper.CallEnumiratorCurrent(valuesEnumirator), writer)
+                        ExpressionsHelper.CallSerialize(keyMode, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(keysEnumirator), writer),
+                        ExpressionsHelper.CallSerialize(valueModel, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(valuesEnumirator), writer)
                         ),
                     Expression.Break(breakLabel)
                     ),
@@ -193,12 +194,12 @@ public class DictionaryModelsGenerator : IModelsGenerator
             Expression.Loop(
                 Expression.IfThenElse(
                     Expression.And(
-                        Helper.CallEnumiratorMoveNext(keysEnumirator),
-                        Helper.CallEnumiratorMoveNext(valuesEnumirator)
+                        ExpressionsHelper.CallEnumiratorMoveNextGenerateTime(keysEnumirator),
+                        ExpressionsHelper.CallEnumiratorMoveNextGenerateTime(valuesEnumirator)
                         ),
                     Expression.Block(
-                        Expression.AddAssign(result, Helper.CallGetSize(keyMode, Helper.CallEnumiratorCurrent(keysEnumirator))),
-                        Expression.AddAssign(result, Helper.CallGetSize(valueModel, Helper.CallEnumiratorCurrent(valuesEnumirator)))
+                        Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(keyMode, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(keysEnumirator))),
+                        Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(valueModel, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(valuesEnumirator)))
                         ),
                     Expression.Break(breakLabel)
                 ),
@@ -210,8 +211,8 @@ public class DictionaryModelsGenerator : IModelsGenerator
 
 
     private Expression GetKeysEnumirator(Expression dictionary, Type valueType) =>
-        Helper.CallGetEnumirator(Expression.Property(dictionary, nameof(Dictionary<byte, byte>.Keys)), valueType);
+        ExpressionsHelper.CallGetEnumiratorGenerateTime(Expression.Property(dictionary, nameof(Dictionary<byte, byte>.Keys)), valueType);
 
     private Expression GetValuesEnumirator(Expression dictionary, Type enumType) =>
-       Helper.CallGetEnumirator(Expression.Property(dictionary, nameof(Dictionary<byte, byte>.Values)), enumType);
+       ExpressionsHelper.CallGetEnumiratorGenerateTime(Expression.Property(dictionary, nameof(Dictionary<byte, byte>.Values)), enumType);
 }
