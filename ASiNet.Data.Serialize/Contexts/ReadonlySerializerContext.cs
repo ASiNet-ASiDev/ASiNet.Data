@@ -6,9 +6,11 @@ using ASiNet.Data.Serialization.Models;
 namespace ASiNet.Data.Serialization.Contexts;
 public class ReadonlySerializerContext : BaseSerializerContext
 {
-    public ReadonlySerializerContext(GeneratorsSettings settings) : base(settings)
+    public ReadonlySerializerContext(GeneratorsSettings settings, params Type[] types) : base(settings)
     {
         var defaultContext = new DefaultSerializerContext(settings);
+        foreach (var type in types)
+            defaultContext.GetOrGenerate(type);
 
         _models = defaultContext.GetModels().ToFrozenDictionary();
         _modelsByHash = defaultContext.GetModelsByHash().ToFrozenDictionary();

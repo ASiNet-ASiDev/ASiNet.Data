@@ -187,8 +187,8 @@ public static class BinarySerializer
     /// </summary>
     /// <param name="settings"> Generators and Context settings. </param>
     /// <returns><see cref="ReadonlySerializerContext"/></returns>
-    public static ISerializerContext InitReadonlyContext(GeneratorsSettings? settings = null) =>
-        (_sharedSerializeContext = new Lazy<ISerializerContext>(() => new ReadonlySerializerContext(settings ?? new()))).Value;
+    public static ISerializerContext InitReadonlyContext(GeneratorsSettings? settings = null, params Type[] types) =>
+        (_sharedSerializeContext = new Lazy<ISerializerContext>(() => new ReadonlySerializerContext(settings ?? new(), types))).Value;
 
     /// <summary>
     /// Use your own context.
@@ -202,8 +202,8 @@ public static class BinarySerializer
     public static IBinarySerializer NewSerializer(GeneratorsSettings? settings = null) =>
         new BinarySerializer<DefaultSerializerContext>(new(settings ?? new()));
 
-    public static IBinarySerializer NewReadonlySerializer(GeneratorsSettings? settings = null) =>
-        new BinarySerializer<ReadonlySerializerContext>(new(settings ?? new()));
+    public static IBinarySerializer NewReadonlySerializer(GeneratorsSettings? settings = null, params Type[] types) =>
+        new BinarySerializer<ReadonlySerializerContext>(new(settings ?? new(), types));
 
     public static IBinarySerializer NewCustomSerializer<T>(T context) where T : ISerializerContext =>
         new BinarySerializer<T>(context);
