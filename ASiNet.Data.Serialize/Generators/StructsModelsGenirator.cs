@@ -34,7 +34,7 @@ public class StructsModelsGenirator : IModelsGenerator
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
 
         var body = Expression.Block(SerializeProperties(type, inst, writer, serializeContext, settings));
 
@@ -47,7 +47,7 @@ public class StructsModelsGenirator : IModelsGenerator
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
 
         var body = Expression.Block(DeserializeProperties(type, inst, reader, serializeContext, settings));
 

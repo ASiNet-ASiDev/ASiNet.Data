@@ -35,7 +35,7 @@ public class ListModelsGenerator : IModelsGenerator
         var itemsType = type.GetGenericArguments().First();
 
         var inst = Expression.Parameter(type, "inst");
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(itemsType, serializeContext);
         var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);
@@ -66,7 +66,7 @@ public class ListModelsGenerator : IModelsGenerator
         var type = typeof(T);
         var itemsType = type.GetGenericArguments().First();
 
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(itemsType, serializeContext);
         var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);

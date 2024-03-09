@@ -42,7 +42,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
         var valueType = type.GenericTypeArguments[1];
 
         var inst = Expression.Parameter(typeof(T), "inst");
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
 
         var keysEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(keyType), "ke");
         var valuesEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(valueType), "ve");
@@ -79,7 +79,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
         var valueType = type.GenericTypeArguments[1];
 
         var inst = Expression.Parameter(typeof(T), "inst");
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
         var count = Expression.Parameter(typeof(int), "count");
 
         var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);

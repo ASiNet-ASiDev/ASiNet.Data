@@ -4,7 +4,7 @@ namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 public class DoubleModel : SerializeModelBase<double>
 {
-    public override double Deserialize(ISerializeReader reader)
+    public override double Deserialize(in ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(double)))
         {
@@ -15,10 +15,10 @@ public class DoubleModel : SerializeModelBase<double>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader) => 
+    public override object? DeserializeToObject(in ISerializeReader reader) => 
         Deserialize(reader);
 
-    public override void Serialize(double obj, ISerializeWriter writer)
+    public override void Serialize(double obj, in ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(double)]);
         if (obj.TryToBytes(buffer))
@@ -30,7 +30,7 @@ public class DoubleModel : SerializeModelBase<double>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer) =>
+    public override void SerializeObject(object? obj, in ISerializeWriter writer) =>
         Serialize((double)obj!, writer);
 
 

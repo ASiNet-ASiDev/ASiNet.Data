@@ -34,7 +34,7 @@ public class NullableModelsGenerator : IModelsGenerator
     {
         var type = typeof(T);
         var inst = Expression.Parameter(typeof(T), "inst");
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(Nullable.GetUnderlyingType(type)!, serializeContext);
 
@@ -58,7 +58,7 @@ public class NullableModelsGenerator : IModelsGenerator
         var type = typeof(T);
         var underlyingType = Nullable.GetUnderlyingType(type)!;
 
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(underlyingType, serializeContext);
 

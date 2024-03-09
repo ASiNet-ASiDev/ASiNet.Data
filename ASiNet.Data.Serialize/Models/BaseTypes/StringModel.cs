@@ -4,7 +4,7 @@ using ASiNet.Data.Serialization.Interfaces;
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class StringModel : SerializeModelBase<string>
 {
-    public override string? Deserialize(ISerializeReader reader)
+    public override string? Deserialize(in ISerializeReader reader)
     {
         if(reader.ReadByte() == 0)
             return null;
@@ -25,10 +25,10 @@ public class StringModel : SerializeModelBase<string>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader) =>
+    public override object? DeserializeToObject(in ISerializeReader reader) =>
         Deserialize(reader);
 
-    public override void Serialize(string? obj, ISerializeWriter writer)
+    public override void Serialize(string? obj, in ISerializeWriter writer)
     {
         if(obj is null)
         {
@@ -51,7 +51,7 @@ public class StringModel : SerializeModelBase<string>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer) =>
+    public override void SerializeObject(object? obj, in ISerializeWriter writer) =>
         Serialize((string?)obj, writer);
 
     public override int ObjectSerializedSize(string? obj)

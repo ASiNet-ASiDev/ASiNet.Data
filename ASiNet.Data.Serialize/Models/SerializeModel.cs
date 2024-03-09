@@ -32,7 +32,7 @@ public class SerializeModel<T>(
     private DeserializeObjectDelegate<T>? _deserializeDelegate = deserialize;
     private GetObjectSizeDelegate<T>? _getSizeDelegate = getSize;
 
-    public virtual void SerializeObject(object? obj, ISerializeWriter writer)
+    public virtual void SerializeObject(object? obj, in ISerializeWriter writer)
     {
         if (_serializeDelegate is null)
             throw new NullReferenceException();
@@ -40,21 +40,21 @@ public class SerializeModel<T>(
             _serializeDelegate(value, writer);
     }
 
-    public virtual object? DeserializeToObject(ISerializeReader reader)
+    public virtual object? DeserializeToObject(in ISerializeReader reader)
     {
         if (_deserializeDelegate is null)
             throw new NullReferenceException();
         return _deserializeDelegate(reader);
     }
 
-    public virtual void Serialize(T obj, ISerializeWriter writer)
+    public virtual void Serialize(T obj, in ISerializeWriter writer)
     {
         if (_serializeDelegate is null)
             throw new NullReferenceException();
         _serializeDelegate(obj, writer);
     }
 
-    public virtual T? Deserialize(ISerializeReader reader)
+    public virtual T? Deserialize(in ISerializeReader reader)
     {
         if (_deserializeDelegate is null)
             throw new NullReferenceException();

@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class CharModel : SerializeModelBase<char>
 {
-    public override char Deserialize(ISerializeReader reader)
+    public override char Deserialize(in ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(char)))
         {
@@ -14,7 +14,7 @@ public class CharModel : SerializeModelBase<char>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(char)))
         {
@@ -25,7 +25,7 @@ public class CharModel : SerializeModelBase<char>
         throw new Exception();
     }
 
-    public override void Serialize(char obj, ISerializeWriter writer)
+    public override void Serialize(char obj, in ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(char)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class CharModel : SerializeModelBase<char>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer)
     {
         if (obj is char value)
         {

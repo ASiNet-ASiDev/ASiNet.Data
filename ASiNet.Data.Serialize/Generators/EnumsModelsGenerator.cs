@@ -33,7 +33,7 @@ public class EnumsModelsGenerator : IModelsGenerator
         var type = typeof(T);
         var enumUnderlyingType = type.GetEnumUnderlyingType();
 
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
         var inst = Expression.Parameter(type, "inst");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(enumUnderlyingType, serializeContext);
@@ -49,7 +49,7 @@ public class EnumsModelsGenerator : IModelsGenerator
         var type = typeof(T);
         var enumUnderlyingType = type.GetEnumUnderlyingType();
 
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(enumUnderlyingType, serializeContext);
 

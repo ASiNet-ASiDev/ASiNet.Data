@@ -32,7 +32,7 @@ public class InterfacesModelsGenerator : IModelsGenerator
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
         var typeProp = Expression.Parameter(typeof(Type), "type");
         var contextProperty = Expression.Parameter(typeof(ISerializerContext), "context");
         var modelProp = Expression.Parameter(typeof(ISerializeModel), "model");
@@ -90,7 +90,7 @@ public class InterfacesModelsGenerator : IModelsGenerator
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
 
         var contextProperty = Expression.Parameter(typeof(ISerializerContext), "context");
         var modelProp = Expression.Parameter(typeof(ISerializeModel), "model");

@@ -1,6 +1,9 @@
-﻿using ASiNet.Data.Serialization.Contexts;
+﻿using System.Net.Sockets;
+using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.IO.Arrays;
+using ASiNet.Data.Serialization.IO.Network;
+using ASiNet.Data.Serialization.IO.Streams;
 
 namespace ASiNet.Data.Serialization;
 
@@ -36,23 +39,6 @@ public static class BinarySerializer
         => Serialize<T>(obj, (ISerializeWriter)(ArrayWriter)buffer);
 
     /// <summary>
-    /// Serializes an object into bytes
-    /// </summary>
-    /// <param name="obj"> Serialized object </param>
-    /// <param name="buffer"> The buffer where the object will be serialized. Make sure that its size is sufficient to fit the entire object! </param>
-    /// <exception cref="Exceptions.GeneratorException"/>
-    /// <exception cref="Exceptions.SerializeException"/>
-    /// <exception cref="Exceptions.TypeNotSupportedException"/>
-    /// <exception cref="IndexOutOfRangeException"/>
-    /// <returns> The number of bytes written. </returns>
-    public static int Serialize<T>(T obj, ISerializeWriter writer)
-    {
-        var model = SerializeContext.GetOrGenerate<T>();
-        model.Serialize(obj, writer);
-        return writer.FilledBytes;
-    }
-
-    /// <summary>
     /// Deserializes an object from the buffer
     /// </summary>
     /// <param name="buffer"> Buffer from where the data will be read </param>
@@ -65,6 +51,98 @@ public static class BinarySerializer
         => Deserialize<T>((ISerializeReader)(ArrayReader)buffer);
 
     /// <summary>
+    /// Serializes an object into bytes
+    /// </summary>
+    /// <param name="obj"> Serialized object </param>
+    /// <param name="buffer"> The buffer where the object will be serialized. Make sure that its size is sufficient to fit the entire object! </param>
+    /// <exception cref="Exceptions.GeneratorException"/>
+    /// <exception cref="Exceptions.SerializeException"/>
+    /// <exception cref="Exceptions.TypeNotSupportedException"/>
+    /// <exception cref="IndexOutOfRangeException"/>
+    /// <returns> The number of bytes written. </returns>
+    public static int Serialize<T>(T obj, FileStream stream)
+        => Serialize<T>(obj, (ISerializeWriter)(FileStreamWriter)stream);
+
+    /// <summary>
+    /// Deserializes an object from the buffer
+    /// </summary>
+    /// <param name="buffer"> Buffer from where the data will be read </param>
+    /// <exception cref="Exceptions.GeneratorException"/>
+    /// <exception cref="Exceptions.DeserializeException"/>
+    /// <exception cref="Exceptions.TypeNotSupportedException"/>
+    /// <exception cref="IndexOutOfRangeException"/>
+    /// <returns> Deserialized object </returns>
+    public static T? Deserialize<T>(FileStream stream)
+        => Deserialize<T>((ISerializeReader)(FileStreamReader)stream);
+
+    /// <summary>
+    /// Serializes an object into bytes
+    /// </summary>
+    /// <param name="obj"> Serialized object </param>
+    /// <param name="buffer"> The buffer where the object will be serialized. Make sure that its size is sufficient to fit the entire object! </param>
+    /// <exception cref="Exceptions.GeneratorException"/>
+    /// <exception cref="Exceptions.SerializeException"/>
+    /// <exception cref="Exceptions.TypeNotSupportedException"/>
+    /// <exception cref="IndexOutOfRangeException"/>
+    /// <returns> The number of bytes written. </returns>
+    public static int Serialize<T>(T obj, MemoryStream stream)
+        => Serialize<T>(obj, (ISerializeWriter)(FileStreamWriter)stream);
+
+    /// <summary>
+    /// Deserializes an object from the buffer
+    /// </summary>
+    /// <param name="buffer"> Buffer from where the data will be read </param>
+    /// <exception cref="Exceptions.GeneratorException"/>
+    /// <exception cref="Exceptions.DeserializeException"/>
+    /// <exception cref="Exceptions.TypeNotSupportedException"/>
+    /// <exception cref="IndexOutOfRangeException"/>
+    /// <returns> Deserialized object </returns>
+    public static T? Deserialize<T>(MemoryStream stream)
+        => Deserialize<T>((ISerializeReader)(FileStreamReader)stream);
+
+    /// <summary>
+    /// Serializes an object into bytes
+    /// </summary>
+    /// <param name="obj"> Serialized object </param>
+    /// <param name="buffer"> The buffer where the object will be serialized. Make sure that its size is sufficient to fit the entire object! </param>
+    /// <exception cref="Exceptions.GeneratorException"/>
+    /// <exception cref="Exceptions.SerializeException"/>
+    /// <exception cref="Exceptions.TypeNotSupportedException"/>
+    /// <exception cref="IndexOutOfRangeException"/>
+    /// <returns> The number of bytes written. </returns>
+    public static int Serialize<T>(T obj, NetworkStream stream)
+        => Serialize<T>(obj, (ISerializeWriter)(NetworkStreamWriter)stream);
+
+    /// <summary>
+    /// Deserializes an object from the buffer
+    /// </summary>
+    /// <param name="buffer"> Buffer from where the data will be read </param>
+    /// <exception cref="Exceptions.GeneratorException"/>
+    /// <exception cref="Exceptions.DeserializeException"/>
+    /// <exception cref="Exceptions.TypeNotSupportedException"/>
+    /// <exception cref="IndexOutOfRangeException"/>
+    /// <returns> Deserialized object </returns>
+    public static T? Deserialize<T>(NetworkStream stream)
+        => Deserialize<T>((ISerializeReader)(NetworkStreamReader)stream);
+
+    /// <summary>
+    /// Serializes an object into bytes
+    /// </summary>
+    /// <param name="obj"> Serialized object </param>
+    /// <param name="buffer"> The buffer where the object will be serialized. Make sure that its size is sufficient to fit the entire object! </param>
+    /// <exception cref="Exceptions.GeneratorException"/>
+    /// <exception cref="Exceptions.SerializeException"/>
+    /// <exception cref="Exceptions.TypeNotSupportedException"/>
+    /// <exception cref="IndexOutOfRangeException"/>
+    /// <returns> The number of bytes written. </returns>
+    public static int Serialize<T>(T obj, in ISerializeWriter writer)
+    {
+        var model = SerializeContext.GetOrGenerate<T>();
+        model.Serialize(obj, writer);
+        return writer.FilledBytes;
+    }
+
+    /// <summary>
     /// Deserializes an object from the buffer
     /// </summary>
     /// <param name="reader"> Buffer from where the data will be read </param>
@@ -73,7 +151,7 @@ public static class BinarySerializer
     /// <exception cref="Exceptions.TypeNotSupportedException"/>
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> Deserialized object </returns>
-    public static T? Deserialize<T>(ISerializeReader reader)
+    public static T? Deserialize<T>(in ISerializeReader reader)
     {
         var model = SerializeContext.GetOrGenerate<T>();
         return model.Deserialize(reader);

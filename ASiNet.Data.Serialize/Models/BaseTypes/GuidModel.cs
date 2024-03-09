@@ -6,7 +6,7 @@ public class GuidModel : SerializeModelBase<Guid>
 {
     public const int GUID_SIZE = 16;
     
-    public override Guid Deserialize(ISerializeReader reader)
+    public override Guid Deserialize(in ISerializeReader reader)
     {
         if (reader.CanReadSize(GUID_SIZE))
         {
@@ -18,7 +18,7 @@ public class GuidModel : SerializeModelBase<Guid>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader)
     {
         if (reader.CanReadSize(GUID_SIZE))
         {
@@ -29,7 +29,7 @@ public class GuidModel : SerializeModelBase<Guid>
         throw new Exception();
     }
 
-    public override void Serialize(Guid obj, ISerializeWriter writer)
+    public override void Serialize(Guid obj, in ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[GUID_SIZE]);
         
@@ -41,7 +41,7 @@ public class GuidModel : SerializeModelBase<Guid>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer)
     {
         if (obj is Guid value)
         {

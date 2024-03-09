@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class BooleanModel : SerializeModelBase<bool>
 {
-    public override bool Deserialize(ISerializeReader reader)
+    public override bool Deserialize(in ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(bool)))
         {
@@ -14,7 +14,7 @@ public class BooleanModel : SerializeModelBase<bool>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(bool)))
         {
@@ -25,7 +25,7 @@ public class BooleanModel : SerializeModelBase<bool>
         throw new Exception();
     }
 
-    public override void Serialize(bool obj, ISerializeWriter writer)
+    public override void Serialize(bool obj, in ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(bool)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class BooleanModel : SerializeModelBase<bool>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer)
     {
         if (obj is bool value)
         {

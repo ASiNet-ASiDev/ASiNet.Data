@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
@@ -34,7 +33,7 @@ public class ArraysModelsGenerator : IModelsGenerator
         var itemsType = type.GetElementType()!;
 
         var inst = Expression.Parameter(type, "inst");
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(itemsType, serializeContext);
         var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);
@@ -64,7 +63,7 @@ public class ArraysModelsGenerator : IModelsGenerator
         var type = typeof(T);
         var itemsType = type.GetElementType()!;
 
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(itemsType, serializeContext);
         var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);

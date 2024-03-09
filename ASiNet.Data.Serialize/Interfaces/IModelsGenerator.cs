@@ -2,9 +2,9 @@
 
 namespace ASiNet.Data.Serialization.Interfaces;
 
-public delegate void SerializeObjectDelegate<T>(T? obj, ISerializeWriter writer);
+public delegate void SerializeObjectDelegate<T>(T? obj, in ISerializeWriter writer);
 
-public delegate T? DeserializeObjectDelegate<T>(ISerializeReader reader);
+public delegate T? DeserializeObjectDelegate<T>(in ISerializeReader reader);
 
 public delegate int GetObjectSizeDelegate<T>(T? obj);
 /// <summary>

@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class Int32Model : SerializeModelBase<int>
 {
-    public override int Deserialize(ISerializeReader reader)
+    public override int Deserialize(in ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(int)))
         {
@@ -14,7 +14,7 @@ public class Int32Model : SerializeModelBase<int>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader)
     {
         if (reader.CanReadSize(sizeof(int)))
         {
@@ -25,7 +25,7 @@ public class Int32Model : SerializeModelBase<int>
         throw new Exception();
     }
 
-    public override void Serialize(int obj, ISerializeWriter writer)
+    public override void Serialize(int obj, in ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[sizeof(int)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class Int32Model : SerializeModelBase<int>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer)
     {
         if (obj is int value)
         {

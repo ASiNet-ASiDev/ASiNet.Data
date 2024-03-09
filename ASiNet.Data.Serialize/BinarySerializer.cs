@@ -16,7 +16,7 @@ public class BinarySerializer<TContext>(TContext context) : IBinarySerializer wh
     public int Serialize<T>(T obj, byte[] buffer)
         => Serialize<T>(obj, (ISerializeWriter)(ArrayWriter)buffer);
 
-    public int Serialize<T>(T obj, ISerializeWriter writer)
+    public int Serialize<T>(T obj, in ISerializeWriter writer)
     {
         var model = SerializeContext.GetOrGenerate<T>();
         model.Serialize(obj, writer);
@@ -26,7 +26,7 @@ public class BinarySerializer<TContext>(TContext context) : IBinarySerializer wh
     public T? Deserialize<T>(byte[] buffer)
         => Deserialize<T>((ISerializeReader)(ArrayReader)buffer);
 
-    public T? Deserialize<T>(ISerializeReader reader)
+    public T? Deserialize<T>(in ISerializeReader reader)
     {
         var model = SerializeContext.GetOrGenerate<T>();
         return model.Deserialize(reader);

@@ -33,7 +33,7 @@ public interface IBinarySerializer
     /// <exception cref="Exceptions.TypeNotSupportedException"/>
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> The number of bytes written. </returns>
-    public int Serialize<T>(T obj, ISerializeWriter writer);
+    public int Serialize<T>(T obj, in ISerializeWriter writer);
 
     /// <summary>
     /// Deserializes an object from the buffer
@@ -55,5 +55,5 @@ public interface IBinarySerializer
     /// <exception cref="Exceptions.TypeNotSupportedException"/>
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> Deserialized object </returns>
-    public T? Deserialize<T>(ISerializeReader reader);
+    public T? Deserialize<T>(in ISerializeReader reader);
 }

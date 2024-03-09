@@ -36,7 +36,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
-        var writer = Expression.Parameter(typeof(ISerializeWriter), "writer");
+        var writer = Expression.Parameter(typeof(ISerializeWriter).MakeByRefType(), "writer");
 
         var body = Expression.IfThenElse(
             // CHECK NULL VALUE
@@ -60,7 +60,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
     {
         var type = typeof(T);
         var inst = Expression.Parameter(type, "inst");
-        var reader = Expression.Parameter(typeof(ISerializeReader), "reader");
+        var reader = Expression.Parameter(typeof(ISerializeReader).MakeByRefType(), "reader");
 
         var body = Expression.IfThen(
             // READ NULLABLE BYTE

@@ -7,22 +7,22 @@ public class DateTimeModel : SerializeModelBase<DateTime>
     private Lazy<SerializeModel<long>> _longSerializeModel =
         new(() => BinarySerializer.SerializeContext.GetOrGenerate<long>()!);
 
-    public override DateTime Deserialize(ISerializeReader reader)
+    public override DateTime Deserialize(in ISerializeReader reader)
     {
         return DateTime.FromBinary(_longSerializeModel.Value.Deserialize(reader));
     }
 
-    public override void Serialize(DateTime obj, ISerializeWriter writer)
+    public override void Serialize(DateTime obj, in ISerializeWriter writer)
     {
         _longSerializeModel.Value.SerializeObject(obj.ToBinary(), writer);
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader)
     {
         return Deserialize(reader);
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer)
     {
         Serialize((DateTime)obj!, writer);
     }
@@ -35,22 +35,22 @@ public class TimeSpanModel : SerializeModelBase<TimeSpan>
     private Lazy<SerializeModel<long>> _longSerializeModel =
         new(() => BinarySerializer.SerializeContext.GetOrGenerate<long>()!);
 
-    public override TimeSpan Deserialize(ISerializeReader reader)
+    public override TimeSpan Deserialize(in ISerializeReader reader)
     {
         return TimeSpan.FromTicks(_longSerializeModel.Value.Deserialize(reader));
     }
 
-    public override void Serialize(TimeSpan obj, ISerializeWriter writer)
+    public override void Serialize(TimeSpan obj, in ISerializeWriter writer)
     {
         _longSerializeModel.Value.SerializeObject(obj.Ticks, writer);
     }
 
-    public override object? DeserializeToObject(ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader)
     {
         return Deserialize(reader);
     }
 
-    public override void SerializeObject(object? obj, ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer)
     {
         Serialize((TimeSpan)obj!, writer);
     }
