@@ -1,9 +1,33 @@
-﻿using System.Text;
+﻿using System.Net.Sockets;
+using System.Text;
+using ASiNet.Data.Serialization.Interfaces;
+using ASiNet.Data.Serialization.IO.Network;
+using ASiNet.Data.Serialization.IO.Streams;
 
 namespace ASiNet.Data.Serialization;
 
 public static class DataBinaryExtensions
 {
+
+    public static int Serialize<T>(this IBinarySerializer serializer, T obj, FileStream stream)
+        => serializer.Serialize<T>(obj, (FileStreamWriter)stream);
+
+    public static T? Deserialize<T>(this IBinarySerializer serializer, FileStream stream)
+        => serializer.Deserialize<T>((FileStreamReader)stream);
+
+    public static int Serialize<T>(this IBinarySerializer serializer, T obj, MemoryStream stream)
+        => serializer.Serialize<T>(obj, (FileStreamWriter)stream);
+
+    public static T? Deserialize<T>(this IBinarySerializer serializer, MemoryStream stream)
+        => serializer.Deserialize<T>((FileStreamReader)stream);
+
+    public static int Serialize<T>(this IBinarySerializer serializer, T obj, NetworkStream stream)
+        => serializer.Serialize<T>(obj, (NetworkStreamWriter)stream);
+
+    public static T? Deserialize<T>(this IBinarySerializer serializer, NetworkStream stream)
+        => serializer.Deserialize<T>((NetworkStreamReader)stream);
+
+
     public static bool TryToBytes(this sbyte src, Span<byte> buffer)
     {
         if (buffer.Length == 0)
