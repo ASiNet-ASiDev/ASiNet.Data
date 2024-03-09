@@ -130,8 +130,6 @@ public class StructsModelsGenirator : IModelsGenerator
 
     private IEnumerable<Expression> GetSizeEnumirable(Type type, Expression inst, Expression result, ISerializerContext serializeContext, GeneratorsSettings settings)
     {
-        yield return Expression.Assign(result, Expression.Constant(1, typeof(int)));
-
         if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {
             foreach (var pi in Helper.EnumerateProperties(type))
