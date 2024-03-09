@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-using ASiNet.Data.Serialization.Contexts;
+﻿using System.Linq.Expressions;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
@@ -15,6 +7,11 @@ using ASiNet.Data.Serialization.Models;
 namespace ASiNet.Data.Serialization.Generators;
 public class DictionaryModelsGenerator : IModelsGenerator
 {
+    public bool CanGenerateModelForType(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+
+    public bool CanGenerateModelForType<T>() =>
+        CanGenerateModelForType(typeof(T));
+
     public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
@@ -46,12 +43,12 @@ public class DictionaryModelsGenerator : IModelsGenerator
 
         var keysEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(keyType), "ke");
         var valuesEnumirator = Expression.Parameter(typeof(IEnumerator<>).MakeGenericType(valueType), "ve");
-        
+
         var intModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(typeof(int), serializeContext);
         var keyModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(keyType, serializeContext);
         var valueModel = ExpressionsHelper.GetOrGenerateModelGenerateTime(valueType, serializeContext);
 
-        var body = 
+        var body =
             Expression.IfThenElse(
                 // CHECK NULL VALUE
                 Expression.NotEqual(
@@ -145,7 +142,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
     {
         var i = Expression.Parameter(typeof(int), "i");
         var breakLabel = Expression.Label("LoopBreak");
-        return 
+        return
             Expression.Block([i],
                 Expression.Assign(i, Expression.Constant(0)),
                 Expression.Loop(
@@ -156,8 +153,8 @@ public class DictionaryModelsGenerator : IModelsGenerator
 
                         Expression.Block(
                             Expression.Call(
-                                inst, 
-                                nameof(Dictionary<byte, byte>.Add), 
+                                inst,
+                                nameof(Dictionary<byte, byte>.Add),
                                 null,
                                 ExpressionsHelper.CallDeserialize(keyMode, reader),
                                 ExpressionsHelper.CallDeserialize(valueModel, reader)),
@@ -190,7 +187,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
     private Expression GetElementsSize(Expression keysEnumirator, Expression valuesEnumirator, Expression keyMode, Expression valueModel, Expression result)
     {
         var breakLabel = Expression.Label("LoopBreak");
-        return 
+        return
             Expression.Loop(
                 Expression.IfThenElse(
                     Expression.And(

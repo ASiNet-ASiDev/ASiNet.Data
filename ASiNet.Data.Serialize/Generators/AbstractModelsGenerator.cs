@@ -5,8 +5,12 @@ using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
 
 namespace ASiNet.Data.Serialization.Generators;
-public class InterfacesModelsGenerator : IModelsGenerator
+public class AbstractModelsGenerator : IModelsGenerator
 {
+    public bool CanGenerateModelForType(Type type) => type.IsInterface || type.IsAbstract;
+
+    public bool CanGenerateModelForType<T>() => typeof(T).IsInterface || typeof(T).IsAbstract;
+
     public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try

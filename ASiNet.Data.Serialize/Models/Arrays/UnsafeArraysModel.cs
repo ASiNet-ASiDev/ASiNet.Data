@@ -55,7 +55,7 @@ public class Int32ArrayModel : SerializeModelBase<int[]>
     {
         if (ArrayHelper.IsNullArray(obj, writer))
             return;
-            
+
         writer.WriteByte(1);
 
         var arrBytesLength = obj!.Length * sizeof(int);
@@ -67,7 +67,7 @@ public class Int32ArrayModel : SerializeModelBase<int[]>
 
     public override int[]? Deserialize(in ISerializeReader reader)
     {
-        if(reader.ReadByte() == 0)
+        if (reader.ReadByte() == 0)
             return null;
 
         var length = ArrayHelper.ReadLength(reader);
@@ -84,9 +84,9 @@ public class Int32ArrayModel : SerializeModelBase<int[]>
     public override object? DeserializeToObject(in ISerializeReader reader) =>
         Deserialize(reader);
 
-    public override int ObjectSerializedSize(int[]? obj) => 
+    public override int ObjectSerializedSize(int[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(int), obj is null);
-    
+
 }
 
 public class UInt32ArrayModel : SerializeModelBase<uint[]>

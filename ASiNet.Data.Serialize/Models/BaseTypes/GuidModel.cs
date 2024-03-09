@@ -5,14 +5,14 @@ namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class GuidModel : SerializeModelBase<Guid>
 {
     public const int GUID_SIZE = 16;
-    
+
     public override Guid Deserialize(in ISerializeReader reader)
     {
         if (reader.CanReadSize(GUID_SIZE))
         {
             var buffer = (stackalloc byte[GUID_SIZE]);
             reader.ReadBytes(buffer);
-            
+
             return new Guid(buffer);
         }
         throw new Exception();
@@ -32,7 +32,7 @@ public class GuidModel : SerializeModelBase<Guid>
     public override void Serialize(Guid obj, in ISerializeWriter writer)
     {
         var buffer = (stackalloc byte[GUID_SIZE]);
-        
+
         if (obj.TryWriteBytes(buffer))
         {
             writer.WriteBytes(buffer);

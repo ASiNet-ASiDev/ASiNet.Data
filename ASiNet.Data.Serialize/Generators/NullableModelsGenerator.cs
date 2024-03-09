@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
@@ -8,6 +7,11 @@ using ASiNet.Data.Serialization.Models;
 namespace ASiNet.Data.Serialization.Generators;
 public class NullableModelsGenerator : IModelsGenerator
 {
+    public bool CanGenerateModelForType(Type type) =>
+        type.IsValueType && Nullable.GetUnderlyingType(type) is not null;
+
+    public bool CanGenerateModelForType<T>() =>
+        CanGenerateModelForType(typeof(T));
 
     public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {

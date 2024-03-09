@@ -1,7 +1,6 @@
 ﻿using System.Net.Sockets;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
-using ASiNet.Data.Serialization.IO.Arrays;
 
 namespace ASiNet.Data.Serialization.IO.Network;
 public class NetworkStreamReader(NetworkStream stream) : ISerializeReader

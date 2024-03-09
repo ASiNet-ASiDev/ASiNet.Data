@@ -6,7 +6,7 @@ public class StringModel : SerializeModelBase<string>
 {
     public override string? Deserialize(in ISerializeReader reader)
     {
-        if(reader.ReadByte() == 0)
+        if (reader.ReadByte() == 0)
             return null;
 
         if (reader.CanReadSize(sizeof(int)))
@@ -30,9 +30,9 @@ public class StringModel : SerializeModelBase<string>
 
     public override void Serialize(string? obj, in ISerializeWriter writer)
     {
-        if(obj is null)
+        if (obj is null)
         {
-            writer.WriteByte(0); 
+            writer.WriteByte(0);
             return;
         }
         else
@@ -56,7 +56,7 @@ public class StringModel : SerializeModelBase<string>
 
     public override int ObjectSerializedSize(string? obj)
     {
-        if(obj is null)
+        if (obj is null)
             return 1;
         return 1 + 4 + Encoding.UTF8.GetByteCount(obj);
     }

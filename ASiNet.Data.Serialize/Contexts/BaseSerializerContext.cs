@@ -6,7 +6,7 @@ public abstract class BaseSerializerContext(GeneratorsSettings settings) : ISeri
 {
     protected GeneratorsSettings Settings { get; init; } = settings;
 
-    public abstract void AddGegerator(Predicate<Type> Comparer, IModelsGenerator Generator);
+    public abstract void AddGegerator(IModelsGenerator generator);
 
     public abstract void AddModel(ISerializeModel model);
 

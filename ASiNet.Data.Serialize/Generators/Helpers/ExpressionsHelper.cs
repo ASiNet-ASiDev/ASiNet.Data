@@ -26,8 +26,8 @@ internal static class ExpressionsHelper
 
     public static Expression GetOrGenerateModelSerializeTime(Expression type, Expression serializeContext) =>
         Expression.Call(
-            serializeContext, 
-            nameof(ISerializerContext.GetOrGenerate), 
+            serializeContext,
+            nameof(ISerializerContext.GetOrGenerate),
             null,
             type
             );
@@ -41,13 +41,13 @@ internal static class ExpressionsHelper
 
     public static Expression GetOrGenerateModelByHash(Expression reader, Expression serializeContext) =>
         Expression.Call(
-            serializeContext, 
-            nameof(ISerializerContext.GetOrGenerateByHash), 
+            serializeContext,
+            nameof(ISerializerContext.GetOrGenerateByHash),
             null,
             Expression.Call(
-                typeof(Helper), 
-                nameof(Helper.ReadTypeHash), 
-                null, 
+                typeof(Helper),
+                nameof(Helper.ReadTypeHash),
+                null,
                 reader)
             );
 

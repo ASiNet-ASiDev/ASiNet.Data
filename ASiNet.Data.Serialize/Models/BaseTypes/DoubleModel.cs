@@ -15,7 +15,7 @@ public class DoubleModel : SerializeModelBase<double>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader) => 
+    public override object? DeserializeToObject(in ISerializeReader reader) =>
         Deserialize(reader);
 
     public override void Serialize(double obj, in ISerializeWriter writer)

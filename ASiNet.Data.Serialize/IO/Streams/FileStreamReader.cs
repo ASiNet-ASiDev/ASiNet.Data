@@ -1,4 +1,3 @@
-using System.Net.Sockets;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Interfaces;
 

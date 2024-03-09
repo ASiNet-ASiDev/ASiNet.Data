@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
@@ -8,6 +7,10 @@ using ASiNet.Data.Serialization.Models;
 namespace ASiNet.Data.Serialization.Generators;
 public class EnumsModelsGenerator : IModelsGenerator
 {
+    public bool CanGenerateModelForType(Type type) => type.IsEnum;
+
+    public bool CanGenerateModelForType<T>() => typeof(T).IsEnum;
+
     public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
@@ -73,9 +76,9 @@ public class EnumsModelsGenerator : IModelsGenerator
             Expression.Assign(
                 result,
                 ExpressionsHelper.CallGetSizeGenerateTime(
-                    model, 
+                    model,
                     Expression.Convert(
-                        inst, 
+                        inst,
                         enumUnderlyingType)
                     )
                 ),

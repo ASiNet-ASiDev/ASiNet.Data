@@ -1,6 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Reflection;
-using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
@@ -9,6 +7,13 @@ using ASiNet.Data.Serialization.Models;
 namespace ASiNet.Data.Serialization.Generators;
 public class ListModelsGenerator : IModelsGenerator
 {
+
+    public bool CanGenerateModelForType(Type type) =>
+        type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
+
+    public bool CanGenerateModelForType<T>() =>
+        CanGenerateModelForType(typeof(T));
+
     public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
@@ -164,7 +169,7 @@ public class ListModelsGenerator : IModelsGenerator
                     // ADD AND DESERIALIZE ELEMENT
                     Expression.Block(
                         Expression.Call(list, nameof(List<byte>.Add), null, ExpressionsHelper.CallDeserialize(model, reader)),
-                        Expression.AddAssign(i, Expression.Constant(1)))  
+                        Expression.AddAssign(i, Expression.Constant(1)))
                     ),
                 breakLabel)
             );

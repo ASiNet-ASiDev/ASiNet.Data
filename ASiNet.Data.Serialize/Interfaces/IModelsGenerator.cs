@@ -12,6 +12,9 @@ public delegate int GetObjectSizeDelegate<T>(T? obj);
 /// </summary>
 public interface IModelsGenerator
 {
+    public bool CanGenerateModelForType(Type type);
+    public bool CanGenerateModelForType<T>();
+
     /// <summary>
     /// Create a new model
     /// </summary>

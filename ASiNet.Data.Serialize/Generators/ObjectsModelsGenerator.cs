@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using ASiNet.Data.Serialization.Attributes;
-using ASiNet.Data.Serialization.Contexts;
 using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
@@ -11,6 +10,12 @@ namespace ASiNet.Data.Serialization.Generators;
 
 public class ObjectsModelsGenerator : IModelsGenerator
 {
+    public bool CanGenerateModelForType(Type type) =>
+        !type.IsArray && !type.IsValueType && !type.IsInterface && !type.IsAbstract;
+
+    public bool CanGenerateModelForType<T>() =>
+        CanGenerateModelForType(typeof(T));
+
     public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
@@ -104,7 +109,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
         // WRITE NULLABLR BYTE!
         yield return ExpressionsHelper.WriteNullableByteGenerateTime(writer, 1);
 
-        if(!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
+        if (!settings.GlobalIgnoreProperties || type.GetCustomAttribute<IgnorePropertiesAttribute>() is not null)
         {
             // WRITE OBJECT PROPERTIES!
             foreach (var pi in Helper.EnumerateProperties(type))
@@ -165,7 +170,7 @@ public class ObjectsModelsGenerator : IModelsGenerator
                 var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
                 yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
-        }
+            }
         }
 
         if (!settings.GlobalIgnoreFields || type.GetCustomAttribute<IgnoreFieldsAttribute>() is not null)

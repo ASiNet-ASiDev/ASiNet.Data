@@ -31,7 +31,7 @@ public interface ISerializerContext
     public ISerializeModel GetModelByHash(string hash);
 
 
-    public void AddGegerator(Predicate<Type> Comparer, IModelsGenerator Generator);
+    public void AddGegerator(IModelsGenerator generator);
 
     public bool RemoveGegerator(IModelsGenerator Generator);
 

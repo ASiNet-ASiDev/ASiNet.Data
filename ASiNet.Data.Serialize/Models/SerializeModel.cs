@@ -16,8 +16,8 @@ public class SerializeModel<T>(
 
     private readonly Lazy<Type> _objType = new(() => typeof(T));
 
-    private readonly Lazy<(byte[] BytesHash, string Hash)> _typeHash = new(() => 
-    { 
+    private readonly Lazy<(byte[] BytesHash, string Hash)> _typeHash = new(() =>
+    {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(typeof(T).FullName ?? typeof(T).Name));
         var str = Convert.ToHexString(bytes);
         return (bytes, str);

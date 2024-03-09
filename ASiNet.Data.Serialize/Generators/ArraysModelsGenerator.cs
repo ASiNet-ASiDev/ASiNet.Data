@@ -7,6 +7,10 @@ using ASiNet.Data.Serialization.Models;
 namespace ASiNet.Data.Serialization.Generators;
 public class ArraysModelsGenerator : IModelsGenerator
 {
+    public bool CanGenerateModelForType(Type type) => type.IsArray;
+
+    public bool CanGenerateModelForType<T>() => typeof(T).IsArray;
+
     public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {
         try
@@ -183,4 +187,5 @@ public class ArraysModelsGenerator : IModelsGenerator
                 breakLabel)
             );
     }
+
 }

@@ -30,33 +30,19 @@ public class DefaultSerializerContext : BaseSerializerContext
         _modelsByHash = new(GenerateModelsByHashDictionary);
     }
 
-    private ObjectsModelsGenerator _objectsGenerator { get; init; } = new();
-
     private Dictionary<Type, ISerializeModel> _models = [];
 
     private Lazy<Dictionary<string, ISerializeModel>> _modelsByHash;
 
-    private List<(Predicate<Type> Comparer, IModelsGenerator Generator)> _generators = [
-        (type => type.IsEnum,
-            new EnumsModelsGenerator()),
-
-        (type => type.IsInterface || type.IsAbstract,
-            new InterfacesModelsGenerator()),
-
-        (type => type.IsValueType && Nullable.GetUnderlyingType(type) is not null,
-            new NullableModelsGenerator()),
-
-        (type => type.IsValueType && !type.IsEnum,
-            new StructsModelsGenirator()),
-
-        (type => type.IsArray,
-            new ArraysModelsGenerator()),
-
-        (type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>),
-            new ListModelsGenerator()),
-
-        (type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>),
-            new DictionaryModelsGenerator()),
+    private List<IModelsGenerator> _generators = [
+        new EnumsModelsGenerator(),
+        new AbstractModelsGenerator(),
+        new NullableModelsGenerator(),
+        new StructsModelsGenirator(),
+        new ArraysModelsGenerator(),
+        new ListModelsGenerator(),
+        new DictionaryModelsGenerator(),
+        new ObjectsModelsGenerator(),
         ];
 
     public Dictionary<Type, ISerializeModel> GetModels() =>
@@ -85,8 +71,8 @@ public class DefaultSerializerContext : BaseSerializerContext
     {
         var type = typeof(T);
 
-        var generator = _generators.FirstOrDefault(x => x.Comparer.Invoke(type)).Generator
-            ?? _objectsGenerator;
+        var generator = _generators.FirstOrDefault(x => x.CanGenerateModelForType(type))
+            ?? throw new GeneratorException(new NullReferenceException("Generator not found"));
 
         var newModel = generator.GenerateModel<T>(this, Settings)
             ?? throw new GeneratorException(new NullReferenceException("model is null"));
@@ -106,8 +92,8 @@ public class DefaultSerializerContext : BaseSerializerContext
 
         var type = typeof(T);
 
-        var generator = _generators.FirstOrDefault(x => x.Comparer.Invoke(type)).Generator
-            ?? _objectsGenerator;
+        var generator = _generators.FirstOrDefault(x => x.CanGenerateModelForType(type))
+            ?? throw new GeneratorException(new NullReferenceException("Generator not found"));
 
         var newModel = generator.GenerateModel<T>(this, Settings)
             ?? throw new GeneratorException(new NullReferenceException("model is null"));
@@ -132,7 +118,7 @@ public class DefaultSerializerContext : BaseSerializerContext
 
     public override ISerializeModel GetModelByHash(string hash)
     {
-        if(_modelsByHash.Value.TryGetValue(hash, out ISerializeModel? model))
+        if (_modelsByHash.Value.TryGetValue(hash, out ISerializeModel? model))
             return model;
 
         throw new ContextException(new ArgumentException("The model for this hash was not found."));
@@ -146,12 +132,12 @@ public class DefaultSerializerContext : BaseSerializerContext
         throw new ContextException(new NotImplementedException("This context does not support hash key model generation."));
     }
 
-    public override void AddGegerator(Predicate<Type> Comparer, IModelsGenerator Generator) =>
-        _generators.Add((Comparer, Generator));
+    public override void AddGegerator(IModelsGenerator generator) =>
+        _generators.Add(generator);
 
-    public override bool RemoveGegerator(IModelsGenerator Generator)
+    public override bool RemoveGegerator(IModelsGenerator generator)
     {
-        var it = _generators.FirstOrDefault(x => x.Generator == Generator);
+        var it = _generators.FirstOrDefault(x => x == generator);
         if (it == default)
             return false;
         return _generators.Remove(it);
@@ -169,7 +155,7 @@ public class DefaultSerializerContext : BaseSerializerContext
         var result = new Dictionary<string, ISerializeModel>();
         foreach (var item in _models.Values)
         {
-            if(!result.TryAdd(item.TypeHash, item))
+            if (!result.TryAdd(item.TypeHash, item))
                 throw new ContextException(
                     new Exception($"It was not possible to add a model with <{item.ObjType.FullName}, {item.TypeHash}> cache, since a model with this hash already exists."));
         }
@@ -179,9 +165,9 @@ public class DefaultSerializerContext : BaseSerializerContext
 
     private void AddByHashModel(ISerializeModel model)
     {
-        if(_modelsByHash.IsValueCreated)
+        if (_modelsByHash.IsValueCreated)
         {
-            if(!_modelsByHash.Value.TryAdd(model.TypeHash, model))
+            if (!_modelsByHash.Value.TryAdd(model.TypeHash, model))
                 throw new ContextException(
                     new Exception($"It was not possible to add a model with <{model.ObjType.FullName}, {model.TypeHash}> cache, since a model with this hash already exists."));
         }
