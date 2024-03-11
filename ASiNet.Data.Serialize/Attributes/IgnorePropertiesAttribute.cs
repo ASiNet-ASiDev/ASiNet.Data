@@ -3,7 +3,7 @@
 /// <summary>
 /// Ignore all properties of the object. IT IS USED ONLY WHEN CREATING A MODEL!
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface)]
 public class IgnorePropertiesAttribute : Attribute
 {
 }
