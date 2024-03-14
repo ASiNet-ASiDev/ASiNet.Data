@@ -32,7 +32,7 @@ public class DefaultSerializerContext : BaseSerializerContext
 
     private Dictionary<Type, ISerializeModel> _models = [];
 
-    private Lazy<Dictionary<string, ISerializeModel>> _modelsByHash;
+    private Lazy<Dictionary<long, ISerializeModel>> _modelsByHash;
 
     private List<IModelsGenerator> _generators = [
         new EnumsModelsGenerator(),
@@ -48,7 +48,7 @@ public class DefaultSerializerContext : BaseSerializerContext
     public Dictionary<Type, ISerializeModel> GetModels() =>
         _models;
 
-    public Dictionary<string, ISerializeModel> GetModelsByHash() =>
+    public Dictionary<long, ISerializeModel> GetModelsByHash() =>
         _modelsByHash.Value;
 
     public override void AddModel(ISerializeModel model)
@@ -116,7 +116,7 @@ public class DefaultSerializerContext : BaseSerializerContext
         return null;
     }
 
-    public override ISerializeModel GetModelByHash(string hash)
+    public override ISerializeModel GetModelByHash(long hash)
     {
         if (_modelsByHash.Value.TryGetValue(hash, out ISerializeModel? model))
             return model;
@@ -124,7 +124,7 @@ public class DefaultSerializerContext : BaseSerializerContext
         throw new ContextException(new ArgumentException("The model for this hash was not found."));
     }
 
-    public override ISerializeModel GetOrGenerateByHash(string hash)
+    public override ISerializeModel GetOrGenerateByHash(long hash)
     {
         if (_modelsByHash.Value.TryGetValue(hash, out ISerializeModel? model))
             return model;
@@ -150,9 +150,9 @@ public class DefaultSerializerContext : BaseSerializerContext
         _models.ContainsKey(type);
 
 
-    private Dictionary<string, ISerializeModel> GenerateModelsByHashDictionary()
+    private Dictionary<long, ISerializeModel> GenerateModelsByHashDictionary()
     {
-        var result = new Dictionary<string, ISerializeModel>();
+        var result = new Dictionary<long, ISerializeModel>();
         foreach (var item in _models.Values)
         {
             if (!result.TryAdd(item.TypeHash, item))

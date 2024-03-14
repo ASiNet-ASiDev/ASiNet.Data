@@ -233,15 +233,15 @@ public struct TestStruct
 
 public class ArraysTest
 {
-    public int[] A { get; set; } = [ -1];
+    public int[] A { get; set; } = [-1];
 
     public uint[] A1 { get; set; } = [1];
 
-    public short[] B { get; set; } = [ -10];
+    public short[] B { get; set; } = [-10];
 
     public ushort[] B1 { get; set; } = [10];
 
-    public long[] C { get; set; } = [ -80];
+    public long[] C { get; set; } = [-80];
 
     public ulong[] C1 { get; set; } = [80];
 
@@ -253,7 +253,7 @@ public class ArraysTest
 
     public byte[] E { get; set; } = [70];
 
-    public sbyte[] E1 { get; set; } = [ -70];
+    public sbyte[] E1 { get; set; } = [-70];
 
     public DateTime[] Dt { get; set; } = [DateTime.Now];
 

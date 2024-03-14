@@ -26,8 +26,8 @@ public abstract class BaseSerializerContext(GeneratorsSettings settings) : ISeri
     public abstract SerializeModel<T> GetOrGenerate<T>();
 
 
-    public abstract ISerializeModel GetModelByHash(string hash);
-    public abstract ISerializeModel GetOrGenerateByHash(string hash);
+    public abstract ISerializeModel GetModelByHash(long hash);
+    public abstract ISerializeModel GetOrGenerateByHash(long hash);
 
 
     public abstract bool RemoveGegerator(IModelsGenerator Generator);

@@ -27,8 +27,8 @@ public interface ISerializerContext
     public SerializeModel<T>? GetModel<T>();
 
 
-    public ISerializeModel GetOrGenerateByHash(string hash);
-    public ISerializeModel GetModelByHash(string hash);
+    public ISerializeModel GetOrGenerateByHash(long hash);
+    public ISerializeModel GetModelByHash(long hash);
 
 
     public void AddGegerator(IModelsGenerator generator);

@@ -18,7 +18,7 @@ public class ReadonlySerializerContext : BaseSerializerContext
 
     private readonly FrozenDictionary<Type, ISerializeModel> _models;
 
-    private FrozenDictionary<string, ISerializeModel> _modelsByHash;
+    private FrozenDictionary<long, ISerializeModel> _modelsByHash;
 
     public override bool ContainsModel<T>() =>
         _models.ContainsKey(typeof(T));
@@ -67,7 +67,7 @@ public class ReadonlySerializerContext : BaseSerializerContext
 
     public override bool RemoveGegerator(IModelsGenerator generator) => throw new ContextException(new NotImplementedException("Method not supported!"));
 
-    public override ISerializeModel GetModelByHash(string hash)
+    public override ISerializeModel GetModelByHash(long hash)
     {
         if (_modelsByHash.TryGetValue(hash, out ISerializeModel? model))
             return model;
@@ -75,7 +75,7 @@ public class ReadonlySerializerContext : BaseSerializerContext
         throw new ContextException(new ArgumentException("The model for this hash was not found."));
     }
 
-    public override ISerializeModel GetOrGenerateByHash(string hash)
+    public override ISerializeModel GetOrGenerateByHash(long hash)
     {
         if (_modelsByHash.TryGetValue(hash, out ISerializeModel? model))
             return model;

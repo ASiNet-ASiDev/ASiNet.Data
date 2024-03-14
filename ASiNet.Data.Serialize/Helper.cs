@@ -87,11 +87,11 @@ internal static class Helper
         writer.WriteBytes(model.TypeHashBytes);
     }
 
-    public static string ReadTypeHash(ISerializeReader reader)
+    public static long ReadTypeHash(ISerializeReader reader)
     {
-        var buff = (stackalloc byte[32]);
+        var buff = (stackalloc byte[sizeof(long)]);
         reader.ReadBytes(buff);
-        var hashString = Convert.ToHexString(buff);
+        var hashString = BitConverter.ToInt64(buff);
         return hashString;
     }
 
@@ -99,7 +99,8 @@ internal static class Helper
     {
         // GET ALL PROPERTIES.
         var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty)
-            .OrderBy(x => x.Name)
+            .OrderBy(x => x.PropertyType.Name)
+            .ThenBy(x => x.Name)
             .Where(x => x.GetIndexParameters().Length == 0 && x.GetCustomAttribute<IgnorePropertyAttribute>() is null);
         foreach (var item in props)
         {
@@ -112,7 +113,8 @@ internal static class Helper
     {
         // GET ALL FIELDS.
         var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField | BindingFlags.SetField)
-            .OrderBy(prop => prop.Name)
+            .OrderBy(x => x.FieldType.Name)
+            .ThenBy(x => x.Name)
             .Where(x => x.GetCustomAttribute<IgnoreFieldAttribute>() is null);
         foreach (var item in fields)
         {

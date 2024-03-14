@@ -7,7 +7,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
-    <Version>0.3.7</Version>
+    <Version>0.4.0</Version>
     <Authors>ASiDev,Difoldery</Authors>
     <Copyright>MIT</Copyright>
     <Description>Fast serialization of almost any objects into bytes</Description>

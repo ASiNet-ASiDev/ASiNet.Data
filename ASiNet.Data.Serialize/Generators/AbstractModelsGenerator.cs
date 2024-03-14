@@ -168,7 +168,7 @@ public class AbstractModelsGenerator : IModelsGenerator
                             typeProp,
                             contextProperty)
                         ),
-                    Expression.AddAssign(result, Expression.Constant(32)),
+                    Expression.AddAssign(result, Expression.Constant(sizeof(long))),
 
                     Expression.AddAssign(
                         result,

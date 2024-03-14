@@ -7,7 +7,7 @@
 public interface ISerializeModel
 {
 
-    public string TypeHash { get; }
+    public long TypeHash { get; }
     public byte[] TypeHashBytes { get; }
     /// <summary>
     /// The type of the object of the current model

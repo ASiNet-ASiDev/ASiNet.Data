@@ -31,8 +31,8 @@ file static class ArrayHelper
 
     public static void ThrowIsIndexOutOfRange(int bytesSize, ISerializeWriter writer)
     {
-        if (!writer.CanWriteSize(bytesSize + sizeof(byte) + sizeof(int)))
-            throw new Exception();
+        if (!writer.CanWriteSize(bytesSize + sizeof(int)))
+            throw new IndexOutOfRangeException();
     }
 
     public static void BlokcCopyElementsUnmanaged<T>(T[] src, int bytesSize, ISerializeWriter writer) where T : unmanaged
@@ -112,7 +112,7 @@ public class UInt32ArrayModel : SerializeModelBase<uint[]>
 
         var length = ArrayHelper.ReadLength(reader);
 
-        var bytes = new byte[length * sizeof(int)];
+        var bytes = new byte[length * sizeof(uint)];
         reader.ReadBytes(bytes);
 
         return bytes.AsUInt32Array();

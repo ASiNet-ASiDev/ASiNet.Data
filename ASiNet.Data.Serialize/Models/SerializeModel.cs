@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using ASiNet.Data.Serialization.Hash;
 using ASiNet.Data.Serialization.Interfaces;
 
 namespace ASiNet.Data.Serialization.Models;
@@ -9,18 +10,18 @@ public class SerializeModel<T>(
     GetObjectSizeDelegate<T>? getSize = null) : ISerializeModel<T>
 {
 
-    public string TypeHash => _typeHash.Value.Hash;
+    public long TypeHash => _typeHash.Value.Hash;
     public byte[] TypeHashBytes => _typeHash.Value.BytesHash;
 
     public Type ObjType => _objType.Value;
 
     private readonly Lazy<Type> _objType = new(() => typeof(T));
 
-    private readonly Lazy<(byte[] BytesHash, string Hash)> _typeHash = new(() =>
+    private readonly Lazy<(byte[] BytesHash, long Hash)> _typeHash = new(() =>
     {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(typeof(T).FullName ?? typeof(T).Name));
-        var str = Convert.ToHexString(bytes);
-        return (bytes, str);
+        var hash = PolynomialHasher.Shared.CalculateHash(typeof(T).FullName ?? typeof(T).Name);
+        var bytes = BitConverter.GetBytes(hash);
+        return (bytes, hash);
     });
 
     public virtual bool ContainsSerializeDelegate => _serializeDelegate is not null;
