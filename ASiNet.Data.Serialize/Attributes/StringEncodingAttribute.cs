@@ -17,3 +17,9 @@ public class StringEncodingAttribute(EncodingType encoding = EncodingType.UTF8) 
         _ => throw new NotSupportedException(),
     };
 }
+
+
+public enum EncodingType : byte
+{
+    UTF8, ASCII, Unicode, UTF32, Latian1,
+}
