@@ -194,19 +194,19 @@ public class TestObject
 
     public string Str { get; set; } = "Hello, World";
 
-    [StringEncoding(Models.EncodingType.UTF8)]
+    [StringEncoding(EncodingType.UTF8)]
     public string StrUTF8 { get; set; } = "Hello, World";
 
-    [StringEncoding(Models.EncodingType.UTF32)]
+    [StringEncoding(EncodingType.UTF32)]
     public string StrUTF32 { get; set; } = "Hello, World";
 
-    [StringEncoding(Models.EncodingType.Unicode)]
+    [StringEncoding(EncodingType.Unicode)]
     public string StrUnicode { get; set; } = "Hello, World";
 
-    [StringEncoding(Models.EncodingType.ASCII)]
+    [StringEncoding(EncodingType.ASCII)]
     public string StrASCII { get; set; } = "Hello, World";
 
-    [StringEncoding(Models.EncodingType.Latian1)]
+    [StringEncoding(EncodingType.Latian1)]
     public string StrLatan1 { get; set; } = "Hello, World";
 }
 

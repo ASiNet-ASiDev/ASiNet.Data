@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Linq.Expressions;
+using System.Text;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
 
@@ -60,6 +61,14 @@ internal static class ExpressionsHelper
     public static Expression CallSerialize(Expression serializeModel, Expression value, Expression writer) =>
         Expression.Call(serializeModel, nameof(SerializeModel<byte>.Serialize), null, value, writer);
 
+    public static Expression CallSerializeString(Expression serializeModel, Expression value, Expression writer, Expression encoding) =>
+        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.Serialize), null, value, writer, encoding);
+
+    public static Expression CallDeserializeString(Expression serializeModel, Expression reader, Expression encoding) =>
+        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.Deserialize), null, reader, encoding);
+
+    public static Expression CallGetSizeStringGenerateTime(Expression serializeModel, Expression inst, Expression encoding) =>
+        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.ObjectSerializedSize), null, inst, encoding);
 
     public static Expression CallDeserializeObject(Expression serializeModel, Expression reader) =>
         Expression.Call(serializeModel, nameof(ISerializeModel.DeserializeToObject), null, reader);

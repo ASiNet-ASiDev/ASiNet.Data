@@ -117,10 +117,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             {
                 if(pi.PropertyType == typeof(string) && pi.GetCustomAttribute<StringEncodingAttribute>() is StringEncodingAttribute eattr)
                 {
-                    var t = eattr.GetEncodingType();
-                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(t, serializeContext);
-                    var value = Expression.New(t.GetConstructor([typeof(string)])!, Expression.Property(inst, pi));
-                    yield return ExpressionsHelper.CallSerialize(model, value, writer);
+                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
+                    var value = Expression.Property(inst, pi);
+                    yield return ExpressionsHelper.CallSerializeString(model, value, writer, Expression.Constant(eattr.GetEncoding()));
                 }
                 else
                 {
@@ -138,10 +137,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             {
                 if (fi.FieldType == typeof(string) && fi.GetCustomAttribute<StringEncodingAttribute>() is StringEncodingAttribute eattr)
                 {
-                    var t = eattr.GetEncodingType();
-                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(t, serializeContext);
-                    var value = Expression.New(t.GetConstructor([typeof(string)])!, Expression.Field(inst, fi));
-                    yield return ExpressionsHelper.CallSerialize(model, value, writer);
+                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
+                    var value = Expression.Field(inst, fi);
+                    yield return ExpressionsHelper.CallSerializeString(model, value, writer, Expression.Constant(eattr.GetEncoding()));
                 }
                 else
                 {
@@ -165,15 +163,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             {
                 if (pi.PropertyType == typeof(string) && pi.GetCustomAttribute<StringEncodingAttribute>() is StringEncodingAttribute eattr)
                 {
-                    var t = eattr.GetEncodingType();
-                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(t, serializeContext);
-                    yield return Expression.Assign(
-                        Expression.Property(inst, pi), 
-                        Expression.Property(
-                            ExpressionsHelper.CallDeserialize(model, reader), 
-                            nameof(EncodingString.Value)
-                            )
-                        );
+                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
+                    var value = Expression.Property(inst, pi);
+                    yield return Expression.Assign(value, ExpressionsHelper.CallDeserializeString(model, reader, Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
@@ -191,15 +183,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             {
                 if (fi.FieldType == typeof(string) && fi.GetCustomAttribute<StringEncodingAttribute>() is StringEncodingAttribute eattr)
                 {
-                    var t = eattr.GetEncodingType();
-                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(t, serializeContext);
-                    yield return Expression.Assign(
-                        Expression.Field(inst, fi), 
-                        Expression.Property(
-                            ExpressionsHelper.CallDeserialize(model, reader),
-                            nameof(EncodingString.Value)
-                            )
-                        );
+                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
+                    var value = Expression.Field(inst, fi);
+                    yield return Expression.Assign(value, ExpressionsHelper.CallDeserializeString(model, reader, Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
@@ -219,10 +205,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             {
                 if (pi.PropertyType == typeof(string) && pi.GetCustomAttribute<StringEncodingAttribute>() is StringEncodingAttribute eattr)
                 {
-                    var t = eattr.GetEncodingType();
-                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(t, serializeContext);
-                    var value = Expression.New(t.GetConstructor([typeof(string)])!, Expression.Property(inst, pi));
-                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
+                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
+                    var value = Expression.Property(inst, pi);
+                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeStringGenerateTime(model, value, Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
@@ -239,10 +224,9 @@ public class ObjectsModelsGenerator : IModelsGenerator
             {
                 if (fi.FieldType == typeof(string) && fi.GetCustomAttribute<StringEncodingAttribute>() is StringEncodingAttribute eattr)
                 {
-                    var t = eattr.GetEncodingType();
-                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(t, serializeContext);
-                    var value = Expression.New(t.GetConstructor([typeof(string)])!, Expression.Field(inst, fi));
-                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
+                    var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
+                    var value = Expression.Field(inst, fi);
+                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeStringGenerateTime(model, value, Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
