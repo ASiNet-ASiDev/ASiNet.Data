@@ -5,12 +5,14 @@ using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
+using ASiNet.Data.Serialization.Models.Arrays;
+using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization.Generators;
 public class StructsModelsGenirator : IModelsGenerator
 {
     public bool CanGenerateModelForType(Type type) =>
-        type.IsValueType && !type.IsEnum;
+        type.IsValueType && !type.IsEnum && !type.IsPrimitive;
 
     public bool CanGenerateModelForType<T>() =>
         CanGenerateModelForType(typeof(T));
@@ -19,7 +21,11 @@ public class StructsModelsGenirator : IModelsGenerator
     {
         try
         {
-            var model = new SerializeModel<T>();
+            var model = GenerateAdditionalModel<T>(settings);
+
+            if(model is not null)
+                return model;
+            model = new();
 
             serializeContext.AddModel(model);
 
@@ -151,5 +157,24 @@ public class StructsModelsGenirator : IModelsGenerator
         }
 
         yield return result;
+    }
+
+
+    private SerializeModel<T>? GenerateAdditionalModel<T>(in GeneratorsSettings settings)
+    {
+        if (!settings.UseAdditionalModelsGenerators)
+            return null;
+        SerializeModel<T>? result = typeof(T).Name switch
+        {
+            nameof(Guid) => Cast(new GuidModel()),
+            nameof(DateTime) => Cast(new DateTimeModel()),
+            nameof(TimeSpan) => Cast(new TimeSpanModel()),
+            _ => null,
+        };
+
+        static SerializeModel<T>? Cast(ISerializeModel model) =>
+            model as SerializeModel<T>;
+
+        return result;
     }
 }

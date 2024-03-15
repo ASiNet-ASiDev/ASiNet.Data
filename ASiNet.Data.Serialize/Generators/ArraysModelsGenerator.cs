@@ -3,6 +3,8 @@ using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators.Helpers;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
+using ASiNet.Data.Serialization.Models.Arrays;
+using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization.Generators;
 public class ArraysModelsGenerator : IModelsGenerator
@@ -15,7 +17,11 @@ public class ArraysModelsGenerator : IModelsGenerator
     {
         try
         {
-            var model = new SerializeModel<T>();
+            var model = GenerateUnsafeModel<T>(settings);
+            if(model is not null)
+                return model;
+
+            model = new();
 
             serializeContext.AddModel(model);
 
@@ -188,4 +194,34 @@ public class ArraysModelsGenerator : IModelsGenerator
             );
     }
 
+
+    private SerializeModel<T>? GenerateUnsafeModel<T>(in GeneratorsSettings settings)
+    {
+        if(!settings.UseUnsafeArraysModelsGenerator)
+            return null;
+        SerializeModel<T>? result = typeof(T).GetElementType()!.Name switch
+        {
+            nameof(Int32) => Cast(new Int32ArrayModel()),
+            nameof(UInt32) => Cast(new UInt32ArrayModel()),
+            nameof(Int16) => Cast(new Int16ArrayModel()),
+            nameof(UInt16) => Cast(new UInt16ArrayModel()),
+            nameof(Int64) => Cast(new Int64ArrayModel()),
+            nameof(UInt64) => Cast(new UInt64ArrayModel()),
+            nameof(Byte) => Cast(new ByteArrayModel()),
+            nameof(SByte) => Cast(new SByteArrayModel()),
+            nameof(Double) => Cast(new DoubleArrayModel()),
+            nameof(Single) => Cast(new SingleArrayModel()),
+            nameof(Char) => Cast(new CharArrayModel()),
+            nameof(Boolean) => Cast(new BooleanArrayModel()),
+
+            nameof(Guid) => Cast(new GuidArrayModel()),
+            nameof(DateTime) => Cast(new DateTimeArrayModel()),
+            _ => null,
+        };
+
+        static SerializeModel<T>? Cast(ISerializeModel model) =>
+            model as SerializeModel<T>;
+
+        return result;
+    }
 }

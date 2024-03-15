@@ -13,12 +13,6 @@ public class DefaultSerializerContext : BaseSerializerContext
 {
     public DefaultSerializerContext(GeneratorsSettings settings) : base(settings)
     {
-        if (Settings.UseDefaultBaseTypesModels)
-            Helper.AddUnmanagedTypes(this);
-        if (Settings.UseDefaultUnsafeArraysModels)
-            Helper.AddUnsafeArraysTypes(this);
-
-
         if (Settings.AllowPreGenerateModelAttribute)
         {
             foreach (var type in Helper.EnumiratePreGenerateModels())
@@ -35,6 +29,8 @@ public class DefaultSerializerContext : BaseSerializerContext
     private Lazy<Dictionary<long, ISerializeModel>> _modelsByHash;
 
     private List<IModelsGenerator> _generators = [
+        new BaseTypesGenerator(),
+        new StringModelsGenerator(),
         new EnumsModelsGenerator(),
         new AbstractModelsGenerator(),
         new NullableModelsGenerator(),

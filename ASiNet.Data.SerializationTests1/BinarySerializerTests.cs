@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ASiNet.Data.Serialization.Attributes;
 
 namespace ASiNet.Data.Serialization.Tests;
 
@@ -192,6 +193,21 @@ public class TestObject
     public bool Bl { get; set; } = true;
 
     public string Str { get; set; } = "Hello, World";
+
+    [StringEncoding(Models.EncodingType.UTF8)]
+    public string StrUTF8 { get; set; } = "Hello, World";
+
+    [StringEncoding(Models.EncodingType.UTF32)]
+    public string StrUTF32 { get; set; } = "Hello, World";
+
+    [StringEncoding(Models.EncodingType.Unicode)]
+    public string StrUnicode { get; set; } = "Hello, World";
+
+    [StringEncoding(Models.EncodingType.ASCII)]
+    public string StrASCII { get; set; } = "Hello, World";
+
+    [StringEncoding(Models.EncodingType.Latian1)]
+    public string StrLatan1 { get; set; } = "Hello, World";
 }
 
 public struct TestStruct

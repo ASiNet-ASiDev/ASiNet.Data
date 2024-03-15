@@ -1,4 +1,5 @@
-﻿using ASiNet.Data.Serialization.Contexts;
+﻿using System.Text;
+using ASiNet.Data.Serialization.Contexts;
 
 namespace ASiNet.Data.Serialization;
 
@@ -30,13 +31,10 @@ public class GeneratorsSettings
     /// </summary>
     public bool AllowPreGenerateModelAttribute { get; set; } = true;
 
-    /// <summary>
-    /// Use unsafe basic serialization models for arrays that are significantly faster than those automatically generated in the process
-    /// </summary>
-    public bool UseDefaultUnsafeArraysModels { get; set; } = true;
 
-    /// <summary>
-    /// Use built-in serialization models of basic types. IT IS NOT RECOMMENDED TO SET THE VALUE <see cref="false"/>
-    /// </summary>
-    public bool UseDefaultBaseTypesModels { get; set; } = true;
+    public bool UseUnsafeArraysModelsGenerator { get; set; } = true;
+
+    public bool UseAdditionalModelsGenerators { get; set; } = true;
+
+    public Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
 }

@@ -7,55 +7,6 @@ using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 namespace ASiNet.Data.Serialization;
 internal static class Helper
 {
-    public static void AddUnmanagedTypes(ISerializerContext context)
-    {
-        context.AddModel(new ByteModel());
-        context.AddModel(new SByteModel());
-
-        context.AddModel(new Int16Model());
-        context.AddModel(new Int32Model());
-        context.AddModel(new Int64Model());
-
-        context.AddModel(new UInt16Model());
-        context.AddModel(new UInt32Model());
-        context.AddModel(new UInt64Model());
-
-        context.AddModel(new SingleModel());
-        context.AddModel(new DoubleModel());
-
-        context.AddModel(new CharModel());
-        context.AddModel(new StringModel());
-
-        context.AddModel(new BooleanModel());
-
-        context.AddModel(new GuidModel());
-        context.AddModel(new DateTimeModel());
-        context.AddModel(new TimeSpanModel());
-    }
-
-    public static void AddUnsafeArraysTypes(ISerializerContext context)
-    {
-        context.AddModel(new BooleanArrayModel());
-
-        context.AddModel(new Int16ArrayModel());
-        context.AddModel(new UInt16ArrayModel());
-
-        context.AddModel(new Int32ArrayModel());
-        context.AddModel(new UInt32ArrayModel());
-
-        context.AddModel(new Int64ArrayModel());
-        context.AddModel(new UInt64ArrayModel());
-
-        context.AddModel(new SingleArrayModel());
-        context.AddModel(new DoubleArrayModel());
-
-        context.AddModel(new ByteArrayModel());
-        context.AddModel(new SByteArrayModel());
-
-        context.AddModel(new GuidArrayModel());
-        context.AddModel(new DateTimeArrayModel());
-    }
-
     public static IEnumerable<Type> EnumiratePreGenerateModels()
     {
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
