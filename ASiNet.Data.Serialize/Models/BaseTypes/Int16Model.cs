@@ -32,4 +32,6 @@ public class Int16Model : SerializeModelBase<short>
         Serialize((short)obj!, writer);
 
     public override int ObjectSerializedSize(short obj) => sizeof(short);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(short);
 }

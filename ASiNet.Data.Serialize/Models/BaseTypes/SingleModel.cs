@@ -53,4 +53,6 @@ public class SingleModel : SerializeModelBase<float>
 
 
     public override int ObjectSerializedSize(float obj) => sizeof(float);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(float);
 }

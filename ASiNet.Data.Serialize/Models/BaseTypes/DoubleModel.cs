@@ -35,4 +35,6 @@ public class DoubleModel : SerializeModelBase<double>
 
 
     public override int ObjectSerializedSize(double obj) => sizeof(double);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(double);
 }

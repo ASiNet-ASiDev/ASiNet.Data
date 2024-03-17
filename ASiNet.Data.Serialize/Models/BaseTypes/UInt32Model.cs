@@ -52,4 +52,6 @@ public class UInt32Model : SerializeModelBase<uint>
     }
 
     public override int ObjectSerializedSize(uint obj) => sizeof(uint);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(uint);
 }

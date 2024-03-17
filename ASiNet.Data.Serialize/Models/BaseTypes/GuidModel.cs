@@ -58,4 +58,7 @@ public class GuidModel : SerializeModelBase<Guid>
 
     public override int ObjectSerializedSize(Guid obj) => GUID_SIZE;
 
+
+    public override int ObjectSerializedSize(object obj) => GUID_SIZE;
+
 }

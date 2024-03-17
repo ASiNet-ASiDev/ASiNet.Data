@@ -28,6 +28,8 @@ public class DateTimeModel : SerializeModelBase<DateTime>
     }
 
     public override int ObjectSerializedSize(DateTime obj) => sizeof(long);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(long);
 }
 
 public class TimeSpanModel : SerializeModelBase<TimeSpan>
@@ -56,4 +58,6 @@ public class TimeSpanModel : SerializeModelBase<TimeSpan>
     }
 
     public override int ObjectSerializedSize(TimeSpan obj) => sizeof(long);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(long);
 }

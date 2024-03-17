@@ -52,4 +52,6 @@ public class CharModel : SerializeModelBase<char>
     }
 
     public override int ObjectSerializedSize(char obj) => sizeof(char);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(char);
 }

@@ -2,7 +2,7 @@
 {
     public interface IBinarySerializer
     {
-        public ISerializerContext Context { get; }
+        ISerializerContext Context { get; }
 
         /// <summary>
         /// Get the size of the object in bytes before it is serialized. It may be useful if you are not sure about choosing the buffer size.
@@ -10,7 +10,7 @@
         /// Attention! This method may attempt to generate models if they have not been generated yet!
         /// </summary>
         /// <returns> Bytes size. </returns>
-        public int GetSize<T>(T obj);
+        int GetSize<T>(T obj);
 
         /// <summary>
         /// Serializes an object into bytes
@@ -22,7 +22,7 @@
         /// <exception cref="Exceptions.TypeNotSupportedException"/>
         /// <exception cref="IndexOutOfRangeException"/>
         /// <returns> The number of bytes written. </returns>
-        public int Serialize<T>(T obj, byte[] buffer);
+        int Serialize<T>(T obj, byte[] buffer);
 
         /// <summary>
         /// Serializes an object into bytes
@@ -34,7 +34,7 @@
         /// <exception cref="Exceptions.TypeNotSupportedException"/>
         /// <exception cref="IndexOutOfRangeException"/>
         /// <returns> The number of bytes written. </returns>
-        public int Serialize<T>(T obj, in ISerializeWriter writer);
+        int Serialize<T>(T obj, in ISerializeWriter writer);
 
         /// <summary>
         /// Deserializes an object from the buffer
@@ -45,7 +45,7 @@
         /// <exception cref="Exceptions.TypeNotSupportedException"/>
         /// <exception cref="IndexOutOfRangeException"/>
         /// <returns> Deserialized object </returns>
-        public T Deserialize<T>(byte[] buffer);
+        T Deserialize<T>(byte[] buffer);
 
         /// <summary>
         /// Deserializes an object from the buffer
@@ -56,6 +56,6 @@
         /// <exception cref="Exceptions.TypeNotSupportedException"/>
         /// <exception cref="IndexOutOfRangeException"/>
         /// <returns> Deserialized object </returns>
-        public T Deserialize<T>(in ISerializeReader reader);
+        T Deserialize<T>(in ISerializeReader reader);
     }
 }

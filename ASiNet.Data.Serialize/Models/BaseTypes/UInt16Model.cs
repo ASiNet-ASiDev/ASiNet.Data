@@ -52,4 +52,6 @@ public class UInt16Model : SerializeModelBase<ushort>
     }
 
     public override int ObjectSerializedSize(ushort obj) => sizeof(ushort);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(ushort);
 }

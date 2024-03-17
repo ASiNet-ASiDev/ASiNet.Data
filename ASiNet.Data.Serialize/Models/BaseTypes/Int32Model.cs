@@ -52,4 +52,6 @@ public class Int32Model : SerializeModelBase<int>
     }
 
     public override int ObjectSerializedSize(int obj) => sizeof(int);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(int);
 }

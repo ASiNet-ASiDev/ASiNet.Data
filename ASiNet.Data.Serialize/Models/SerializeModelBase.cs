@@ -4,16 +4,12 @@ namespace ASiNet.Data.Serialization.Models;
 
 public abstract class SerializeModelBase<T> : SerializeModel<T>
 {
-    public override bool ContainsDeserializeDelegate => true;
-    public override bool ContainsSerializeDelegate => true;
-    public override bool ContainsGetSizeDelegate => true;
-
     /// <summary>
     /// Reads an object from byte data.
     /// </summary>
     /// <param name="reader"> Byte space from where the object is read. </param>
     /// <returns></returns>
-    public override abstract T? Deserialize(in ISerializeReader reader);
+    public override abstract T Deserialize(in ISerializeReader reader);
 
 
     /// <summary>
@@ -27,5 +23,5 @@ public abstract class SerializeModelBase<T> : SerializeModel<T>
 
     public override abstract void SerializeObject(object? obj, in ISerializeWriter writer);
 
-    public override abstract int ObjectSerializedSize(T? obj);
+    public override abstract int ObjectSerializedSize(T obj);
 }

@@ -52,4 +52,6 @@ public class BooleanModel : SerializeModelBase<bool>
     }
 
     public override int ObjectSerializedSize(bool obj) => sizeof(bool);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(bool);
 }

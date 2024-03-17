@@ -24,9 +24,9 @@ namespace ASiNet.Data.Serialization.Interfaces
 
         SerializeModel<T> GetOrGenerate<T>();
 
-        ISerializeModel? GetModel(Type type);
+        ISerializeModel GetModel(Type type);
 
-        SerializeModel<T>? GetModel<T>();
+        SerializeModel<T> GetModel<T>();
 
 
         ISerializeModel GetOrGenerateByHash(long hash);

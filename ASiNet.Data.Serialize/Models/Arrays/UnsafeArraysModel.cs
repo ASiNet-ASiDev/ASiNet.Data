@@ -87,6 +87,7 @@ public class Int32ArrayModel : SerializeModelBase<int[]>
     public override int ObjectSerializedSize(int[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(int), obj is null);
 
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((int[]?)obj);
 }
 
 public class UInt32ArrayModel : SerializeModelBase<uint[]>
@@ -126,6 +127,8 @@ public class UInt32ArrayModel : SerializeModelBase<uint[]>
 
     public override int ObjectSerializedSize(uint[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(uint), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((uint[]?)obj);
 }
 
 public class Int16ArrayModel : SerializeModelBase<short[]>
@@ -165,6 +168,8 @@ public class Int16ArrayModel : SerializeModelBase<short[]>
 
     public override int ObjectSerializedSize(short[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(short), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((short[]?)obj);
 }
 
 public class UInt16ArrayModel : SerializeModelBase<ushort[]>
@@ -204,6 +209,9 @@ public class UInt16ArrayModel : SerializeModelBase<ushort[]>
 
     public override int ObjectSerializedSize(ushort[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(ushort), obj is null);
+
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((ushort[]?)obj);
 }
 
 public class Int64ArrayModel : SerializeModelBase<long[]>
@@ -243,6 +251,8 @@ public class Int64ArrayModel : SerializeModelBase<long[]>
 
     public override int ObjectSerializedSize(long[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(long), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((long[]?)obj);
 }
 
 public class UInt64ArrayModel : SerializeModelBase<ulong[]>
@@ -282,6 +292,8 @@ public class UInt64ArrayModel : SerializeModelBase<ulong[]>
 
     public override int ObjectSerializedSize(ulong[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(ulong), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((ulong[]?)obj);
 }
 
 public class CharArrayModel : SerializeModelBase<char[]>
@@ -321,6 +333,9 @@ public class CharArrayModel : SerializeModelBase<char[]>
 
     public override int ObjectSerializedSize(char[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(char), obj is null);
+
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((char[]?)obj);
 }
 
 public class BooleanArrayModel : SerializeModelBase<bool[]>
@@ -360,6 +375,9 @@ public class BooleanArrayModel : SerializeModelBase<bool[]>
 
     public override int ObjectSerializedSize(bool[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(bool), obj is null);
+
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((bool[]?)obj);
 }
 
 public class DateTimeArrayModel : SerializeModelBase<DateTime[]>
@@ -403,6 +421,9 @@ public class DateTimeArrayModel : SerializeModelBase<DateTime[]>
 
     public override int ObjectSerializedSize(DateTime[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(long), obj is null);
+
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((DateTime[]?)obj);
 }
 
 public class DoubleArrayModel : SerializeModelBase<double[]>
@@ -442,6 +463,8 @@ public class DoubleArrayModel : SerializeModelBase<double[]>
 
     public override int ObjectSerializedSize(double[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(double), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((double[]?)obj);
 }
 
 public class SingleArrayModel : SerializeModelBase<float[]>
@@ -481,6 +504,8 @@ public class SingleArrayModel : SerializeModelBase<float[]>
 
     public override int ObjectSerializedSize(float[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(float), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((float[]?)obj);
 }
 
 public class GuidArrayModel : SerializeModelBase<Guid[]>
@@ -524,6 +549,8 @@ public class GuidArrayModel : SerializeModelBase<Guid[]>
 
     public override int ObjectSerializedSize(Guid[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(decimal), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((Guid[]?)obj);
 }
 
 public class SByteArrayModel : SerializeModelBase<sbyte[]>
@@ -563,6 +590,8 @@ public class SByteArrayModel : SerializeModelBase<sbyte[]>
 
     public override int ObjectSerializedSize(sbyte[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(sbyte), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((sbyte[]?)obj);
 }
 
 public class ByteArrayModel : SerializeModelBase<byte[]>
@@ -602,4 +631,6 @@ public class ByteArrayModel : SerializeModelBase<byte[]>
 
     public override int ObjectSerializedSize(byte[]? obj) =>
         ArrayHelper.GetArraySize(obj?.Length, sizeof(byte), obj is null);
+
+    public override int ObjectSerializedSize(object obj) => ObjectSerializedSize((byte[]?)obj);
 }

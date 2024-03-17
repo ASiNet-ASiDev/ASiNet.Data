@@ -76,5 +76,8 @@ public class StringModel(Encoding encoding) : SerializeModelBase<string>, ISeria
             return 1;
         return 1 + 4 + encoding.GetByteCount(obj);
     }
+
+    public override int ObjectSerializedSize(object obj) => 
+        ObjectSerializedSize((string?)obj);
 }
 

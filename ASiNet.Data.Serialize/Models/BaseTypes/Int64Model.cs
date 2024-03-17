@@ -53,4 +53,6 @@ public class Int64Model : SerializeModelBase<long>
 
     public override int ObjectSerializedSize(long obj) => sizeof(long);
 
+    public override int ObjectSerializedSize(object obj) => sizeof(long);
+
 }

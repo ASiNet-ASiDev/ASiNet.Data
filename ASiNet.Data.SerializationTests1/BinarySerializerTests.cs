@@ -205,9 +205,6 @@ public class TestObject
 
     [StringEncoding(EncodingType.ASCII)]
     public string StrASCII { get; set; } = "Hello, World";
-
-    [StringEncoding(EncodingType.Latian1)]
-    public string StrLatan1 { get; set; } = "Hello, World";
 }
 
 public struct TestStruct

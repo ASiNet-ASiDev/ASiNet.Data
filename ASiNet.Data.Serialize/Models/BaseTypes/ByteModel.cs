@@ -38,4 +38,6 @@ public class ByteModel : SerializeModelBase<byte>
     }
 
     public override int ObjectSerializedSize(byte obj) => sizeof(byte);
+
+    public override int ObjectSerializedSize(object obj) => sizeof(byte);
 }
