@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASiNet.Data.SerializationTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{18FC20D4-AA62-454D-89F3-B70F305510AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASiNet.Data.Serialization.Analyzers", "ASiNet.Data.Serialization.Analyzers\ASiNet.Data.Serialization.Analyzers.csproj", "{F124B18A-2984-4BA9-A59E-B02102A6ED91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASiNet.Data.Serialization.Analyzers", "ASiNet.Data.Serialization.Analyzers\ASiNet.Data.Serialization.Analyzers.csproj", "{F124B18A-2984-4BA9-A59E-B02102A6ED91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASiNet.Data.Serialization.Core", "ASiNet.Data.Serialization.Core\ASiNet.Data.Serialization.Core.csproj", "{3DCB617A-ACB2-4BF1-8A0D-917DBB1EFD01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASiNet.Data.Serialization.Common", "ASiNet.Data.Serialization.Core\ASiNet.Data.Serialization.Common.csproj", "{3DCB617A-ACB2-4BF1-8A0D-917DBB1EFD01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisTest", "AnalysisTest\AnalysisTest.csproj", "{D14BBDD0-6B1A-4A26-9CF2-40A49B1C6248}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnalysisTest", "AnalysisTest\AnalysisTest.csproj", "{D14BBDD0-6B1A-4A26-9CF2-40A49B1C6248}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
