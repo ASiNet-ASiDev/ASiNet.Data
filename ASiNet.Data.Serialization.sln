@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASiNet.Data.SerializationTests", "ASiNet.Data.SerializationTests1\ASiNet.Data.SerializationTests.csproj", "{3DA2888B-91DA-407F-81E5-3621277F8388}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{18FC20D4-AA62-454D-89F3-B70F305510AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASiNet.Data.Serialization.Analyzers", "ASiNet.Data.Serialization.Analyzers\ASiNet.Data.Serialization.Analyzers.csproj", "{F124B18A-2984-4BA9-A59E-B02102A6ED91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASiNet.Data.Serialization.Core", "ASiNet.Data.Serialization.Core\ASiNet.Data.Serialization.Core.csproj", "{3DCB617A-ACB2-4BF1-8A0D-917DBB1EFD01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +33,21 @@ Global
 		{3DA2888B-91DA-407F-81E5-3621277F8388}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DA2888B-91DA-407F-81E5-3621277F8388}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DA2888B-91DA-407F-81E5-3621277F8388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F124B18A-2984-4BA9-A59E-B02102A6ED91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F124B18A-2984-4BA9-A59E-B02102A6ED91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F124B18A-2984-4BA9-A59E-B02102A6ED91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F124B18A-2984-4BA9-A59E-B02102A6ED91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DCB617A-ACB2-4BF1-8A0D-917DBB1EFD01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DCB617A-ACB2-4BF1-8A0D-917DBB1EFD01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DCB617A-ACB2-4BF1-8A0D-917DBB1EFD01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DCB617A-ACB2-4BF1-8A0D-917DBB1EFD01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{61665EA4-143B-4722-9C09-117CAC69355D} = {18FC20D4-AA62-454D-89F3-B70F305510AC}
+		{3DA2888B-91DA-407F-81E5-3621277F8388} = {18FC20D4-AA62-454D-89F3-B70F305510AC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FA36B38-EBDE-429F-B2CC-A9C9BE41AE3F}

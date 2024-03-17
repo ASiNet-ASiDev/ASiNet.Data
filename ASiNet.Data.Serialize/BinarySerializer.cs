@@ -10,7 +10,7 @@ public class BinarySerializer<TContext>(TContext context) : IBinarySerializer wh
 
     private TContext SerializeContext { get; init; } = context;
 
-    public int GetSize<T>(T? obj) =>
+    public int GetSize<T>(T obj) =>
         SerializeContext.GetOrGenerate<T>().ObjectSerializedSize(obj);
 
     public int Serialize<T>(T obj, byte[] buffer)
