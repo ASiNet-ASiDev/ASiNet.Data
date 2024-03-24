@@ -49,7 +49,8 @@ public class NullableModelsGenerator : IModelsGenerator
                 ExpressionsHelper.CallSerialize(
                     model,
                     Value(inst),
-                    writer)
+                    writer,
+                    Expression.Constant(serializeContext))
                 ),
             ExpressionsHelper.WriteNullableByteGenerateTime(writer, 0));
 
@@ -79,7 +80,7 @@ public class NullableModelsGenerator : IModelsGenerator
                     inst,
                     Expression.New(
                         constructor,
-                        ExpressionsHelper.CallDeserialize(model, reader))),
+                        ExpressionsHelper.CallDeserialize(model, reader, Expression.Constant(serializeContext)))),
                 Expression.Assign(
                     inst,
                     Expression.Default(type))
@@ -105,7 +106,12 @@ public class NullableModelsGenerator : IModelsGenerator
             Expression.Assign(result, Expression.Constant(1, typeof(int))),
             Expression.IfThen(
                 HashValue(inst),
-                Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, Expression.Convert(inst, underlyingType)))
+                Expression.AddAssign(
+                    result, 
+                    ExpressionsHelper.CallGetSizeGenerateTime(
+                        model, 
+                        Expression.Convert(inst, underlyingType),
+                        Expression.Constant(serializeContext)))
                 ),
             result
             );

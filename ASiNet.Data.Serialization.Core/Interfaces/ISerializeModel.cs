@@ -17,21 +17,21 @@ namespace ASiNet.Data.Serialization.Interfaces
         /// </summary>
         Type ObjType { get; }
 
-        int ObjectSerializedSize(object obj);
+        int ObjectSerializedSize(object obj, ISerializerContext context);
 
         /// <summary>
         /// Writes an object as byte data.
         /// </summary>
         /// <param name="obj"> The object being recorded. </param>
         /// <param name="writer"> The byte space where the object is written to. </param>
-        void SerializeObject(object obj, in ISerializeWriter writer);
+        void SerializeObject(object obj, in ISerializeWriter writer, ISerializerContext context);
 
         /// <summary>
         /// Reads an object from byte data.
         /// </summary>
         /// <param name="reader"> Byte space from where the object is read. </param>
         /// <returns></returns>
-        object DeserializeToObject(in ISerializeReader reader);
+        object DeserializeToObject(in ISerializeReader reader, ISerializerContext context);
     }
 
 
@@ -42,17 +42,17 @@ namespace ASiNet.Data.Serialization.Interfaces
         /// </summary>
         /// <param name="obj"> The object being recorded. </param>
         /// <param name="writer"> The byte space where the object is written to. </param>
-        void Serialize(T obj, in ISerializeWriter writer);
+        void Serialize(T obj, in ISerializeWriter writer, ISerializerContext context);
 
         /// <summary>
         /// Reads an object from byte data.
         /// </summary>
         /// <param name="reader"> Byte space from where the object is read. </param>
         /// <returns></returns>
-        T Deserialize(in ISerializeReader reader);
+        T Deserialize(in ISerializeReader reader, ISerializerContext context);
 
 
-        int ObjectSerializedSize(T obj);
+        int ObjectSerializedSize(T obj, ISerializerContext context);
     }
 
 }

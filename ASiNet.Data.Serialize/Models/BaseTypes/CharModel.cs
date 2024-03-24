@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class CharModel : SerializeModelBase<char>
 {
-    public override char Deserialize(in ISerializeReader reader)
+    public override char Deserialize(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(char)))
         {
@@ -14,7 +14,7 @@ public class CharModel : SerializeModelBase<char>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(char)))
         {
@@ -25,7 +25,7 @@ public class CharModel : SerializeModelBase<char>
         throw new Exception();
     }
 
-    public override void Serialize(char obj, in ISerializeWriter writer)
+    public override void Serialize(char obj, in ISerializeWriter writer, ISerializerContext context)
     {
         var buffer = (stackalloc byte[sizeof(char)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class CharModel : SerializeModelBase<char>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, in ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer, ISerializerContext context)
     {
         if (obj is char value)
         {
@@ -51,7 +51,7 @@ public class CharModel : SerializeModelBase<char>
         throw new Exception();
     }
 
-    public override int ObjectSerializedSize(char obj) => sizeof(char);
+    public override int ObjectSerializedSize(char obj, ISerializerContext context) => sizeof(char);
 
-    public override int ObjectSerializedSize(object obj) => sizeof(char);
+    public override int ObjectSerializedSize(object obj, ISerializerContext context) => sizeof(char);
 }

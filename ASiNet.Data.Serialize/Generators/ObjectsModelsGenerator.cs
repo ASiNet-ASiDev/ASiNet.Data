@@ -119,13 +119,22 @@ public class ObjectsModelsGenerator : IModelsGenerator
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                     var value = Expression.Property(inst, pi);
-                    yield return ExpressionsHelper.CallSerializeString(model, value, writer, Expression.Constant(eattr.GetEncoding()));
+                    yield return ExpressionsHelper.CallSerializeString(
+                        model, 
+                        value, 
+                        writer,
+                        Expression.Constant(serializeContext),
+                        Expression.Constant(eattr.GetEncoding()));
                 }
                 else
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                     var value = Expression.Property(inst, pi);
-                    yield return ExpressionsHelper.CallSerialize(model, value, writer);
+                    yield return ExpressionsHelper.CallSerialize(
+                        model, 
+                        value, 
+                        writer,
+                        Expression.Constant(serializeContext));
                 }
             }
         }
@@ -139,13 +148,22 @@ public class ObjectsModelsGenerator : IModelsGenerator
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                     var value = Expression.Field(inst, fi);
-                    yield return ExpressionsHelper.CallSerializeString(model, value, writer, Expression.Constant(eattr.GetEncoding()));
+                    yield return ExpressionsHelper.CallSerializeString(
+                        model, 
+                        value, 
+                        writer,
+                        Expression.Constant(serializeContext),
+                        Expression.Constant(eattr.GetEncoding()));
                 }
                 else
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                     var value = Expression.Field(inst, fi);
-                    yield return ExpressionsHelper.CallSerialize(model, value, writer);
+                    yield return ExpressionsHelper.CallSerialize(
+                        model, 
+                        value, 
+                        writer,
+                        Expression.Constant(serializeContext));
                 }
             }
         }
@@ -165,13 +183,24 @@ public class ObjectsModelsGenerator : IModelsGenerator
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                     var value = Expression.Property(inst, pi);
-                    yield return Expression.Assign(value, ExpressionsHelper.CallDeserializeString(model, reader, Expression.Constant(eattr.GetEncoding())));
+                    yield return Expression.Assign(
+                        value, 
+                        ExpressionsHelper.CallDeserializeString(
+                            model, 
+                            reader,
+                            Expression.Constant(serializeContext),
+                            Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                     var value = Expression.Property(inst, pi);
-                    yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
+                    yield return Expression.Assign(
+                        value, 
+                        ExpressionsHelper.CallDeserialize(
+                            model, 
+                            reader,
+                            Expression.Constant(serializeContext)));
                 }
             }
         }
@@ -185,13 +214,24 @@ public class ObjectsModelsGenerator : IModelsGenerator
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                     var value = Expression.Field(inst, fi);
-                    yield return Expression.Assign(value, ExpressionsHelper.CallDeserializeString(model, reader, Expression.Constant(eattr.GetEncoding())));
+                    yield return Expression.Assign(
+                        value, 
+                        ExpressionsHelper.CallDeserializeString(
+                            model, 
+                            reader,
+                            Expression.Constant(serializeContext),
+                            Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                     var value = Expression.Field(inst, fi);
-                    yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
+                    yield return Expression.Assign(
+                        value, 
+                        ExpressionsHelper.CallDeserialize(
+                            model, 
+                            reader,
+                            Expression.Constant(serializeContext)));
                 }
             }
         }
@@ -207,13 +247,24 @@ public class ObjectsModelsGenerator : IModelsGenerator
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                     var value = Expression.Property(inst, pi);
-                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeStringGenerateTime(model, value, Expression.Constant(eattr.GetEncoding())));
+                    yield return Expression.AddAssign(
+                        result, 
+                        ExpressionsHelper.CallGetSizeStringGenerateTime(
+                            model, 
+                            value,
+                            Expression.Constant(serializeContext),
+                            Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                     var value = Expression.Property(inst, pi);
-                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
+                    yield return Expression.AddAssign(
+                        result, 
+                        ExpressionsHelper.CallGetSizeGenerateTime(
+                            model, 
+                            value,
+                            Expression.Constant(serializeContext)));
                 }
             }
         }
@@ -226,13 +277,24 @@ public class ObjectsModelsGenerator : IModelsGenerator
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                     var value = Expression.Field(inst, fi);
-                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeStringGenerateTime(model, value, Expression.Constant(eattr.GetEncoding())));
+                    yield return Expression.AddAssign(
+                        result, 
+                        ExpressionsHelper.CallGetSizeStringGenerateTime(
+                            model, 
+                            value,
+                            Expression.Constant(serializeContext),
+                            Expression.Constant(eattr.GetEncoding())));
                 }
                 else
                 {
                     var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                     var value = Expression.Field(inst, fi);
-                    yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
+                    yield return Expression.AddAssign(
+                        result, 
+                        ExpressionsHelper.CallGetSizeGenerateTime(
+                            model, 
+                            value,
+                            Expression.Constant(serializeContext)));
                 }
             }
         }

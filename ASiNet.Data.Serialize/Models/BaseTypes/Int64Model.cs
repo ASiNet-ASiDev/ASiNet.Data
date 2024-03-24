@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class Int64Model : SerializeModelBase<long>
 {
-    public override long Deserialize(in ISerializeReader reader)
+    public override long Deserialize(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(long)))
         {
@@ -14,7 +14,7 @@ public class Int64Model : SerializeModelBase<long>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(long)))
         {
@@ -25,7 +25,7 @@ public class Int64Model : SerializeModelBase<long>
         throw new Exception();
     }
 
-    public override void Serialize(long obj, in ISerializeWriter writer)
+    public override void Serialize(long obj, in ISerializeWriter writer, ISerializerContext context)
     {
         var buffer = (stackalloc byte[sizeof(long)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class Int64Model : SerializeModelBase<long>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, in ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer, ISerializerContext context)
     {
         if (obj is long value)
         {
@@ -51,8 +51,8 @@ public class Int64Model : SerializeModelBase<long>
         throw new Exception();
     }
 
-    public override int ObjectSerializedSize(long obj) => sizeof(long);
+    public override int ObjectSerializedSize(long obj, ISerializerContext context) => sizeof(long);
 
-    public override int ObjectSerializedSize(object obj) => sizeof(long);
+    public override int ObjectSerializedSize(object obj, ISerializerContext context) => sizeof(long);
 
 }

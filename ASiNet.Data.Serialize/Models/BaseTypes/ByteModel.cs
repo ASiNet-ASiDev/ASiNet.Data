@@ -4,7 +4,7 @@ namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 public class ByteModel : SerializeModelBase<byte>
 {
-    public override byte Deserialize(in ISerializeReader reader)
+    public override byte Deserialize(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(1))
         {
@@ -13,7 +13,7 @@ public class ByteModel : SerializeModelBase<byte>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(1))
         {
@@ -22,12 +22,12 @@ public class ByteModel : SerializeModelBase<byte>
         throw new Exception();
     }
 
-    public override void Serialize(byte obj, in ISerializeWriter writer)
+    public override void Serialize(byte obj, in ISerializeWriter writer, ISerializerContext context)
     {
         writer.WriteByte(obj);
     }
 
-    public override void SerializeObject(object? obj, in ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer, ISerializerContext context)
     {
         if (obj is byte value)
         {
@@ -37,7 +37,7 @@ public class ByteModel : SerializeModelBase<byte>
         throw new Exception();
     }
 
-    public override int ObjectSerializedSize(byte obj) => sizeof(byte);
+    public override int ObjectSerializedSize(byte obj, ISerializerContext context) => sizeof(byte);
 
-    public override int ObjectSerializedSize(object obj) => sizeof(byte);
+    public override int ObjectSerializedSize(object obj, ISerializerContext context) => sizeof(byte);
 }

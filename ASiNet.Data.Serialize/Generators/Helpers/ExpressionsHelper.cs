@@ -55,29 +55,38 @@ internal static class ExpressionsHelper
     public static Expression SerializeTypeHash(Expression writer, Expression model) =>
         Expression.Call(typeof(Helper), nameof(Helper.WriteTypeHash), null, writer, model);
 
-    public static Expression CallDeserialize(Expression serializeModel, Expression reader) =>
-        Expression.Call(serializeModel, nameof(SerializeModel<byte>.Deserialize), null, reader);
+    public static Expression CallDeserialize(Expression serializeModel, Expression reader, Expression context) =>
+        Expression.Call(serializeModel, nameof(SerializeModel<byte>.Deserialize), null, reader, context);
 
-    public static Expression CallSerialize(Expression serializeModel, Expression value, Expression writer) =>
-        Expression.Call(serializeModel, nameof(SerializeModel<byte>.Serialize), null, value, writer);
+    public static Expression CallSerialize(Expression serializeModel, Expression value, Expression writer, Expression context) =>
+        Expression.Call(serializeModel, nameof(SerializeModel<byte>.Serialize), null, value, writer, context);
 
-    public static Expression CallSerializeString(Expression serializeModel, Expression value, Expression writer, Expression encoding) =>
-        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.Serialize), null, value, writer, encoding);
+    public static Expression CallSerializeString(Expression serializeModel, Expression value, Expression writer, Expression context, Expression encoding) =>
+        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.Serialize), null, value, writer, context, encoding);
 
-    public static Expression CallDeserializeString(Expression serializeModel, Expression reader, Expression encoding) =>
-        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.Deserialize), null, reader, encoding);
+    public static Expression CallDeserializeString(Expression serializeModel, Expression reader, Expression context, Expression encoding) =>
+        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.Deserialize), null, reader, context, encoding);
 
-    public static Expression CallGetSizeStringGenerateTime(Expression serializeModel, Expression inst, Expression encoding) =>
-        Expression.Call(Expression.Convert(serializeModel, typeof(ISerializeStringModel)), nameof(ISerializeStringModel.ObjectSerializedSize), null, inst, encoding);
+    public static Expression CallGetSizeStringGenerateTime(Expression serializeModel, Expression inst, Expression context, Expression encoding) =>
+        Expression.Call(
+            Expression.Convert(
+                serializeModel, 
+                typeof(ISerializeStringModel)), 
+            nameof(ISerializeStringModel.ObjectSerializedSize), null, inst, context, encoding);
 
-    public static Expression CallDeserializeObject(Expression serializeModel, Expression reader) =>
-        Expression.Call(serializeModel, nameof(ISerializeModel.DeserializeToObject), null, reader);
+    public static Expression CallDeserializeObject(Expression serializeModel, Expression reader, Expression context) =>
+        Expression.Call(serializeModel, nameof(ISerializeModel.DeserializeToObject), null, reader, context);
 
-    public static Expression CallSerializeObject(Expression serializeModel, Expression value, Expression writer) =>
-        Expression.Call(serializeModel, nameof(ISerializeModel.SerializeObject), null, value, writer);
+    public static Expression CallSerializeObject(Expression serializeModel, Expression value, Expression writer, Expression context) =>
+        Expression.Call(serializeModel, nameof(ISerializeModel.SerializeObject), null, value, writer, context);
 
-    public static Expression CallGetSizeGenerateTime(Expression serializeModel, Expression inst) =>
-        Expression.Call(serializeModel, serializeModel.Type.GetMethod(nameof(ISerializeModel.ObjectSerializedSize), [inst.Type])!, inst);
+    public static Expression CallGetSizeGenerateTime(Expression serializeModel, Expression inst, Expression context) =>
+        Expression.Call(
+            serializeModel,
+            serializeModel.Type.GetMethod(nameof(ISerializeModel<byte>.ObjectSerializedSize), 
+                [inst.Type, typeof(ISerializerContext)])!, 
+            inst, 
+            context);
 
     public static Expression CallEnumiratorMoveNextGenerateTime(Expression enumirator) =>
         Expression.Call(Expression.Convert(enumirator, typeof(IEnumerator)), nameof(IEnumerator<byte>.MoveNext), null);

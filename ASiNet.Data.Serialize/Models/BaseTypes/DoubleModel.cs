@@ -4,7 +4,7 @@ namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 public class DoubleModel : SerializeModelBase<double>
 {
-    public override double Deserialize(in ISerializeReader reader)
+    public override double Deserialize(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(double)))
         {
@@ -15,10 +15,10 @@ public class DoubleModel : SerializeModelBase<double>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader) =>
-        Deserialize(reader);
+    public override object? DeserializeToObject(in ISerializeReader reader, ISerializerContext context) =>
+        Deserialize(reader, context);
 
-    public override void Serialize(double obj, in ISerializeWriter writer)
+    public override void Serialize(double obj, in ISerializeWriter writer, ISerializerContext context)
     {
         var buffer = (stackalloc byte[sizeof(double)]);
         if (obj.TryToBytes(buffer))
@@ -30,11 +30,11 @@ public class DoubleModel : SerializeModelBase<double>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, in ISerializeWriter writer) =>
-        Serialize((double)obj!, writer);
+    public override void SerializeObject(object? obj, in ISerializeWriter writer, ISerializerContext context) =>
+        Serialize((double)obj!, writer, context);
 
 
-    public override int ObjectSerializedSize(double obj) => sizeof(double);
+    public override int ObjectSerializedSize(double obj, ISerializerContext context) => sizeof(double);
 
-    public override int ObjectSerializedSize(object obj) => sizeof(double);
+    public override int ObjectSerializedSize(object obj, ISerializerContext context) => sizeof(double);
 }

@@ -11,20 +11,9 @@ public class StringModelsGenerator : IModelsGenerator
 
     public bool CanGenerateModelForType<T>() => CanGenerateModelForType(typeof(T));
 
-    public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
-    {
-        SerializeModel<T>? result = typeof(T).Name switch
-        {
-            nameof(String) => Cast(new StringModel(settings.DefaultEncoding)),
-            _ => null,
-        };
-
-        static SerializeModel<T>? Cast(ISerializeModel model) =>
-            model as SerializeModel<T>;
-
-        return result is null ? throw new GeneratorException(new NotImplementedException()) : result;
-    }
-
+    public SerializeModel<T> GenerateModel<T>(ISerializerContext serializeContext, in GeneratorsSettings settings) => 
+        new StringModel(settings.DefaultEncoding) as SerializeModel<T> ?? throw new GeneratorException(new NotImplementedException());
+    
 
     public DeserializeObjectDelegate<T> GenerateDeserializeLambda<T>(ISerializerContext serializeContext, in GeneratorsSettings settings)
     {

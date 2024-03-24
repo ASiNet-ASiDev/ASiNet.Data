@@ -56,10 +56,10 @@ public class DictionaryModelsGenerator : IModelsGenerator
                     Expression.Default(type)),
                 Expression.Block([keysEnumirator, valuesEnumirator],
                     ExpressionsHelper.WriteNullableByteGenerateTime(writer, 1),
-                    ExpressionsHelper.CallSerialize(intModel, GetCount(inst), writer),
+                    ExpressionsHelper.CallSerialize(intModel, GetCount(inst), writer, Expression.Constant(serializeContext)),
                     Expression.Assign(keysEnumirator, GetKeysEnumirator(inst, keyType)),
                     Expression.Assign(valuesEnumirator, GetValuesEnumirator(inst, valueType)),
-                    SerializeDictionary(keysEnumirator, valuesEnumirator, keyModel, valueModel, writer)
+                    SerializeDictionary(serializeContext, keysEnumirator, valuesEnumirator, keyModel, valueModel, writer)
                 ),
                 ExpressionsHelper.WriteNullableByteGenerateTime(writer, 0)
             );
@@ -91,9 +91,9 @@ public class DictionaryModelsGenerator : IModelsGenerator
                     ExpressionsHelper.ReadNullableByteGenerateTime(reader),
                     Expression.Constant((byte)1)),
                 Expression.Block([count],
-                    Expression.Assign(count, ExpressionsHelper.CallDeserialize(intModel, reader)),
+                    Expression.Assign(count, ExpressionsHelper.CallDeserialize(intModel, reader, Expression.Constant(serializeContext))),
                     Expression.Assign(inst, Expression.New(ctor, count)),
-                    DeserializeDictionary(count, inst, keyModel, valueModel, reader)
+                    DeserializeDictionary(serializeContext, count, inst, keyModel, valueModel, reader)
                     )
                 ),
             inst
@@ -128,7 +128,13 @@ public class DictionaryModelsGenerator : IModelsGenerator
                     Expression.Assign(keysEnumirator, GetKeysEnumirator(inst, keyType)),
                     Expression.Assign(valuesEnumirator, GetValuesEnumirator(inst, valueType)),
                     Expression.AddAssign(result, Expression.Constant(4, typeof(int))),
-                    GetElementsSize(keysEnumirator, valuesEnumirator, keyModel, valueModel, result)
+                    GetElementsSize(
+                        serializeContext,
+                        keysEnumirator, 
+                        valuesEnumirator, 
+                        keyModel, 
+                        valueModel, 
+                        result)
                     )
                 ),
             result
@@ -138,7 +144,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
         return lambda.Compile();
     }
 
-    private Expression DeserializeDictionary(Expression count, Expression inst, Expression keyMode, Expression valueModel, Expression reader)
+    private Expression DeserializeDictionary(ISerializerContext serializeContext, Expression count, Expression inst, Expression keyMode, Expression valueModel, Expression reader)
     {
         var i = Expression.Parameter(typeof(int), "i");
         var breakLabel = Expression.Label("LoopBreak");
@@ -156,8 +162,14 @@ public class DictionaryModelsGenerator : IModelsGenerator
                                 inst,
                                 nameof(Dictionary<byte, byte>.Add),
                                 null,
-                                ExpressionsHelper.CallDeserialize(keyMode, reader),
-                                ExpressionsHelper.CallDeserialize(valueModel, reader)),
+                                ExpressionsHelper.CallDeserialize(
+                                    keyMode, 
+                                    reader,
+                                    Expression.Constant(serializeContext)),
+                                ExpressionsHelper.CallDeserialize(
+                                    valueModel, 
+                                    reader,
+                                    Expression.Constant(serializeContext))),
 
                             Expression.AddAssign(i, Expression.Constant(1)))
                         ),
@@ -165,7 +177,7 @@ public class DictionaryModelsGenerator : IModelsGenerator
                 );
     }
 
-    private Expression SerializeDictionary(Expression keysEnumirator, Expression valuesEnumirator, Expression keyMode, Expression valueModel, Expression writer)
+    private Expression SerializeDictionary(ISerializerContext serializeContext, Expression keysEnumirator, Expression valuesEnumirator, Expression keyMode, Expression valueModel, Expression writer)
     {
         var breakLabel = Expression.Label("LoopBreak");
         return
@@ -176,15 +188,23 @@ public class DictionaryModelsGenerator : IModelsGenerator
                         ExpressionsHelper.CallEnumiratorMoveNextGenerateTime(valuesEnumirator)
                         ),
                     Expression.Block(
-                        ExpressionsHelper.CallSerialize(keyMode, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(keysEnumirator), writer),
-                        ExpressionsHelper.CallSerialize(valueModel, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(valuesEnumirator), writer)
+                        ExpressionsHelper.CallSerialize(
+                            keyMode, 
+                            ExpressionsHelper.CallEnumiratorCurrentGenerateTime(keysEnumirator),
+                            writer,
+                            Expression.Constant(serializeContext)),
+                        ExpressionsHelper.CallSerialize(
+                            valueModel, 
+                            ExpressionsHelper.CallEnumiratorCurrentGenerateTime(valuesEnumirator), 
+                            writer,
+                            Expression.Constant(serializeContext))
                         ),
                     Expression.Break(breakLabel)
                     ),
                 breakLabel);
     }
 
-    private Expression GetElementsSize(Expression keysEnumirator, Expression valuesEnumirator, Expression keyMode, Expression valueModel, Expression result)
+    private Expression GetElementsSize(ISerializerContext serializeContext, Expression keysEnumirator, Expression valuesEnumirator, Expression keyMode, Expression valueModel, Expression result)
     {
         var breakLabel = Expression.Label("LoopBreak");
         return
@@ -195,8 +215,18 @@ public class DictionaryModelsGenerator : IModelsGenerator
                         ExpressionsHelper.CallEnumiratorMoveNextGenerateTime(valuesEnumirator)
                         ),
                     Expression.Block(
-                        Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(keyMode, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(keysEnumirator))),
-                        Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(valueModel, ExpressionsHelper.CallEnumiratorCurrentGenerateTime(valuesEnumirator)))
+                        Expression.AddAssign(
+                            result, 
+                            ExpressionsHelper.CallGetSizeGenerateTime(
+                                keyMode, 
+                                ExpressionsHelper.CallEnumiratorCurrentGenerateTime(keysEnumirator),
+                                Expression.Constant(serializeContext))),
+                        Expression.AddAssign(
+                            result, 
+                            ExpressionsHelper.CallGetSizeGenerateTime(
+                                valueModel, 
+                                ExpressionsHelper.CallEnumiratorCurrentGenerateTime(valuesEnumirator),
+                                Expression.Constant(serializeContext)))
                         ),
                     Expression.Break(breakLabel)
                 ),

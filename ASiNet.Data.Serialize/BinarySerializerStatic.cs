@@ -23,7 +23,7 @@ public static class BinarySerializer
     /// </summary>
     /// <returns> Bytes size. </returns>
     public static int GetSize<T>(T? obj) =>
-        SerializeContext.GetOrGenerate<T>().ObjectSerializedSize(obj);
+        SerializeContext.GetOrGenerate<T>().ObjectSerializedSize(obj, SerializeContext);
 
     /// <summary>
     /// Serializes an object into bytes
@@ -138,7 +138,7 @@ public static class BinarySerializer
     public static int Serialize<T>(T obj, in ISerializeWriter writer)
     {
         var model = SerializeContext.GetOrGenerate<T>();
-        model.Serialize(obj, writer);
+        model.Serialize(obj, writer, SerializeContext);
         return writer.FilledBytes;
     }
 
@@ -154,7 +154,7 @@ public static class BinarySerializer
     public static T? Deserialize<T>(in ISerializeReader reader)
     {
         var model = SerializeContext.GetOrGenerate<T>();
-        return model.Deserialize(reader);
+        return model.Deserialize(reader, SerializeContext);
     }
 
     /// <summary>

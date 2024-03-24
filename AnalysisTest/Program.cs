@@ -1,12 +1,27 @@
-﻿namespace AnalysisTest;
+﻿using ASiNet.Data.Serialization.Attributes;
 
-public partial class Program
+namespace AnalysisTest;
+
+public class Program
 {
     static void Main(string[] args)
     {
-        HelloFrom("rrwrwww");
+        Console.ReadKey();
+
     }
 
+}
 
-    static partial void HelloFrom(string name);
+
+[PreGenerate]
+public class At
+{
+
+}
+
+
+[PreGenerate]
+public class At2
+{
+
 }

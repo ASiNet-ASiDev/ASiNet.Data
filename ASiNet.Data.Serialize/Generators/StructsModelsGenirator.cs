@@ -90,7 +90,11 @@ public class StructsModelsGenirator : IModelsGenerator
             {
                 var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return ExpressionsHelper.CallSerialize(model, value, writer);
+                yield return ExpressionsHelper.CallSerialize(
+                    model, 
+                    value, 
+                    writer,
+                    Expression.Constant(serializeContext));
             }
         }
 
@@ -101,7 +105,11 @@ public class StructsModelsGenirator : IModelsGenerator
             {
                 var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return ExpressionsHelper.CallSerialize(model, value, writer);
+                yield return ExpressionsHelper.CallSerialize(
+                    model, 
+                    value, 
+                    writer,
+                    Expression.Constant(serializeContext));
             }
         }
     }
@@ -118,7 +126,12 @@ public class StructsModelsGenirator : IModelsGenerator
             {
                 var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
+                yield return Expression.Assign(
+                    value, 
+                    ExpressionsHelper.CallDeserialize(
+                        model, 
+                        reader,
+                        Expression.Constant(serializeContext)));
             }
         }
 
@@ -129,7 +142,12 @@ public class StructsModelsGenirator : IModelsGenerator
             {
                 var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Expression.Assign(value, ExpressionsHelper.CallDeserialize(model, reader));
+                yield return Expression.Assign(
+                    value, 
+                    ExpressionsHelper.CallDeserialize(
+                        model, 
+                        reader,
+                        Expression.Constant(serializeContext)));
             }
         }
     }
@@ -142,7 +160,12 @@ public class StructsModelsGenirator : IModelsGenerator
             {
                 var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(pi.PropertyType, serializeContext);
                 var value = Expression.Property(inst, pi);
-                yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
+                yield return Expression.AddAssign(
+                    result, 
+                    ExpressionsHelper.CallGetSizeGenerateTime(
+                        model, 
+                        value,
+                        Expression.Constant(serializeContext)));
             }
         }
 
@@ -152,7 +175,12 @@ public class StructsModelsGenirator : IModelsGenerator
             {
                 var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(fi.FieldType, serializeContext);
                 var value = Expression.Field(inst, fi);
-                yield return Expression.AddAssign(result, ExpressionsHelper.CallGetSizeGenerateTime(model, value));
+                yield return Expression.AddAssign(
+                    result, 
+                    ExpressionsHelper.CallGetSizeGenerateTime(
+                        model, 
+                        value,
+                        Expression.Constant(serializeContext)));
             }
         }
 

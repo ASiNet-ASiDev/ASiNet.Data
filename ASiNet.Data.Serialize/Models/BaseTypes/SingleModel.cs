@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class SingleModel : SerializeModelBase<float>
 {
-    public override float Deserialize(in ISerializeReader reader)
+    public override float Deserialize(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(float)))
         {
@@ -14,7 +14,7 @@ public class SingleModel : SerializeModelBase<float>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(float)))
         {
@@ -25,7 +25,7 @@ public class SingleModel : SerializeModelBase<float>
         throw new Exception();
     }
 
-    public override void Serialize(float obj, in ISerializeWriter writer)
+    public override void Serialize(float obj, in ISerializeWriter writer, ISerializerContext context)
     {
         var buffer = (stackalloc byte[sizeof(float)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class SingleModel : SerializeModelBase<float>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, in ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer, ISerializerContext context)
     {
         if (obj is float value)
         {
@@ -52,7 +52,7 @@ public class SingleModel : SerializeModelBase<float>
     }
 
 
-    public override int ObjectSerializedSize(float obj) => sizeof(float);
+    public override int ObjectSerializedSize(float obj, ISerializerContext context) => sizeof(float);
 
-    public override int ObjectSerializedSize(object obj) => sizeof(float);
+    public override int ObjectSerializedSize(object obj, ISerializerContext context) => sizeof(float);
 }

@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class UInt64Model : SerializeModelBase<ulong>
 {
-    public override ulong Deserialize(in ISerializeReader reader)
+    public override ulong Deserialize(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(ulong)))
         {
@@ -14,7 +14,7 @@ public class UInt64Model : SerializeModelBase<ulong>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(ulong)))
         {
@@ -25,7 +25,7 @@ public class UInt64Model : SerializeModelBase<ulong>
         throw new Exception();
     }
 
-    public override void Serialize(ulong obj, in ISerializeWriter writer)
+    public override void Serialize(ulong obj, in ISerializeWriter writer, ISerializerContext context)
     {
         var buffer = (stackalloc byte[sizeof(ulong)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class UInt64Model : SerializeModelBase<ulong>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, in ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer, ISerializerContext context)
     {
         if (obj is ulong value)
         {
@@ -51,8 +51,8 @@ public class UInt64Model : SerializeModelBase<ulong>
         throw new Exception();
     }
 
-    public override int ObjectSerializedSize(ulong obj) => sizeof(ulong);
+    public override int ObjectSerializedSize(ulong obj, ISerializerContext context) => sizeof(ulong);
 
-    public override int ObjectSerializedSize(object obj) => sizeof(ulong);
+    public override int ObjectSerializedSize(object obj, ISerializerContext context) => sizeof(ulong);
 
 }

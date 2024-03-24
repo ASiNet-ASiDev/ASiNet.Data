@@ -8,9 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ASiNet.Data.Serialization.Analyzers\ASiNet.Data.Serialization.Analyzers.csproj"
+    <ProjectReference Include="..\ASiNet.Data.Serialization.Analyzers\ASiNet.Data.Serialization.Analyzers.csproj" 
 					  OutputItemType="Analyzer"
-					  ReferenceOutputAssembly="false" />
+					  ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\ASiNet.Data.Serialization.Core\ASiNet.Data.Serialization.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@
 namespace ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 public class BooleanModel : SerializeModelBase<bool>
 {
-    public override bool Deserialize(in ISerializeReader reader)
+    public override bool Deserialize(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(bool)))
         {
@@ -14,7 +14,7 @@ public class BooleanModel : SerializeModelBase<bool>
         throw new Exception();
     }
 
-    public override object? DeserializeToObject(in ISerializeReader reader)
+    public override object? DeserializeToObject(in ISerializeReader reader, ISerializerContext context)
     {
         if (reader.CanReadSize(sizeof(bool)))
         {
@@ -25,7 +25,7 @@ public class BooleanModel : SerializeModelBase<bool>
         throw new Exception();
     }
 
-    public override void Serialize(bool obj, in ISerializeWriter writer)
+    public override void Serialize(bool obj, in ISerializeWriter writer, ISerializerContext context)
     {
         var buffer = (stackalloc byte[sizeof(bool)]);
         if (obj.TryToBytes(buffer))
@@ -36,7 +36,7 @@ public class BooleanModel : SerializeModelBase<bool>
         throw new Exception();
     }
 
-    public override void SerializeObject(object? obj, in ISerializeWriter writer)
+    public override void SerializeObject(object? obj, in ISerializeWriter writer, ISerializerContext context)
     {
         if (obj is bool value)
         {
@@ -51,7 +51,7 @@ public class BooleanModel : SerializeModelBase<bool>
         throw new Exception();
     }
 
-    public override int ObjectSerializedSize(bool obj) => sizeof(bool);
+    public override int ObjectSerializedSize(bool obj, ISerializerContext context) => sizeof(bool);
 
-    public override int ObjectSerializedSize(object obj) => sizeof(bool);
+    public override int ObjectSerializedSize(object obj, ISerializerContext context) => sizeof(bool);
 }

@@ -78,7 +78,8 @@ public class AbstractModelsGenerator : IModelsGenerator
                         inst,
                         typeof(object)
                         ),
-                    writer
+                    writer,
+                    contextProperty
                     )
                 ),
 
@@ -123,7 +124,7 @@ public class AbstractModelsGenerator : IModelsGenerator
                 Expression.Assign(
                     inst,
                     Expression.Convert(
-                        ExpressionsHelper.CallDeserializeObject(modelProp, reader),
+                        ExpressionsHelper.CallDeserializeObject(modelProp, reader, contextProperty),
                         type)
                     )
                 )
@@ -174,7 +175,8 @@ public class AbstractModelsGenerator : IModelsGenerator
                         result,
                         ExpressionsHelper.CallGetSizeGenerateTime(
                             modelProp,
-                            inst
+                            inst,
+                            contextProperty
                             )
                         )
                     )

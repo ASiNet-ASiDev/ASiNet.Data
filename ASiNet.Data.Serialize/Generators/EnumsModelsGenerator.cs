@@ -41,7 +41,7 @@ public class EnumsModelsGenerator : IModelsGenerator
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(enumUnderlyingType, serializeContext);
 
-        var body = ExpressionsHelper.CallSerialize(model, Expression.Convert(inst, enumUnderlyingType), writer);
+        var body = ExpressionsHelper.CallSerialize(model, Expression.Convert(inst, enumUnderlyingType), writer, Expression.Constant(serializeContext));
 
         var lambda = Expression.Lambda<SerializeObjectDelegate<T>>(body, inst, writer);
         return lambda.Compile();
@@ -56,7 +56,7 @@ public class EnumsModelsGenerator : IModelsGenerator
 
         var model = ExpressionsHelper.GetOrGenerateModelGenerateTime(enumUnderlyingType, serializeContext);
 
-        var body = Expression.Convert(ExpressionsHelper.CallDeserialize(model, reader), type);
+        var body = Expression.Convert(ExpressionsHelper.CallDeserialize(model, reader, Expression.Constant(serializeContext)), type);
 
         var lambda = Expression.Lambda<DeserializeObjectDelegate<T>>(body, reader);
         return lambda.Compile();
@@ -79,7 +79,8 @@ public class EnumsModelsGenerator : IModelsGenerator
                     model,
                     Expression.Convert(
                         inst,
-                        enumUnderlyingType)
+                        enumUnderlyingType),
+                    Expression.Constant(serializeContext)
                     )
                 ),
             result

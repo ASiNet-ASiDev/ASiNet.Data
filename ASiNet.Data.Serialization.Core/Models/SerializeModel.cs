@@ -20,16 +20,16 @@ namespace ASiNet.Data.Serialization.Models
             return (bytes, hash);
         });
 
-        public abstract void Serialize(T obj, in ISerializeWriter writer);
+        public abstract void Serialize(T obj, in ISerializeWriter writer, ISerializerContext context);
 
-        public abstract T Deserialize(in ISerializeReader reader);
+        public abstract T Deserialize(in ISerializeReader reader, ISerializerContext context);
 
-        public abstract int ObjectSerializedSize(object obj);
+        public abstract int ObjectSerializedSize(object obj, ISerializerContext context);
         
-        public abstract void SerializeObject(object obj, in ISerializeWriter writer);
+        public abstract void SerializeObject(object obj, in ISerializeWriter writer, ISerializerContext context);
 
-        public abstract object DeserializeToObject(in ISerializeReader reader);
+        public abstract object DeserializeToObject(in ISerializeReader reader, ISerializerContext context);
 
-        public abstract int ObjectSerializedSize(T obj);
+        public abstract int ObjectSerializedSize(T obj, ISerializerContext context);
     }
 }
