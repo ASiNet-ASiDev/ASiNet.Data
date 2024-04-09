@@ -31,9 +31,7 @@ public class StreamReader(Stream stream) : ISerializeReader
         return (byte)res;
     }
 
-    public static implicit operator StreamReader(FileStream src) => new(src);
-
-    public static implicit operator StreamReader(MemoryStream src) => new(src);
+    public static implicit operator StreamReader(Stream src) => new(src);
 
     public static implicit operator Stream(StreamReader src) => src._stream;
 }

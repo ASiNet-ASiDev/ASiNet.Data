@@ -16,10 +16,10 @@ public static class DataBinaryExtensions
         => serializer.Deserialize<T>((FileStreamReader)stream);
 
     public static int Serialize<T>(this IBinarySerializer serializer, T obj, MemoryStream stream)
-        => serializer.Serialize<T>(obj, (FileStreamWriter)stream);
+        => serializer.Serialize<T>(obj, (IO.Streams.StreamWriter)stream);
 
     public static T? Deserialize<T>(this IBinarySerializer serializer, MemoryStream stream)
-        => serializer.Deserialize<T>((FileStreamReader)stream);
+        => serializer.Deserialize<T>((IO.Streams.StreamReader)stream);
 
     public static int Serialize<T>(this IBinarySerializer serializer, T obj, NetworkStream stream)
         => serializer.Serialize<T>(obj, (NetworkStreamWriter)stream);

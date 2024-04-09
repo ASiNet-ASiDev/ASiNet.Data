@@ -21,9 +21,7 @@ public class StreamWriter(Stream stream) : ISerializeWriter
         _stream.WriteByte(data);
     }
 
-    public static implicit operator StreamWriter(FileStream src) => new(src);
-
-    public static implicit operator StreamWriter(MemoryStream src) => new(src);
+    public static implicit operator StreamWriter(Stream src) => new(src);
 
     public static implicit operator Stream(StreamWriter src) => src._stream;
 }
