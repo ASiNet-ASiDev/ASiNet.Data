@@ -29,7 +29,5 @@ public class FileStreamWriter(Stream stream) : ISerializeWriter
 
     public static implicit operator FileStreamWriter(FileStream src) => new(src);
 
-    public static implicit operator FileStreamWriter(MemoryStream src) => new(src);
-
     public static implicit operator Stream(FileStreamWriter src) => src._stream;
 }
