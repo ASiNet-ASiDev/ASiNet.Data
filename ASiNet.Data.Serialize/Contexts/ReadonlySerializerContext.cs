@@ -82,4 +82,7 @@ public class ReadonlySerializerContext : BaseSerializerContext
 
         throw new ContextException(new NotImplementedException("This context does not support hash key model generation."));
     }
+
+    public override long RegisterModel<T>() => throw new ContextException(new NotImplementedException("Method not supported!"));
+    public override long RegisterModel(Type type) => throw new ContextException(new NotImplementedException("Method not supported!"));
 }

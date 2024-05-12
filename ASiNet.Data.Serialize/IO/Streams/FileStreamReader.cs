@@ -15,15 +15,11 @@ public class FileStreamReader(Stream stream) : ISerializeReader
 
     public void ReadBytes(Span<byte> data)
     {
-        if (AvalibleBytes < data.Length)
-            throw new ReaderException(new IndexOutOfRangeException("The length of the stream is less than what you are trying to read"));
         _stream.Read(data);
     }
 
     public byte ReadByte()
     {
-        if (AvalibleBytes < 1)
-            throw new ReaderException(new IndexOutOfRangeException("The length of the stream is less than what you are trying to read"));
         int res = _stream.ReadByte();
         if (res == -1)
             throw new Exception("Out of range.");

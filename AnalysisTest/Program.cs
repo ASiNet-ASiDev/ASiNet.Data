@@ -1,4 +1,5 @@
 ﻿using ASiNet.Data.Serialization.Attributes;
+using ASiNet.Data.Serialization.Interfaces;
 
 namespace AnalysisTest;
 
@@ -14,7 +15,7 @@ public class Program
 
 
 [PreGenerate]
-public class At
+public partial class At : ISerializeModel<At>
 {
 
 }

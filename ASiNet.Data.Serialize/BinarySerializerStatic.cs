@@ -61,7 +61,7 @@ public static class BinarySerializer
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> The number of bytes written. </returns>
     public static int Serialize<T>(T obj, FileStream stream)
-        => Serialize<T>(obj, (FileStreamWriter)stream);
+        => Serialize<T>(obj, (ISerializeWriter)(FileStreamWriter)stream);
 
     /// <summary>
     /// Deserializes an object from the buffer
@@ -73,7 +73,7 @@ public static class BinarySerializer
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> Deserialized object </returns>
     public static T? Deserialize<T>(Stream stream)
-        => Deserialize<T>((IO.Streams.StreamReader)stream);
+        => Deserialize<T>((ISerializeReader)(IO.Streams.StreamReader)stream);
 
     /// <summary>
     /// Serializes an object into bytes
@@ -86,7 +86,7 @@ public static class BinarySerializer
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> The number of bytes written. </returns>
     public static int Serialize<T>(T obj, Stream stream)
-        => Serialize<T>(obj, (IO.Streams.StreamWriter)stream);
+        => Serialize<T>(obj, (ISerializeWriter)(IO.Streams.StreamWriter)stream);
 
     /// <summary>
     /// Deserializes an object from the buffer
@@ -98,7 +98,7 @@ public static class BinarySerializer
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> Deserialized object </returns>
     public static T? Deserialize<T>(FileStream stream)
-        => Deserialize<T>((FileStreamReader)stream);
+        => Deserialize<T>((ISerializeReader)(FileStreamReader)stream);
 
     /// <summary>
     /// Serializes an object into bytes
@@ -111,7 +111,7 @@ public static class BinarySerializer
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> The number of bytes written. </returns>
     public static int Serialize<T>(T obj, MemoryStream stream)
-        => Serialize<T>(obj, (IO.Streams.StreamWriter)stream);
+        => Serialize<T>(obj, (ISerializeWriter)(IO.Streams.StreamWriter)stream);
 
     /// <summary>
     /// Deserializes an object from the buffer
@@ -123,7 +123,7 @@ public static class BinarySerializer
     /// <exception cref="IndexOutOfRangeException"/>
     /// <returns> Deserialized object </returns>
     public static T? Deserialize<T>(MemoryStream stream)
-        => Deserialize<T>((IO.Streams.StreamReader)stream);
+        => Deserialize<T>((ISerializeReader)(IO.Streams.StreamReader)stream);
 
     /// <summary>
     /// Serializes an object into bytes

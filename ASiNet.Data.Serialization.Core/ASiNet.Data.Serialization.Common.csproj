@@ -4,6 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>ASiNet.Data.Serialization</RootNamespace>
 	  <LangVersion>11</LangVersion>
+	  <Version>4.0.5</Version>
+	  <Authors>ASiDev</Authors>
+	  <Copyright>MIT</Copyright>
+	  <RepositoryUrl>https://github.com/ASiNet-ASiDev/ASiNet.Data.Serialization</RepositoryUrl>
+	  <Title>$(AssemblyName)</Title>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -1,5 +1,6 @@
 ﻿using ASiNet.Data.Serialization.Exceptions;
 using ASiNet.Data.Serialization.Generators;
+using ASiNet.Data.Serialization.Hash;
 using ASiNet.Data.Serialization.Interfaces;
 using ASiNet.Data.Serialization.Models;
 
@@ -21,12 +22,21 @@ public class DefaultSerializerContext : BaseSerializerContext
                     GenerateModel(type);
             }
         }
+        if(Settings.AllowRegisterAttribute)
+        {
+            foreach (var type in Helper.EnumirateRegisteredModels())
+            {
+                RegisterModel(type);
+            }
+        }
         _modelsByHash = new(GenerateModelsByHashDictionary);
     }
 
     private Dictionary<Type, ISerializeModel> _models = [];
 
     private Lazy<Dictionary<long, ISerializeModel>> _modelsByHash;
+
+    private Lazy<Dictionary<long, Type>> _registeredModels = new(() => []);
 
     private List<IModelsGenerator> _generators = [
         new BaseTypesGenerator(),
@@ -74,6 +84,8 @@ public class DefaultSerializerContext : BaseSerializerContext
             ?? throw new GeneratorException(new NullReferenceException("model is null"));
 
         _models.TryAdd(type, newModel);
+        if (_modelsByHash.IsValueCreated)
+            _modelsByHash.Value.Add(newModel.TypeHash, newModel);
         return newModel;
     }
 
@@ -95,6 +107,8 @@ public class DefaultSerializerContext : BaseSerializerContext
             ?? throw new GeneratorException(new NullReferenceException("model is null"));
 
         _models.TryAdd(type, newModel);
+        if(_modelsByHash.IsValueCreated)
+            _modelsByHash.Value.Add(newModel.TypeHash, newModel);
         return newModel;
     }
 
@@ -125,7 +139,15 @@ public class DefaultSerializerContext : BaseSerializerContext
         if (_modelsByHash.Value.TryGetValue(hash, out ISerializeModel? model))
             return model;
 
-        throw new ContextException(new NotImplementedException("This context does not support hash key model generation."));
+        if(_registeredModels.IsValueCreated)
+        {
+            if(_registeredModels.Value.TryGetValue(hash, out var value))
+            {
+                _registeredModels.Value.Remove(hash);
+                return GetOrGenerate(value);
+            }
+        }
+        throw new ContextException(new ArgumentException("The model for this hash was not found."));
     }
 
     public override void AddGegerator(IModelsGenerator generator) =>
@@ -167,5 +189,27 @@ public class DefaultSerializerContext : BaseSerializerContext
                 throw new ContextException(
                     new Exception($"It was not possible to add a model with <{model.ObjType.FullName}, {model.TypeHash}> cache, since a model with this hash already exists."));
         }
+    }
+
+    public override long RegisterModel<T>()
+    {
+        var hash = PolynomialHasher.Shared.CalculateHash(typeof(T).FullName ?? typeof(T).Name);
+        if(_registeredModels.Value.TryAdd(hash, typeof(T)))
+        {
+            return hash;
+        }
+        else
+            return -1;   
+    }
+
+    public override long RegisterModel(Type type)
+    {
+        var hash = PolynomialHasher.Shared.CalculateHash(type.FullName ?? type.Name);
+        if (_registeredModels.Value.TryAdd(hash, type))
+        {
+            return hash;
+        }
+        else
+            return -1;
     }
 }

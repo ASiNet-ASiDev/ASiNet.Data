@@ -43,6 +43,10 @@ namespace ASiNet.Data.Serialization.Contexts
         public abstract bool RemoveModel(ISerializeModel model);
 
         public abstract bool RemoveModel<T>(SerializeModel<T> model);
+
+        public abstract long RegisterModel<T>();
+
+        public abstract long RegisterModel(Type type);
     }
 
 }

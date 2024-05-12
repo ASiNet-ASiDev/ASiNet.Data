@@ -15,15 +15,11 @@ public class FileStreamWriter(Stream stream) : ISerializeWriter
 
     public void WriteBytes(Span<byte> data)
     {
-        if ((!_stream.CanSeek || !_stream.CanWrite) && AvalibleBytes < data.Length)
-            throw new ReaderException(new IndexOutOfRangeException("The length of the stream is less than what you are trying to read"));
         _stream.Write(data);
     }
 
     public void WriteByte(byte data)
     {
-        if ((!_stream.CanSeek || !_stream.CanWrite) && AvalibleBytes < 1)
-            throw new ReaderException(new IndexOutOfRangeException("The length of the stream is less than what you are trying to read"));
         _stream.WriteByte(data);
     }
 

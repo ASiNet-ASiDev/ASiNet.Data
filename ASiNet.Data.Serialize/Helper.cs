@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using ASiNet.Data.Serialization.Attributes;
 using ASiNet.Data.Serialization.Interfaces;
-using ASiNet.Data.Serialization.Models.Arrays;
-using ASiNet.Data.Serialization.Models.BinarySerializeModels.BaseTypes;
 
 namespace ASiNet.Data.Serialization;
 internal static class Helper
@@ -12,6 +10,17 @@ internal static class Helper
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
             foreach (var type in assembly.GetTypes().Where(x => x.GetCustomAttribute<PreGenerateAttribute>() is not null))
+            {
+                yield return type;
+            }
+        }
+    }
+
+    public static IEnumerable<Type> EnumirateRegisteredModels()
+    {
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            foreach (var type in assembly.GetTypes().Where(x => x.GetCustomAttribute<RegisterAttribute>() is not null))
             {
                 yield return type;
             }

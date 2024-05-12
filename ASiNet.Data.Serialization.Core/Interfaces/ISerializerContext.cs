@@ -5,6 +5,10 @@ namespace ASiNet.Data.Serialization.Interfaces
 {
     public interface ISerializerContext
     {
+        long RegisterModel<T>();
+
+        long RegisterModel(Type type);
+
         void AddModel(ISerializeModel model);
 
         void AddModel<T>(SerializeModel<T> model);

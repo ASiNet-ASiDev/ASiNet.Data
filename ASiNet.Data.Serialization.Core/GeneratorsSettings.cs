@@ -30,6 +30,7 @@ namespace ASiNet.Data.Serialization
         /// </summary>
         public bool AllowPreGenerateModelAttribute { get; set; } = true;
 
+        public bool AllowRegisterAttribute { get; set; } = true;
 
         public bool UseUnsafeArraysModelsGenerator { get; set; } = true;
 

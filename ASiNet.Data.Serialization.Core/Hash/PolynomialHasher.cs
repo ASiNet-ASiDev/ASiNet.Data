@@ -7,7 +7,7 @@ namespace ASiNet.Data.Serialization.Hash
 
         public static PolynomialHasher Shared => _shared.Value;
 
-        private static Lazy<PolynomialHasher> _shared = new Lazy<PolynomialHasher>(() => new PolynomialHasher());
+        private static Lazy<PolynomialHasher> _shared = new(() => new PolynomialHasher());
 
         private const int _defaultAsciiOffset = 32;
         private const int _alphabet = 137;
